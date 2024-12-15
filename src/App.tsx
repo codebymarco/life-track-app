@@ -24,7 +24,7 @@ type FormData = {
   prayMorning: boolean;
   prayEvening: boolean;
   workout: boolean;
-  workoutDetails: string[]; // New property for workout details
+  workoutDetails: string[];
   mast: boolean;
   pn: boolean;
   steps: string;
@@ -34,7 +34,13 @@ type FormData = {
 type DietData = {
   date: string;
   foods: string[];
-  water: string; // Water intake in liters
+  water: string;
+};
+
+// Journal data type
+type JournalData = {
+  date: string;
+  body: string;
 };
 
 const style = {
@@ -50,10 +56,11 @@ const style = {
 };
 
 function App() {
-  const [tab, setTab] = useState<"entries" | "diet">("entries");
+  const [tab, setTab] = useState<"entries" | "diet" | "journal">("entries");
   const [open, setOpen] = useState<boolean>(false);
   const [data, setData] = useState<FormData[]>([]);
   const [dietData, setDietData] = useState<DietData[]>([]);
+  const [journalData, setJournalData] = useState<JournalData[]>([]);
   const [formData, setFormData] = useState<FormData>({
     date: "",
     prayMorning: false,
@@ -69,33 +76,33 @@ function App() {
     foods: [],
     water: "",
   });
+  const [journalForm, setJournalForm] = useState<JournalData>({
+    date: "",
+    body: "",
+  });
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
   useEffect(() => {
     try {
-      const storedEntries = JSON.parse(
-        localStorage.getItem("entries") || "[]"
-      ) as FormData[];
-      setData(
-        storedEntries.map((entry) => ({
-          ...entry,
-          workoutDetails: entry.workoutDetails || [],
-        }))
-      );
+      const storedEntries = JSON.parse(localStorage.getItem("entries") || "[]") as FormData[];
+      setData(storedEntries.map((entry) => ({
+        ...entry,
+        workoutDetails: entry.workoutDetails || [],
+      })));
 
-      const storedDiet = JSON.parse(
-        localStorage.getItem("dietEntries") || "[]"
-      ) as DietData[];
-      setDietData(
-        storedDiet.map((entry) => ({
-          ...entry,
-          foods: entry.foods || [],
-          water: entry.water || "",
-        }))
-      );
+      const storedDiet = JSON.parse(localStorage.getItem("dietEntries") || "[]") as DietData[];
+      setDietData(storedDiet.map((entry) => ({
+        ...entry,
+        foods: entry.foods || [],
+        water: entry.water || "",
+      })));
+
+      const storedJournal = JSON.parse(localStorage.getItem("journalEntries") || "[]") as JournalData[];
+      setJournalData(storedJournal);
     } catch {
       setData([]);
       setDietData([]);
+      setJournalData([]);
     }
   }, []);
 
@@ -113,12 +120,13 @@ function App() {
       workoutDetails: [],
     });
     setDietForm({ date: "", foods: [], water: "" });
+    setJournalForm({ date: "", body: "" });
     setEditIndex(null);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-  
+
     if (tab === "entries") {
       setFormData({
         ...formData,
@@ -128,7 +136,7 @@ function App() {
       if (name === "foods") {
         setDietForm({
           ...dietForm,
-          foods: value.split(",").map((food) => food.trim()), // Split by comma and trim whitespace
+          foods: value.split(",").map((food) => food.trim()),
         });
       } else {
         setDietForm({
@@ -136,16 +144,12 @@ function App() {
           [name]: value,
         });
       }
+    } else if (tab === "journal") {
+      setJournalForm({
+        ...journalForm,
+        [name]: value,
+      });
     }
-  };
-  
-
-  const handleArrayChange = (e: React.ChangeEvent<HTMLInputElement>, arrayName: keyof FormData) => {
-    const { value } = e.target;
-    setFormData({
-      ...formData,
-      [arrayName]: value.split(","),
-    });
   };
 
   const handleSave = () => {
@@ -169,6 +173,16 @@ function App() {
         setDietData([...dietData, dietForm]);
         localStorage.setItem("dietEntries", JSON.stringify([...dietData, dietForm]));
       }
+    } else if (tab === "journal") {
+      if (editIndex !== null) {
+        const updatedJournal = [...journalData];
+        updatedJournal[editIndex] = journalForm;
+        setJournalData(updatedJournal);
+        localStorage.setItem("journalEntries", JSON.stringify(updatedJournal));
+      } else {
+        setJournalData([...journalData, journalForm]);
+        localStorage.setItem("journalEntries", JSON.stringify([...journalData, journalForm]));
+      }
     }
     handleClose();
   };
@@ -182,6 +196,10 @@ function App() {
       const filteredDiet = dietData.filter((_, i) => i !== index);
       setDietData(filteredDiet);
       localStorage.setItem("dietEntries", JSON.stringify(filteredDiet));
+    } else if (tab === "journal") {
+      const filteredJournal = journalData.filter((_, i) => i !== index);
+      setJournalData(filteredJournal);
+      localStorage.setItem("journalEntries", JSON.stringify(filteredJournal));
     }
   };
 
@@ -192,12 +210,20 @@ function App() {
     } else if (tab === "diet") {
       setDietForm(dietData[index]);
       setEditIndex(index);
+    } else if (tab === "journal") {
+      setJournalForm(journalData[index]);
+      setEditIndex(index);
     }
     handleOpen();
   };
 
-  const handleDownload = (type: "entries" | "diet") => {
-    const jsonData = type === "entries" ? JSON.stringify(data, null, 2) : JSON.stringify(dietData, null, 2);
+  const handleDownload = (type: "entries" | "diet" | "journal") => {
+    const jsonData =
+      type === "entries"
+        ? JSON.stringify(data, null, 2)
+        : type === "diet"
+        ? JSON.stringify(dietData, null, 2)
+        : JSON.stringify(journalData, null, 2);
     const blob = new Blob([jsonData], { type: "application/json" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -221,6 +247,13 @@ function App() {
         >
           Diet
         </Button>
+        <Button
+          variant={tab === "journal" ? "contained" : "outlined"}
+          onClick={() => setTab("journal")}
+          style={{ marginLeft: "10px" }}
+        >
+          Day Journal
+        </Button>
       </div>
 
       <Button
@@ -229,7 +262,7 @@ function App() {
         onClick={handleOpen}
         style={{ marginTop: "10px" }}
       >
-        {tab === "entries" ? "Add Entry" : "Enter Day Diet"}
+        {tab === "entries" ? "Add Entry" : tab === "diet" ? "Enter Day Diet" : "Add Journal"}
       </Button>
 
       <Button
@@ -238,7 +271,7 @@ function App() {
         onClick={() => handleDownload(tab)}
         style={{ marginLeft: "10px", marginTop: "10px" }}
       >
-        Download {tab === "entries" ? "Entries" : "Diet"} as JSON
+        Download {tab === "entries" ? "Entries" : tab === "diet" ? "Diet" : "Journal"} as JSON
       </Button>
 
       <Modal open={open} onClose={handleClose}>
@@ -323,7 +356,7 @@ function App() {
                 onChange={handleChange}
               />
             </>
-          ) : (
+          ) : tab === "diet" ? (
             <>
               <TextField
                 fullWidth
@@ -351,6 +384,29 @@ function App() {
                 name="water"
                 value={dietForm.water}
                 onChange={handleChange}
+              />
+            </>
+          ) : (
+            <>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Date"
+                type="date"
+                name="date"
+                value={journalForm.date}
+                onChange={handleChange}
+                InputLabelProps={{ shrink: true }}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Journal Body"
+                name="body"
+                value={journalForm.body}
+                onChange={handleChange}
+                multiline
+                rows={4}
               />
             </>
           )}
@@ -405,7 +461,7 @@ function App() {
             </TableBody>
           </Table>
         </TableContainer>
-      ) : (
+      ) : tab === "diet" ? (
         <TableContainer component={Paper} sx={{ marginTop: 4 }}>
           <Table>
             <TableHead>
@@ -422,6 +478,34 @@ function App() {
                   <TableCell>{row.date}</TableCell>
                   <TableCell>{row.foods?.join(", ") || ""}</TableCell>
                   <TableCell>{row.water}</TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => handleEdit(index)}>
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton onClick={() => handleDelete(index)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <TableContainer component={Paper} sx={{ marginTop: 4 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Date</TableCell>
+                <TableCell>Body</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {journalData.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell>{row.date}</TableCell>
+                  <TableCell>{row.body}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleEdit(index)}>
                       <EditIcon />
