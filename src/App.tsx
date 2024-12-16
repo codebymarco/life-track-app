@@ -28,6 +28,7 @@ type FormData = {
   mast: boolean;
   pn: boolean;
   steps: string;
+  suntime: number; // new attribute for suntime
 };
 
 // Diet data type
@@ -70,6 +71,7 @@ function App() {
     steps: "",
     workout: false,
     workoutDetails: [],
+    suntime: 0, // initialize suntime
   });
   const [dietForm, setDietForm] = useState<DietData>({
     date: "",
@@ -118,6 +120,7 @@ function App() {
       steps: "",
       workout: false,
       workoutDetails: [],
+      suntime: 0, // reset suntime
     });
     setDietForm({ date: "", foods: [], water: "" });
     setJournalForm({ date: "", body: "" });
@@ -355,6 +358,15 @@ function App() {
                 value={formData.steps}
                 onChange={handleChange}
               />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Suntime"
+                type="number"
+                name="suntime"
+                value={formData.suntime}
+                onChange={handleChange}
+              />
             </>
           ) : tab === "diet" ? (
             <>
@@ -434,6 +446,7 @@ function App() {
                 <TableCell>Steps</TableCell>
                 <TableCell>Workout</TableCell>
                 <TableCell>Workout Details</TableCell>
+                <TableCell>Suntime</TableCell> {/* Add suntime column */}
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -448,6 +461,7 @@ function App() {
                   <TableCell>{row.steps}</TableCell>
                   <TableCell>{row.workout ? "Yes" : "No"}</TableCell>
                   <TableCell>{row.workoutDetails?.join(", ") || ""}</TableCell>
+                  <TableCell>{row.suntime}</TableCell> {/* Display suntime */}
                   <TableCell>
                     <IconButton onClick={() => handleEdit(index)}>
                       <EditIcon />
