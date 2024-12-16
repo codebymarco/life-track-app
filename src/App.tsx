@@ -24,11 +24,13 @@ type FormData = {
   prayMorning: boolean;
   prayEvening: boolean;
   workout: boolean;
-  workoutDetails: string[];
+  workoutDetails: string[]; // Keep this as an array
   mast: boolean;
   pn: boolean;
   steps: string;
-  suntime: number; // new attribute for suntime
+  suntime: number;
+  stretch: boolean; // new attribute for stretch
+  pe: boolean; // new attribute for PE
 };
 
 // Diet data type
@@ -71,7 +73,9 @@ function App() {
     steps: "",
     workout: false,
     workoutDetails: [],
-    suntime: 0, // initialize suntime
+    suntime: 0,
+    stretch: false, // initialize stretch
+    pe: false, // initialize PE
   });
   const [dietForm, setDietForm] = useState<DietData>({
     date: "",
@@ -89,7 +93,7 @@ function App() {
       const storedEntries = JSON.parse(localStorage.getItem("entries") || "[]") as FormData[];
       setData(storedEntries.map((entry) => ({
         ...entry,
-        workoutDetails: entry.workoutDetails || [],
+        workoutDetails: entry.workoutDetails || [], // Ensure workoutDetails is always an array
       })));
 
       const storedDiet = JSON.parse(localStorage.getItem("dietEntries") || "[]") as DietData[];
@@ -120,7 +124,9 @@ function App() {
       steps: "",
       workout: false,
       workoutDetails: [],
-      suntime: 0, // reset suntime
+      suntime: 0,
+      stretch: false, // reset stretch
+      pe: false, // reset PE
     });
     setDietForm({ date: "", foods: [], water: "" });
     setJournalForm({ date: "", body: "" });
@@ -316,8 +322,11 @@ function App() {
                 margin="normal"
                 label="Workout Details (comma-separated)"
                 name="workoutDetails"
-                value={formData.workoutDetails?.join(",") || ""}
-                onChange={(e) => handleArrayChange(e, "workoutDetails")}
+                value={formData.workoutDetails.join(",")}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  workoutDetails: e.target.value.split(",").map((detail) => detail.trim())
+                })}
               />
               <FormControlLabel
                 control={
@@ -366,6 +375,26 @@ function App() {
                 name="suntime"
                 value={formData.suntime}
                 onChange={handleChange}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formData.stretch}
+                    name="stretch"
+                    onChange={handleChange}
+                  />
+                }
+                label="Stretch"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formData.pe}
+                    name="pe"
+                    onChange={handleChange}
+                  />
+                }
+                label="PE"
               />
             </>
           ) : tab === "diet" ? (
@@ -446,7 +475,9 @@ function App() {
                 <TableCell>Steps</TableCell>
                 <TableCell>Workout</TableCell>
                 <TableCell>Workout Details</TableCell>
-                <TableCell>Suntime</TableCell> {/* Add suntime column */}
+                <TableCell>Suntime</TableCell>
+                <TableCell>Stretch</TableCell>
+                <TableCell>PE</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -460,8 +491,10 @@ function App() {
                   <TableCell>{row.pn ? "Yes" : "No"}</TableCell>
                   <TableCell>{row.steps}</TableCell>
                   <TableCell>{row.workout ? "Yes" : "No"}</TableCell>
-                  <TableCell>{row.workoutDetails?.join(", ") || ""}</TableCell>
-                  <TableCell>{row.suntime}</TableCell> {/* Display suntime */}
+                  <TableCell>{row.workoutDetails.join(", ")}</TableCell>
+                  <TableCell>{row.suntime}</TableCell>
+                  <TableCell>{row.stretch ? "Yes" : "No"}</TableCell>
+                  <TableCell>{row.pe ? "Yes" : "No"}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleEdit(index)}>
                       <EditIcon />
@@ -490,7 +523,7 @@ function App() {
               {dietData.map((row, index) => (
                 <TableRow key={index}>
                   <TableCell>{row.date}</TableCell>
-                  <TableCell>{row.foods?.join(", ") || ""}</TableCell>
+                  <TableCell>{row.foods.join(", ")}</TableCell>
                   <TableCell>{row.water}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleEdit(index)}>
