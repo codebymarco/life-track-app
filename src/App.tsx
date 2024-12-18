@@ -14,6 +14,10 @@ import {
   TableRow,
   Paper,
   IconButton,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -31,6 +35,7 @@ type FormData = {
   suntime: number;
   stretch: boolean; // new attribute for stretch
   pe: boolean; // new attribute for PE
+  kegels: boolean; // new attribute for kegels
 };
 
 // Diet data type
@@ -52,6 +57,8 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 400,
+  maxHeight: "90vh",
+  overflowY: "auto",
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -76,6 +83,7 @@ function App() {
     suntime: 0,
     stretch: false, // initialize stretch
     pe: false, // initialize PE
+    kegels: false, // initialize kegels
   });
   const [dietForm, setDietForm] = useState<DietData>({
     date: "",
@@ -87,6 +95,16 @@ function App() {
     body: "",
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
+
+  // Sorting and Filtering State
+  const [entriesSortOrder, setEntriesSortOrder] = useState<"asc" | "desc">("asc");
+  const [entriesFilterDate, setEntriesFilterDate] = useState<string>("");
+
+  const [dietSortOrder, setDietSortOrder] = useState<"asc" | "desc">("asc");
+  const [dietFilterDate, setDietFilterDate] = useState<string>("");
+
+  const [journalSortOrder, setJournalSortOrder] = useState<"asc" | "desc">("asc");
+  const [journalFilterDate, setJournalFilterDate] = useState<string>("");
 
   useEffect(() => {
     try {
@@ -127,14 +145,15 @@ function App() {
       suntime: 0,
       stretch: false, // reset stretch
       pe: false, // reset PE
+      kegels: false, // reset kegels
     });
     setDietForm({ date: "", foods: [], water: "" });
     setJournalForm({ date: "", body: "" });
     setEditIndex(null);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+    const { name, value, type, checked } = e.target as HTMLInputElement;
 
     if (tab === "entries") {
       setFormData({
@@ -145,7 +164,7 @@ function App() {
       if (name === "foods") {
         setDietForm({
           ...dietForm,
-          foods: value.split(",").map((food) => food.trim()),
+          foods: (value as string).split(",").map((food) => food.trim()),
         });
       } else {
         setDietForm({
@@ -169,8 +188,9 @@ function App() {
         setData(updatedData);
         localStorage.setItem("entries", JSON.stringify(updatedData));
       } else {
-        setData([...data, formData]);
-        localStorage.setItem("entries", JSON.stringify([...data, formData]));
+        const newData = [...data, formData];
+        setData(newData);
+        localStorage.setItem("entries", JSON.stringify(newData));
       }
     } else if (tab === "diet") {
       if (editIndex !== null) {
@@ -179,8 +199,9 @@ function App() {
         setDietData(updatedDiet);
         localStorage.setItem("dietEntries", JSON.stringify(updatedDiet));
       } else {
-        setDietData([...dietData, dietForm]);
-        localStorage.setItem("dietEntries", JSON.stringify([...dietData, dietForm]));
+        const newDiet = [...dietData, dietForm];
+        setDietData(newDiet);
+        localStorage.setItem("dietEntries", JSON.stringify(newDiet));
       }
     } else if (tab === "journal") {
       if (editIndex !== null) {
@@ -189,8 +210,9 @@ function App() {
         setJournalData(updatedJournal);
         localStorage.setItem("journalEntries", JSON.stringify(updatedJournal));
       } else {
-        setJournalData([...journalData, journalForm]);
-        localStorage.setItem("journalEntries", JSON.stringify([...journalData, journalForm]));
+        const newJournal = [...journalData, journalForm];
+        setJournalData(newJournal);
+        localStorage.setItem("journalEntries", JSON.stringify(newJournal));
       }
     }
     handleClose();
@@ -240,9 +262,28 @@ function App() {
     link.click();
   };
 
+  // Sorting and Filtering Functions
+  const sortData = <T extends { date: string }>(data: T[], order: "asc" | "desc"): T[] => {
+    return [...data].sort((a, b) => {
+      if (a.date < b.date) return order === "asc" ? -1 : 1;
+      if (a.date > b.date) return order === "asc" ? 1 : -1;
+      return 0;
+    });
+  };
+
+  const filterData = <T extends { date: string }>(data: T[], filterDate: string): T[] => {
+    if (!filterDate) return data;
+    return data.filter((item) => item.date === filterDate);
+  };
+
+  // Processed Data for Rendering
+  const processedEntries = sortData(filterData(data, entriesFilterDate), entriesSortOrder);
+  const processedDiet = sortData(filterData(dietData, dietFilterDate), dietSortOrder);
+  const processedJournal = sortData(filterData(journalData, journalFilterDate), journalSortOrder);
+
   return (
-    <div>
-      <div>
+    <div style={{ padding: "20px" }}>
+      <div style={{ marginBottom: "10px" }}>
         <Button
           variant={tab === "entries" ? "contained" : "outlined"}
           onClick={() => setTab("entries")}
@@ -265,24 +306,87 @@ function App() {
         </Button>
       </div>
 
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleOpen}
-        style={{ marginTop: "10px" }}
-      >
-        {tab === "entries" ? "Add Entry" : tab === "diet" ? "Enter Day Diet" : "Add Journal"}
-      </Button>
+      <div style={{ marginBottom: "10px" }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOpen}
+        >
+          {tab === "entries" ? "Add Entry" : tab === "diet" ? "Enter Day Diet" : "Add Journal"}
+        </Button>
 
-      <Button
-        variant="outlined"
-        color="secondary"
-        onClick={() => handleDownload(tab)}
-        style={{ marginLeft: "10px", marginTop: "10px" }}
-      >
-        Download {tab === "entries" ? "Entries" : tab === "diet" ? "Diet" : "Journal"} as JSON
-      </Button>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => handleDownload(tab)}
+          style={{ marginLeft: "10px" }}
+        >
+          Download {tab === "entries" ? "Entries" : tab === "diet" ? "Diet" : "Journal"} as JSON
+        </Button>
+      </div>
 
+      {/* Sorting and Filtering Controls */}
+      <div style={{ display: "flex", alignItems: "center", marginBottom: "20px", gap: "20px" }}>
+        {/* Sorting */}
+        <FormControl variant="outlined" size="small">
+          <InputLabel>Sort by Date</InputLabel>
+          <Select
+            label="Sort by Date"
+            value={
+              tab === "entries"
+                ? entriesSortOrder
+                : tab === "diet"
+                ? dietSortOrder
+                : journalSortOrder
+            }
+            onChange={(e) => {
+              const order = e.target.value as "asc" | "desc";
+              if (tab === "entries") setEntriesSortOrder(order);
+              else if (tab === "diet") setDietSortOrder(order);
+              else setJournalSortOrder(order);
+            }}
+            style={{ minWidth: 150 }}
+          >
+            <MenuItem value="asc">Ascending</MenuItem>
+            <MenuItem value="desc">Descending</MenuItem>
+          </Select>
+        </FormControl>
+
+        {/* Filtering */}
+        <TextField
+          label="Filter by Date"
+          type="date"
+          size="small"
+          InputLabelProps={{ shrink: true }}
+          value={
+            tab === "entries"
+              ? entriesFilterDate
+              : tab === "diet"
+              ? dietFilterDate
+              : journalFilterDate
+          }
+          onChange={(e) => {
+            const date = e.target.value;
+            if (tab === "entries") setEntriesFilterDate(date);
+            else if (tab === "diet") setDietFilterDate(date);
+            else setJournalFilterDate(date);
+          }}
+        />
+
+        {/* Reset Filter Button */}
+        <Button
+          variant="text"
+          onClick={() => {
+            if (tab === "entries") setEntriesFilterDate("");
+            else if (tab === "diet") setDietFilterDate("");
+            else setJournalFilterDate("");
+          }}
+        >
+          Reset Filter
+        </Button>
+      </div>
+
+      {/* Modal for Adding/Editing */}
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
           {tab === "entries" ? (
@@ -296,6 +400,7 @@ function App() {
                 value={formData.date}
                 onChange={handleChange}
                 InputLabelProps={{ shrink: true }}
+                required
               />
               <FormControlLabel
                 control={
@@ -317,17 +422,24 @@ function App() {
                 }
                 label="Workout"
               />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Workout Details (comma-separated)"
-                name="workoutDetails"
-                value={formData.workoutDetails.join(",")}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  workoutDetails: e.target.value.split(",").map((detail) => detail.trim())
-                })}
-              />
+              {formData.workout && (
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Workout Details (comma-separated)"
+                  name="workoutDetails"
+                  value={formData.workoutDetails.join(",")}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      workoutDetails: e.target.value
+                        .split(",")
+                        .map((detail) => detail.trim())
+                        .filter((detail) => detail !== ""),
+                    })
+                  }
+                />
+              )}
               <FormControlLabel
                 control={
                   <Checkbox
@@ -366,15 +478,17 @@ function App() {
                 name="steps"
                 value={formData.steps}
                 onChange={handleChange}
+                inputProps={{ min: 0 }}
               />
               <TextField
                 fullWidth
                 margin="normal"
-                label="Suntime"
+                label="Suntime (minutes)"
                 type="number"
                 name="suntime"
                 value={formData.suntime}
                 onChange={handleChange}
+                inputProps={{ min: 0 }}
               />
               <FormControlLabel
                 control={
@@ -396,6 +510,16 @@ function App() {
                 }
                 label="PE"
               />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formData.kegels}
+                    name="kegels"
+                    onChange={handleChange}
+                  />
+                }
+                label="Kegels"
+              />
             </>
           ) : tab === "diet" ? (
             <>
@@ -408,6 +532,7 @@ function App() {
                 value={dietForm.date}
                 onChange={handleChange}
                 InputLabelProps={{ shrink: true }}
+                required
               />
               <TextField
                 fullWidth
@@ -425,6 +550,7 @@ function App() {
                 name="water"
                 value={dietForm.water}
                 onChange={handleChange}
+                inputProps={{ min: 0, step: "0.1" }}
               />
             </>
           ) : (
@@ -438,6 +564,7 @@ function App() {
                 value={journalForm.date}
                 onChange={handleChange}
                 InputLabelProps={{ shrink: true }}
+                required
               />
               <TextField
                 fullWidth
@@ -462,6 +589,7 @@ function App() {
         </Box>
       </Modal>
 
+      {/* Tables */}
       {tab === "entries" ? (
         <TableContainer component={Paper} sx={{ marginTop: 4 }}>
           <Table>
@@ -478,33 +606,43 @@ function App() {
                 <TableCell>Suntime</TableCell>
                 <TableCell>Stretch</TableCell>
                 <TableCell>PE</TableCell>
+                <TableCell>Kegels</TableCell> {/* Add Kegels column */}
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell>{row.date}</TableCell>
-                  <TableCell>{row.prayMorning ? "Yes" : "No"}</TableCell>
-                  <TableCell>{row.prayEvening ? "Yes" : "No"}</TableCell>
-                  <TableCell>{row.mast ? "Yes" : "No"}</TableCell>
-                  <TableCell>{row.pn ? "Yes" : "No"}</TableCell>
-                  <TableCell>{row.steps}</TableCell>
-                  <TableCell>{row.workout ? "Yes" : "No"}</TableCell>
-                  <TableCell>{row.workoutDetails.join(", ")}</TableCell>
-                  <TableCell>{row.suntime}</TableCell>
-                  <TableCell>{row.stretch ? "Yes" : "No"}</TableCell>
-                  <TableCell>{row.pe ? "Yes" : "No"}</TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleEdit(index)}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton onClick={() => handleDelete(index)}>
-                      <DeleteIcon />
-                    </IconButton>
+              {processedEntries.length > 0 ? (
+                processedEntries.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{row.date}</TableCell>
+                    <TableCell>{row.prayMorning ? "Yes" : "No"}</TableCell>
+                    <TableCell>{row.prayEvening ? "Yes" : "No"}</TableCell>
+                    <TableCell>{row.mast ? "Yes" : "No"}</TableCell>
+                    <TableCell>{row.pn ? "Yes" : "No"}</TableCell>
+                    <TableCell>{row.steps}</TableCell>
+                    <TableCell>{row.workout ? "Yes" : "No"}</TableCell>
+                    <TableCell>{row.workoutDetails.join(", ")}</TableCell>
+                    <TableCell>{row.suntime}</TableCell>
+                    <TableCell>{row.stretch ? "Yes" : "No"}</TableCell>
+                    <TableCell>{row.pe ? "Yes" : "No"}</TableCell>
+                    <TableCell>{row.kegels ? "Yes" : "No"}</TableCell> {/* Display Kegels */}
+                    <TableCell>
+                      <IconButton onClick={() => handleEdit(index)}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton onClick={() => handleDelete(index)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={12} align="center">
+                    No entries found.
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -520,21 +658,29 @@ function App() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {dietData.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell>{row.date}</TableCell>
-                  <TableCell>{row.foods.join(", ")}</TableCell>
-                  <TableCell>{row.water}</TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleEdit(index)}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton onClick={() => handleDelete(index)}>
-                      <DeleteIcon />
-                    </IconButton>
+              {processedDiet.length > 0 ? (
+                processedDiet.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{row.date}</TableCell>
+                    <TableCell>{row.foods.join(", ")}</TableCell>
+                    <TableCell>{row.water}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => handleEdit(index)}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton onClick={() => handleDelete(index)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={4} align="center">
+                    No diet entries found.
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -549,20 +695,28 @@ function App() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {journalData.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell>{row.date}</TableCell>
-                  <TableCell>{row.body}</TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleEdit(index)}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton onClick={() => handleDelete(index)}>
-                      <DeleteIcon />
-                    </IconButton>
+              {processedJournal.length > 0 ? (
+                processedJournal.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{row.date}</TableCell>
+                    <TableCell>{row.body}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => handleEdit(index)}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton onClick={() => handleDelete(index)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={3} align="center">
+                    No journal entries found.
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </TableContainer>
