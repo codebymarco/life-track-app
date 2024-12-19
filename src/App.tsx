@@ -36,6 +36,7 @@ type FormData = {
   stretch: boolean; // new attribute for stretch
   pe: boolean; // new attribute for PE
   kegels: boolean; // new attribute for kegels
+  coding?: number; // ✅ Made coding optional and in minutes
 };
 
 // Diet data type
@@ -52,7 +53,7 @@ type JournalData = {
 };
 
 const style = {
-  position: "absolute",
+  position: "absolute" as const,
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
@@ -71,7 +72,9 @@ function App() {
   const [data, setData] = useState<FormData[]>([]);
   const [dietData, setDietData] = useState<DietData[]>([]);
   const [journalData, setJournalData] = useState<JournalData[]>([]);
-  const [formData, setFormData] = useState<FormData>({
+  
+  // Modify formData to handle 'coding' as string for input purposes
+  const [formData, setFormData] = useState<Omit<FormData, 'coding'> & { coding: string }>({
     date: "",
     prayMorning: false,
     prayEvening: false,
@@ -84,6 +87,7 @@ function App() {
     stretch: false, // initialize stretch
     pe: false, // initialize PE
     kegels: false, // initialize kegels
+    coding: "", // ✅ Initialize coding as empty string
   });
   const [dietForm, setDietForm] = useState<DietData>({
     date: "",
@@ -109,17 +113,23 @@ function App() {
   useEffect(() => {
     try {
       const storedEntries = JSON.parse(localStorage.getItem("entries") || "[]") as FormData[];
-      setData(storedEntries.map((entry) => ({
-        ...entry,
-        workoutDetails: entry.workoutDetails || [], // Ensure workoutDetails is always an array
-      })));
+      setData(
+        storedEntries.map((entry) => ({
+          ...entry,
+          workoutDetails: entry.workoutDetails || [], // Ensure workoutDetails is always an array
+          // Remove default 0 for coding, keep as undefined if not present
+          coding: entry.coding !== undefined ? entry.coding : undefined,
+        }))
+      );
 
       const storedDiet = JSON.parse(localStorage.getItem("dietEntries") || "[]") as DietData[];
-      setDietData(storedDiet.map((entry) => ({
-        ...entry,
-        foods: entry.foods || [],
-        water: entry.water || "",
-      })));
+      setDietData(
+        storedDiet.map((entry) => ({
+          ...entry,
+          foods: entry.foods || [],
+          water: entry.water || "",
+        }))
+      );
 
       const storedJournal = JSON.parse(localStorage.getItem("journalEntries") || "[]") as JournalData[];
       setJournalData(storedJournal);
@@ -146,49 +156,72 @@ function App() {
       stretch: false, // reset stretch
       pe: false, // reset PE
       kegels: false, // reset kegels
+      coding: "", // ✅ Reset coding to empty string
     });
     setDietForm({ date: "", foods: [], water: "" });
     setJournalForm({ date: "", body: "" });
     setEditIndex(null);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>
+  ) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;
 
     if (tab === "entries") {
-      setFormData({
-        ...formData,
-        [name]: type === "checkbox" ? checked : value,
-      });
+      setFormData((prev) => ({
+        ...prev,
+        [name!]:
+          type === "checkbox"
+            ? checked
+            : name === "coding"
+            ? value // Keep 'coding' as string for input
+            : value,
+      }));
     } else if (tab === "diet") {
       if (name === "foods") {
         setDietForm({
           ...dietForm,
-          foods: (value as string).split(",").map((food) => food.trim()),
+          foods: (value as string)
+            .split(",")
+            .map((food) => food.trim())
+            .filter((food) => food !== ""),
         });
       } else {
         setDietForm({
           ...dietForm,
-          [name]: value,
+          [name!]: value,
         });
       }
     } else if (tab === "journal") {
       setJournalForm({
         ...journalForm,
-        [name]: value,
+        [name!]: value,
       });
     }
   };
 
   const handleSave = () => {
     if (tab === "entries") {
+      // Convert 'coding' to number if possible
+      const codingNumber = formData.coding ? Number(formData.coding) : undefined;
+      if (isNaN(codingNumber!)) {
+        alert("Please enter a valid number for Coding (minutes).");
+        return;
+      }
+
+      const entryToSave: FormData = {
+        ...formData,
+        coding: codingNumber,
+      };
+
       if (editIndex !== null) {
         const updatedData = [...data];
-        updatedData[editIndex] = formData;
+        updatedData[editIndex] = entryToSave;
         setData(updatedData);
         localStorage.setItem("entries", JSON.stringify(updatedData));
       } else {
-        const newData = [...data, formData];
+        const newData = [...data, entryToSave];
         setData(newData);
         localStorage.setItem("entries", JSON.stringify(newData));
       }
@@ -236,7 +269,11 @@ function App() {
 
   const handleEdit = (index: number) => {
     if (tab === "entries") {
-      setFormData(data[index]);
+      const entry = data[index];
+      setFormData({
+        ...entry,
+        coding: entry.coding !== undefined ? String(entry.coding) : "", // Convert number to string for input
+      });
       setEditIndex(index);
     } else if (tab === "diet") {
       setDietForm(dietData[index]);
@@ -263,7 +300,10 @@ function App() {
   };
 
   // Sorting and Filtering Functions
-  const sortData = <T extends { date: string }>(data: T[], order: "asc" | "desc"): T[] => {
+  const sortData = <T extends { date: string }>(
+    data: T[],
+    order: "asc" | "desc"
+  ): T[] => {
     return [...data].sort((a, b) => {
       if (a.date < b.date) return order === "asc" ? -1 : 1;
       if (a.date > b.date) return order === "asc" ? 1 : -1;
@@ -271,15 +311,27 @@ function App() {
     });
   };
 
-  const filterData = <T extends { date: string }>(data: T[], filterDate: string): T[] => {
+  const filterData = <T extends { date: string }>(
+    data: T[],
+    filterDate: string
+  ): T[] => {
     if (!filterDate) return data;
     return data.filter((item) => item.date === filterDate);
   };
 
   // Processed Data for Rendering
-  const processedEntries = sortData(filterData(data, entriesFilterDate), entriesSortOrder);
-  const processedDiet = sortData(filterData(dietData, dietFilterDate), dietSortOrder);
-  const processedJournal = sortData(filterData(journalData, journalFilterDate), journalSortOrder);
+  const processedEntries = sortData(
+    filterData(data, entriesFilterDate),
+    entriesSortOrder
+  );
+  const processedDiet = sortData(
+    filterData(dietData, dietFilterDate),
+    dietSortOrder
+  );
+  const processedJournal = sortData(
+    filterData(journalData, journalFilterDate),
+    journalSortOrder
+  );
 
   return (
     <div style={{ padding: "20px" }}>
@@ -307,12 +359,12 @@ function App() {
       </div>
 
       <div style={{ marginBottom: "10px" }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleOpen}
-        >
-          {tab === "entries" ? "Add Entry" : tab === "diet" ? "Enter Day Diet" : "Add Journal"}
+        <Button variant="contained" color="primary" onClick={handleOpen}>
+          {tab === "entries"
+            ? "Add Entry"
+            : tab === "diet"
+            ? "Enter Day Diet"
+            : "Add Journal"}
         </Button>
 
         <Button
@@ -321,12 +373,25 @@ function App() {
           onClick={() => handleDownload(tab)}
           style={{ marginLeft: "10px" }}
         >
-          Download {tab === "entries" ? "Entries" : tab === "diet" ? "Diet" : "Journal"} as JSON
+          Download{" "}
+          {tab === "entries"
+            ? "Entries"
+            : tab === "diet"
+            ? "Diet"
+            : "Journal"}{" "}
+          as JSON
         </Button>
       </div>
 
       {/* Sorting and Filtering Controls */}
-      <div style={{ display: "flex", alignItems: "center", marginBottom: "20px", gap: "20px" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          marginBottom: "20px",
+          gap: "20px",
+        }}
+      >
         {/* Sorting */}
         <FormControl variant="outlined" size="small">
           <InputLabel>Sort by Date</InputLabel>
@@ -520,6 +585,17 @@ function App() {
                 }
                 label="Kegels"
               />
+              {/* ✅ Updated TextField for Coding in Minutes */}
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Coding (minutes)"
+                type="number"
+                name="coding"
+                value={formData.coding}
+                onChange={handleChange}
+                inputProps={{ min: 0 }}
+              />
             </>
           ) : tab === "diet" ? (
             <>
@@ -606,7 +682,9 @@ function App() {
                 <TableCell>Suntime</TableCell>
                 <TableCell>Stretch</TableCell>
                 <TableCell>PE</TableCell>
-                <TableCell>Kegels</TableCell> {/* Add Kegels column */}
+                <TableCell>Kegels</TableCell>
+                {/* ✅ Updated Table Header for Coding in Minutes */}
+                <TableCell>Coding (minutes)</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -625,7 +703,9 @@ function App() {
                     <TableCell>{row.suntime}</TableCell>
                     <TableCell>{row.stretch ? "Yes" : "No"}</TableCell>
                     <TableCell>{row.pe ? "Yes" : "No"}</TableCell>
-                    <TableCell>{row.kegels ? "Yes" : "No"}</TableCell> {/* Display Kegels */}
+                    <TableCell>{row.kegels ? "Yes" : "No"}</TableCell>
+                    {/* ✅ Display Coding in Minutes */}
+                    <TableCell>{row.coding !== undefined ? row.coding : "-"}</TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleEdit(index)}>
                         <EditIcon />
@@ -638,7 +718,7 @@ function App() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={12} align="center">
+                  <TableCell colSpan={13} align="center">
                     No entries found.
                   </TableCell>
                 </TableRow>
