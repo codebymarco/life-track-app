@@ -33,6 +33,7 @@ type FormData = {
   pn: boolean;
   steps: string;
   suntime: number;
+  jelqs: number;
   stretch: boolean; // new attribute for stretch
   pe: boolean; // new attribute for PE
   kegels: boolean; // new attribute for kegels
@@ -84,6 +85,7 @@ function App() {
     workout: false,
     workoutDetails: [],
     suntime: 0,
+    jelqs: 0,
     stretch: false, // initialize stretch
     pe: false, // initialize PE
     kegels: false, // initialize kegels
@@ -153,6 +155,7 @@ function App() {
       workout: false,
       workoutDetails: [],
       suntime: 0,
+      jelqs: 0,
       stretch: false, // reset stretch
       pe: false, // reset PE
       kegels: false, // reset kegels
@@ -555,6 +558,16 @@ function App() {
                 onChange={handleChange}
                 inputProps={{ min: 0 }}
               />
+                            <TextField
+                fullWidth
+                margin="normal"
+                label="Jeqls(strokes)"
+                type="number"
+                name="jelqs"
+                value={formData.jelqs}
+                onChange={handleChange}
+                inputProps={{ min: 0 }}
+              />
               <FormControlLabel
                 control={
                   <Checkbox
@@ -680,6 +693,7 @@ function App() {
                 <TableCell>Workout</TableCell>
                 <TableCell>Workout Details</TableCell>
                 <TableCell>Suntime</TableCell>
+                <TableCell>Jelqs</TableCell>
                 <TableCell>Stretch</TableCell>
                 <TableCell>PE</TableCell>
                 <TableCell>Kegels</TableCell>
@@ -701,6 +715,7 @@ function App() {
                     <TableCell>{row.workout ? "Yes" : "No"}</TableCell>
                     <TableCell>{row.workoutDetails.join(", ")}</TableCell>
                     <TableCell>{row.suntime}</TableCell>
+                    <TableCell>{row.jelqs}</TableCell>
                     <TableCell>{row.stretch ? "Yes" : "No"}</TableCell>
                     <TableCell>{row.pe ? "Yes" : "No"}</TableCell>
                     <TableCell>{row.kegels ? "Yes" : "No"}</TableCell>
