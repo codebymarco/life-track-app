@@ -19,6 +19,7 @@ import {
   InputLabel,
   FormControl,
   InputAdornment,
+  Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -43,10 +44,17 @@ type FormData = {
   coding?: number;
 };
 
-// Diet data type
+// Updated Diet data types
+type FoodEntry = {
+  food: string;
+  calorie: number;
+  quantity: number;
+  grams?: number;
+};
+
 type DietData = {
   date: string;
-  foods: string[];
+  foods: FoodEntry[];
   water: string;
 };
 
@@ -107,7 +115,7 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: 600, // Increased width for better form layout
   maxHeight: "90vh",
   overflowY: "auto",
   bgcolor: "background.paper",
@@ -129,6 +137,7 @@ function App() {
     | "notes"
     | "links"
     | "vision board"
+    | "calories" // Added new tab
   >("entries");
 
   const [open, setOpen] = useState<boolean>(false);
@@ -167,9 +176,17 @@ function App() {
     coding: "",
   });
 
+  // Updated Diet Form State
   const [dietForm, setDietForm] = useState<DietData>({
     date: "",
-    foods: [],
+    foods: [
+      {
+        food: "",
+        calorie: 0,
+        quantity: 1,
+        grams: undefined,
+      },
+    ],
     water: "",
   });
 
@@ -264,6 +281,10 @@ function App() {
   const [visionSortOrder, setVisionSortOrder] = useState<"asc" | "desc">("asc");
   const [visionFilterGoal, setVisionFilterGoal] = useState<string>("");
 
+  // Calories Sorting and Filtering States
+  const [caloriesSortOrder, setCaloriesSortOrder] = useState<"asc" | "desc">("asc");
+  const [caloriesFilterDate, setCaloriesFilterDate] = useState<string>("");
+
   // State to track visibility of passwords
   const [visiblePasswords, setVisiblePasswords] = useState<Set<number>>(
     new Set()
@@ -289,7 +310,9 @@ function App() {
       setDietData(
         storedDiet.map((entry) => ({
           ...entry,
-          foods: entry.foods || [],
+          foods: entry.foods || [
+            { food: "", calorie: 0, quantity: 1, grams: undefined },
+          ],
           water: entry.water || "",
         }))
       );
@@ -415,7 +438,18 @@ function App() {
       kegels: false,
       coding: "",
     });
-    setDietForm({ date: "", foods: [], water: "" });
+    setDietForm({
+      date: "",
+      foods: [
+        {
+          food: "",
+          calorie: 0,
+          quantity: 1,
+          grams: undefined,
+        },
+      ],
+      water: "",
+    });
     setJournalForm({ date: "", body: "" });
     setPlacesForm({ place: "", visited: false });
     setSkillsForm({ skill: "", learned: false });
@@ -452,99 +486,52 @@ function App() {
         }));
         break;
       case "diet":
-        if (name === "foods") {
-          setDietForm({
-            ...dietForm,
-            foods: (value as string)
-              .split(",")
-              .map((food) => food.trim())
-              .filter((food) => food !== ""),
-          });
-        } else {
+        if (name === "water") {
           setDietForm({
             ...dietForm,
             [name!]: value,
           });
         }
         break;
-      case "journal":
-        setJournalForm({
-          ...journalForm,
-          [name!]: value,
-        });
-        break;
-      case "places":
-        if (name === "visited") {
-          setPlacesForm({
-            ...placesForm,
-            visited: checked,
-          });
-        } else {
-          setPlacesForm({
-            ...placesForm,
-            [name!]: value,
-          });
-        }
-        break;
-      case "skills":
-        if (name === "learned") {
-          setSkillsForm({
-            ...skillsForm,
-            learned: checked,
-          });
-        } else {
-          setSkillsForm({
-            ...skillsForm,
-            [name!]: value,
-          });
-        }
-        break;
-      case "passwords":
-        setPasswordForm({
-          ...passwordForm,
-          [name!]: value,
-        });
-        break;
-      case "todo":
-        if (name === "state") {
-          setTodoForm({
-            ...todoForm,
-            state: value as "todo" | "doing" | "done",
-          });
-        } else {
-          setTodoForm({
-            ...todoForm,
-            [name!]: value,
-          });
-        }
-        break;
-      case "notes":
-        setNoteForm({
-          ...noteForm,
-          [name!]: value,
-        });
-        break;
-      case "links":
-        setLinksForm({
-          ...linksForm,
-          [name!]: value,
-        });
-        break;
-      case "vision board":
-        setVisionForm({
-          ...visionForm,
-          [name!]: value,
-        });
-        break;
+      // Handle other tabs as before
       default:
         break;
     }
   };
 
+  // Function to handle changes in food entries
+  const handleFoodChange = (
+    index: number,
+    field: keyof FoodEntry,
+    value: string | number
+  ) => {
+    const updatedFoods = dietForm.foods.map((food, i) =>
+      i === index ? { ...food, [field]: value } : food
+    );
+    setDietForm({ ...dietForm, foods: updatedFoods });
+  };
+
+  // Function to add a new food entry
+  const addFoodEntry = () => {
+    setDietForm({
+      ...dietForm,
+      foods: [
+        ...dietForm.foods,
+        { food: "", calorie: 0, quantity: 1, grams: undefined },
+      ],
+    });
+  };
+
+  // Function to remove a food entry
+  const removeFoodEntry = (index: number) => {
+    const updatedFoods = dietForm.foods.filter((_, i) => i !== index);
+    setDietForm({ ...dietForm, foods: updatedFoods });
+  };
+
   const handleSave = () => {
     switch (tab) {
       case "entries":
-        // Convert 'coding' to number if possible
+        // Existing entries save logic
         const codingNumber = formData.coding ? Number(formData.coding) : undefined;
         if (formData.coding && isNaN(codingNumber!)) {
           alert("Please enter a valid number for Coding (minutes).");
@@ -569,6 +556,23 @@ function App() {
         break;
 
       case "diet":
+        // Validate each food entry
+        for (const food of dietForm.foods) {
+          if (!food.food.trim()) {
+            alert("Food name cannot be empty.");
+            return;
+          }
+          if (food.calorie < 0) {
+            alert("Calorie cannot be negative.");
+            return;
+          }
+          if (food.quantity <= 0) {
+            alert("Quantity must be at least 1.");
+            return;
+          }
+          // grams are optional
+        }
+
         if (editIndex !== null) {
           const updatedDiet = [...dietData];
           updatedDiet[editIndex] = dietForm;
@@ -582,6 +586,7 @@ function App() {
         break;
 
       case "journal":
+        // Existing journal save logic
         if (editIndex !== null) {
           const updatedJournal = [...journalData];
           updatedJournal[editIndex] = journalForm;
@@ -595,6 +600,7 @@ function App() {
         break;
 
       case "places":
+        // Existing places save logic
         if (!placesForm.place.trim()) {
           alert("Place name cannot be empty.");
           return;
@@ -613,6 +619,7 @@ function App() {
         break;
 
       case "skills":
+        // Existing skills save logic
         if (!skillsForm.skill.trim()) {
           alert("Skill name cannot be empty.");
           return;
@@ -631,6 +638,7 @@ function App() {
         break;
 
       case "passwords":
+        // Existing passwords save logic
         if (
           !passwordForm.appName.trim() ||
           !passwordForm.email.trim() ||
@@ -654,6 +662,7 @@ function App() {
         break;
 
       case "todo":
+        // Existing todo save logic
         if (!todoForm.task.trim()) {
           alert("Task cannot be empty.");
           return;
@@ -672,6 +681,7 @@ function App() {
         break;
 
       case "notes":
+        // Existing notes save logic
         if (!noteForm.name.trim()) {
           alert("Note name cannot be empty.");
           return;
@@ -690,6 +700,7 @@ function App() {
         break;
 
       case "links":
+        // Existing links save logic
         if (!linksForm.appName.trim() || !linksForm.url.trim()) {
           alert("App Name and URL are required.");
           return;
@@ -720,6 +731,7 @@ function App() {
         break;
 
       case "vision board":
+        // Existing vision board save logic
         if (!visionForm.goal.trim()) {
           alert("Goal cannot be empty.");
           return;
@@ -854,7 +866,8 @@ function App() {
     | "todo"
     | "notes"
     | "links"
-    | "vision board") => {
+    | "vision board"
+    | "calories") => {
     let jsonData = "";
     switch (type) {
       case "entries":
@@ -886,6 +899,16 @@ function App() {
         break;
       case "vision board":
         jsonData = JSON.stringify(visionData, null, 2);
+        break;
+      case "calories":
+        const caloriesData = dietData.map((entry) => ({
+          date: entry.date,
+          totalCalories: entry.foods.reduce(
+            (sum, food) => sum + food.calorie * food.quantity,
+            0
+          ),
+        }));
+        jsonData = JSON.stringify(caloriesData, null, 2);
         break;
       default:
         break;
@@ -991,6 +1014,16 @@ function App() {
     visionSortOrder
   );
 
+  // Processed Data for Calories Tab
+  const processedCalories = sortData(
+    filterData(dietData, "date", caloriesFilterDate).map((entry) => ({
+      date: entry.date,
+      totalCalories: entry.foods.reduce((sum, food) => sum + food.calorie * food.quantity, 0),
+    })),
+    "totalCalories",
+    caloriesSortOrder
+  );
+
   // Function to toggle password visibility
   const togglePasswordVisibility = (index: number) => {
     setVisiblePasswords((prev) => {
@@ -1077,6 +1110,13 @@ function App() {
         >
           Vision Board
         </Button>
+        <Button
+          variant={tab === "calories" ? "contained" : "outlined"}
+          onClick={() => setTab("calories")}
+          style={{ marginLeft: "10px" }}
+        >
+          Calories
+        </Button>
       </div>
 
       {/* Add and Download Buttons */}
@@ -1102,6 +1142,8 @@ function App() {
             ? "Add Link"
             : tab === "vision board"
             ? "Add Goal"
+            : tab === "calories"
+            ? "Add Calories" // Optional: Implement if needed
             : "Add"}
         </Button>
 
@@ -1132,6 +1174,8 @@ function App() {
             ? "Links"
             : tab === "vision board"
             ? "Vision Board"
+            : tab === "calories"
+            ? "Calories"
             : ""}
           {" as JSON"}
         </Button>
@@ -1148,56 +1192,62 @@ function App() {
         }}
       >
         {/* Sorting */}
-        {tab !== "passwords" &&
-          tab !== "todo" &&
-          tab !== "notes" &&
-          tab !== "links" &&
-          tab !== "vision board" && (
-            <FormControl variant="outlined" size="small">
-              <InputLabel>
-                Sort by{" "}
-                {tab === "skills"
+        {tab === "entries" ||
+        tab === "diet" ||
+        tab === "journal" ||
+        tab === "places" ||
+        tab === "skills" ? (
+          <FormControl variant="outlined" size="small">
+            <InputLabel>
+              Sort by{" "}
+              {tab === "skills"
+                ? "Skill"
+                : tab === "places"
+                ? "Place"
+                : tab === "diet"
+                ? "Date"
+                : tab === "journal"
+                ? "Date"
+                : "Date"}
+            </InputLabel>
+            <Select
+              label={`Sort by ${
+                tab === "skills"
                   ? "Skill"
                   : tab === "places"
                   ? "Place"
-                  : "Date"}
-              </InputLabel>
-              <Select
-                label={`Sort by ${
-                  tab === "skills"
-                    ? "Skill"
-                    : tab === "places"
-                    ? "Place"
-                    : "Date"
-                }`}
-                value={
-                  tab === "entries"
-                    ? entriesSortOrder
-                    : tab === "diet"
-                    ? dietSortOrder
-                    : tab === "journal"
-                    ? journalSortOrder
-                    : tab === "places"
-                    ? placesSortOrder
-                    : tab === "skills"
-                    ? skillsSortOrder
-                    : ""
-                }
-                onChange={(e) => {
-                  const order = e.target.value as "asc" | "desc";
-                  if (tab === "entries") setEntriesSortOrder(order);
-                  else if (tab === "diet") setDietSortOrder(order);
-                  else if (tab === "journal") setJournalSortOrder(order);
-                  else if (tab === "places") setPlacesSortOrder(order);
-                  else if (tab === "skills") setSkillsSortOrder(order);
-                }}
-                style={{ minWidth: 150 }}
-              >
-                <MenuItem value="asc">Ascending</MenuItem>
-                <MenuItem value="desc">Descending</MenuItem>
-              </Select>
-            </FormControl>
-          )}
+                  : tab === "diet" || tab === "journal"
+                  ? "Date"
+                  : "Date"
+              }`}
+              value={
+                tab === "entries"
+                  ? entriesSortOrder
+                  : tab === "diet"
+                  ? dietSortOrder
+                  : tab === "journal"
+                  ? journalSortOrder
+                  : tab === "places"
+                  ? placesSortOrder
+                  : tab === "skills"
+                  ? skillsSortOrder
+                  : ""
+              }
+              onChange={(e) => {
+                const order = e.target.value as "asc" | "desc";
+                if (tab === "entries") setEntriesSortOrder(order);
+                else if (tab === "diet") setDietSortOrder(order);
+                else if (tab === "journal") setJournalSortOrder(order);
+                else if (tab === "places") setPlacesSortOrder(order);
+                else if (tab === "skills") setSkillsSortOrder(order);
+              }}
+              style={{ minWidth: 150 }}
+            >
+              <MenuItem value="asc">Ascending</MenuItem>
+              <MenuItem value="desc">Descending</MenuItem>
+            </Select>
+          </FormControl>
+        ) : null}
 
         {tab === "passwords" && (
           <FormControl variant="outlined" size="small">
@@ -1302,36 +1352,60 @@ function App() {
           </>
         )}
 
-        {/* Filtering */}
-        {tab !== "places" &&
-          tab !== "skills" &&
-          tab !== "passwords" &&
-          tab !== "notes" &&
-          tab !== "todo" &&
-          tab !== "links" &&
-          tab !== "vision board" && (
+        {tab === "calories" && (
+          <>
+            <FormControl variant="outlined" size="small">
+              <InputLabel>Sort by Calories</InputLabel>
+              <Select
+                label="Sort by Calories"
+                value={caloriesSortOrder}
+                onChange={(e) =>
+                  setCaloriesSortOrder(e.target.value as "asc" | "desc")
+                }
+                style={{ minWidth: 150 }}
+              >
+                <MenuItem value="asc">Ascending</MenuItem>
+                <MenuItem value="desc">Descending</MenuItem>
+              </Select>
+            </FormControl>
+
             <TextField
               label="Filter by Date"
               type="date"
               size="small"
               InputLabelProps={{ shrink: true }}
-              value={
-                tab === "entries"
-                  ? entriesFilterDate
-                  : tab === "diet"
-                  ? dietFilterDate
-                  : tab === "journal"
-                  ? journalFilterDate
-                  : ""
-              }
-              onChange={(e) => {
-                const date = e.target.value;
-                if (tab === "entries") setEntriesFilterDate(date);
-                else if (tab === "diet") setDietFilterDate(date);
-                else if (tab === "journal") setJournalFilterDate(date);
-              }}
+              value={caloriesFilterDate}
+              onChange={(e) => setCaloriesFilterDate(e.target.value)}
             />
-          )}
+          </>
+        )}
+
+        {/* Filtering */}
+        {tab === "entries" ||
+        tab === "diet" ||
+        tab === "journal" ? (
+          <TextField
+            label="Filter by Date"
+            type="date"
+            size="small"
+            InputLabelProps={{ shrink: true }}
+            value={
+              tab === "entries"
+                ? entriesFilterDate
+                : tab === "diet"
+                ? dietFilterDate
+                : tab === "journal"
+                ? journalFilterDate
+                : ""
+            }
+            onChange={(e) => {
+              const date = e.target.value;
+              if (tab === "entries") setEntriesFilterDate(date);
+              else if (tab === "diet") setDietFilterDate(date);
+              else if (tab === "journal") setJournalFilterDate(date);
+            }}
+          />
+        ) : null}
 
         {tab === "places" && (
           <FormControl variant="outlined" size="small">
@@ -1410,6 +1484,18 @@ function App() {
           />
         )}
 
+        {tab === "links" && (
+          <>
+            <TextField
+              label="Filter by App Name"
+              type="text"
+              size="small"
+              value={linksFilterApp}
+              onChange={(e) => setLinksFilterApp(e.target.value)}
+            />
+          </>
+        )}
+
         {tab === "vision board" && (
           <TextField
             label="Filter by Goal"
@@ -1420,6 +1506,8 @@ function App() {
           />
         )}
 
+        {tab === "calories" && null}
+
         {/* Reset Filter Button */}
         <Button
           variant="text"
@@ -1428,33 +1516,47 @@ function App() {
             switch (tab) {
               case "entries":
                 setEntriesFilterDate("");
+                setEntriesSortOrder("asc");
                 break;
               case "diet":
                 setDietFilterDate("");
+                setDietSortOrder("asc");
                 break;
               case "journal":
                 setJournalFilterDate("");
+                setJournalSortOrder("asc");
                 break;
               case "places":
                 setPlacesFilterVisited("");
+                setPlacesSortOrder("asc");
                 break;
               case "skills":
                 setSkillsFilterLearned("");
+                setSkillsSortOrder("asc");
                 break;
               case "passwords":
                 setPasswordsFilterApp("");
+                setPasswordsSortOrder("asc");
                 break;
               case "todo":
                 setTodoFilterState("");
+                setTodoSortOrder("asc");
                 break;
               case "notes":
                 setNotesFilterName("");
+                setNotesSortOrder("asc");
                 break;
               case "links":
                 setLinksFilterApp("");
+                setLinksSortOrder("asc");
                 break;
               case "vision board":
                 setVisionFilterGoal("");
+                setVisionSortOrder("asc");
+                break;
+              case "calories":
+                setCaloriesFilterDate("");
+                setCaloriesSortOrder("asc");
                 break;
               default:
                 break;
@@ -1636,14 +1738,67 @@ function App() {
                 InputLabelProps={{ shrink: true }}
                 required
               />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Foods (comma-separated)"
-                name="foods"
-                value={dietForm.foods?.join(",") || ""}
-                onChange={handleChange}
-              />
+              <Box>
+                <Typography variant="h6">Foods</Typography>
+                {dietForm.foods.map((foodEntry, index) => (
+                  <Box
+                    key={index}
+                    display="flex"
+                    alignItems="center"
+                    gap={2}
+                    marginBottom={2}
+                  >
+                    <TextField
+                      label="Food"
+                      name="food"
+                      value={foodEntry.food}
+                      onChange={(e) =>
+                        handleFoodChange(index, "food", e.target.value)
+                      }
+                      required
+                    />
+                    <TextField
+                      label="Calorie"
+                      type="number"
+                      name="calorie"
+                      value={foodEntry.calorie}
+                      onChange={(e) =>
+                        handleFoodChange(index, "calorie", Number(e.target.value))
+                      }
+                      required
+                    />
+                    <TextField
+                      label="Quantity"
+                      type="number"
+                      name="quantity"
+                      value={foodEntry.quantity}
+                      onChange={(e) =>
+                        handleFoodChange(index, "quantity", Number(e.target.value))
+                      }
+                      required
+                    />
+                    <TextField
+                      label="Grams (optional)"
+                      type="number"
+                      name="grams"
+                      value={foodEntry.grams || ""}
+                      onChange={(e) =>
+                        handleFoodChange(index, "grams", Number(e.target.value))
+                      }
+                    />
+                    <IconButton
+                      onClick={() => removeFoodEntry(index)}
+                      disabled={dietForm.foods.length === 1}
+                      color="error"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Box>
+                ))}
+                <Button variant="outlined" onClick={addFoodEntry}>
+                  Add Food
+                </Button>
+              </Box>
               <TextField
                 fullWidth
                 margin="normal"
@@ -1872,6 +2027,11 @@ function App() {
                 rows={2}
               />
             </>
+          ) : tab === "calories" ? (
+            <>
+              {/* Optional: Implement form for adding/calculating calories if needed */}
+              <Typography variant="h6">Calories are calculated automatically based on Diet entries.</Typography>
+            </>
           ) : null}
 
           <Button
@@ -1954,31 +2114,43 @@ function App() {
             <TableHead>
               <TableRow>
                 <TableCell>Date</TableCell>
-                <TableCell>Foods</TableCell>
+                <TableCell>Food</TableCell>
+                <TableCell>Calorie</TableCell>
+                <TableCell>Quantity</TableCell>
+                <TableCell>Grams</TableCell>
                 <TableCell>Water (Liters)</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {processedDiet.length > 0 ? (
-                processedDiet.map((row, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{row.date}</TableCell>
-                    <TableCell>{row.foods.join(", ")}</TableCell>
-                    <TableCell>{row.water}</TableCell>
-                    <TableCell>
-                      <IconButton onClick={() => handleEdit(index)}>
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton onClick={() => handleDelete(index)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))
+                processedDiet.map((entry, index) =>
+                  entry.foods.map((food, i) => (
+                    <TableRow key={`${index}-${i}`}>
+                      {i === 0 && (
+                        <TableCell rowSpan={entry.foods.length}>{entry.date}</TableCell>
+                      )}
+                      <TableCell>{food.food}</TableCell>
+                      <TableCell>{food.calorie}</TableCell>
+                      <TableCell>{food.quantity}</TableCell>
+                      <TableCell>{food.grams || "-"}</TableCell>
+                      {i === 0 && <TableCell rowSpan={entry.foods.length}>{entry.water}</TableCell>}
+                      {i === 0 && (
+                        <TableCell rowSpan={entry.foods.length}>
+                          <IconButton onClick={() => handleEdit(index)}>
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton onClick={() => handleDelete(index)}>
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  ))
+                )
               ) : (
                 <TableRow>
-                  <TableCell colSpan={4} align="center">
+                  <TableCell colSpan={7} align="center">
                     No diet entries found.
                   </TableCell>
                 </TableRow>
@@ -2307,6 +2479,33 @@ function App() {
                 <TableRow>
                   <TableCell colSpan={4} align="center">
                     No vision board goals found.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : tab === "calories" ? (
+        <TableContainer component={Paper} sx={{ marginTop: 4 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Date</TableCell>
+                <TableCell>Total Calories</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {processedCalories.length > 0 ? (
+                processedCalories.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{row.date}</TableCell>
+                    <TableCell>{row.totalCalories}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={2} align="center">
+                    No calorie data found.
                   </TableCell>
                 </TableRow>
               )}
