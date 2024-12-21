@@ -20,6 +20,9 @@ import {
   FormControl,
   InputAdornment,
   Typography,
+  Card,
+  CardContent,
+  Grid,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -138,6 +141,7 @@ function App() {
     | "links"
     | "vision board"
     | "calories" // Added new tab
+    | "status" // New Status tab
   >("entries");
 
   const [open, setOpen] = useState<boolean>(false);
@@ -867,7 +871,8 @@ function App() {
     | "notes"
     | "links"
     | "vision board"
-    | "calories") => {
+    | "calories"
+    | "status") => { // Added "status"
     let jsonData = "";
     switch (type) {
       case "entries":
@@ -910,6 +915,28 @@ function App() {
         }));
         jsonData = JSON.stringify(caloriesData, null, 2);
         break;
+      case "status":
+        const totalEntries = data.length;
+        if (totalEntries === 0) {
+          jsonData = JSON.stringify({ message: "No entries available to generate status." }, null, 2);
+        } else {
+          // Calculate statistics
+          const stats = {
+            prayMorning: `${data.filter(entry => entry.prayMorning).length}/${totalEntries} (${((data.filter(entry => entry.prayMorning).length / totalEntries) * 100).toFixed(2)}%)`,
+            prayEvening: `${data.filter(entry => entry.prayEvening).length}/${totalEntries} (${((data.filter(entry => entry.prayEvening).length / totalEntries) * 100).toFixed(2)}%)`,
+            workout: `${data.filter(entry => entry.workout).length}/${totalEntries} (${((data.filter(entry => entry.workout).length / totalEntries) * 100).toFixed(2)}%)`,
+            mast: `${data.filter(entry => entry.mast).length}/${totalEntries} (${((data.filter(entry => entry.mast).length / totalEntries) * 100).toFixed(2)}%)`,
+            pn: `${data.filter(entry => entry.pn).length}/${totalEntries} (${((data.filter(entry => entry.pn).length / totalEntries) * 100).toFixed(2)}%)`,
+            stretch: `${data.filter(entry => entry.stretch).length}/${totalEntries} (${((data.filter(entry => entry.stretch).length / totalEntries) * 100).toFixed(2)}%)`,
+            pe: `${data.filter(entry => entry.pe).length}/${totalEntries} (${((data.filter(entry => entry.pe).length / totalEntries) * 100).toFixed(2)}%)`,
+            kegels: `${data.filter(entry => entry.kegels).length}/${totalEntries} (${((data.filter(entry => entry.kegels).length / totalEntries) * 100).toFixed(2)}%)`,
+            coding: `${data.filter(entry => entry.coding && entry.coding > 0).length}/${totalEntries} (${((data.filter(entry => entry.coding && entry.coding > 0).length / totalEntries) * 100).toFixed(2)}%)`,
+            startDate: getStartDate(),
+            latestDate: getLatestDate(),
+          };
+          jsonData = JSON.stringify(stats, null, 2);
+        }
+        break;
       default:
         break;
     }
@@ -950,6 +977,19 @@ function App() {
       }
       return item[key] === filterValue;
     });
+  };
+
+  // Utility functions to get start and latest dates
+  const getStartDate = () => {
+    if (data.length === 0) return "N/A";
+    const sorted = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    return sorted[0].date;
+  };
+
+  const getLatestDate = () => {
+    if (data.length === 0) return "N/A";
+    const sorted = [...data].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return sorted[0].date;
   };
 
   // Processed Data for Rendering
@@ -1117,11 +1157,23 @@ function App() {
         >
           Calories
         </Button>
+        <Button
+          variant={tab === "status" ? "contained" : "outlined"}
+          onClick={() => setTab("status")}
+          style={{ marginLeft: "10px" }}
+        >
+          Status
+        </Button>
       </div>
 
       {/* Add and Download Buttons */}
       <div style={{ marginBottom: "10px" }}>
-        <Button variant="contained" color="primary" onClick={handleOpen}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOpen}
+          disabled={tab === "status"} // Disable Add for Status tab
+        >
           {tab === "entries"
             ? "Add Entry"
             : tab === "diet"
@@ -1144,41 +1196,56 @@ function App() {
             ? "Add Goal"
             : tab === "calories"
             ? "Add Calories" // Optional: Implement if needed
+            : tab === "status"
+            ? "Generate Status" // Status tab does not need Add
             : "Add"}
         </Button>
 
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={() => handleDownload(tab)}
-          style={{ marginLeft: "10px" }}
-        >
-          Download{" "}
-          {tab === "entries"
-            ? "Entries"
-            : tab === "diet"
-            ? "Diet"
-            : tab === "journal"
-            ? "Journal"
-            : tab === "places"
-            ? "Places"
-            : tab === "skills"
-            ? "Skills"
-            : tab === "passwords"
-            ? "Passwords"
-            : tab === "todo"
-            ? "Todo"
-            : tab === "notes"
-            ? "Notes"
-            : tab === "links"
-            ? "Links"
-            : tab === "vision board"
-            ? "Vision Board"
-            : tab === "calories"
-            ? "Calories"
-            : ""}
-          {" as JSON"}
-        </Button>
+        {tab !== "status" && ( // Disable Download for Status tab as it's an aggregate
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => handleDownload(tab)}
+            style={{ marginLeft: "10px" }}
+          >
+            Download{" "}
+            {tab === "entries"
+              ? "Entries"
+              : tab === "diet"
+              ? "Diet"
+              : tab === "journal"
+              ? "Journal"
+              : tab === "places"
+              ? "Places"
+              : tab === "skills"
+              ? "Skills"
+              : tab === "passwords"
+              ? "Passwords"
+              : tab === "todo"
+              ? "Todo"
+              : tab === "notes"
+              ? "Notes"
+              : tab === "links"
+              ? "Links"
+              : tab === "vision board"
+              ? "Vision Board"
+              : tab === "calories"
+              ? "Calories"
+              : ""}
+            {" as JSON"}
+          </Button>
+        )}
+
+        {tab === "status" && ( // Allow download of status
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => handleDownload(tab)}
+            style={{ marginLeft: "10px" }}
+          >
+            Download Status as JSON
+          </Button>
+        )}
       </div>
 
       {/* Sorting and Filtering Controls */}
@@ -1192,379 +1259,314 @@ function App() {
         }}
       >
         {/* Sorting */}
-        {tab === "entries" ||
-        tab === "diet" ||
-        tab === "journal" ||
-        tab === "places" ||
-        tab === "skills" ? (
-          <FormControl variant="outlined" size="small">
-            <InputLabel>
-              Sort by{" "}
-              {tab === "skills"
-                ? "Skill"
-                : tab === "places"
-                ? "Place"
-                : tab === "diet"
-                ? "Date"
-                : tab === "journal"
-                ? "Date"
-                : "Date"}
-            </InputLabel>
-            <Select
-              label={`Sort by ${
-                tab === "skills"
-                  ? "Skill"
-                  : tab === "places"
-                  ? "Place"
-                  : tab === "diet" || tab === "journal"
-                  ? "Date"
-                  : "Date"
-              }`}
-              value={
-                tab === "entries"
-                  ? entriesSortOrder
-                  : tab === "diet"
-                  ? dietSortOrder
-                  : tab === "journal"
-                  ? journalSortOrder
-                  : tab === "places"
-                  ? placesSortOrder
-                  : tab === "skills"
-                  ? skillsSortOrder
-                  : ""
-              }
-              onChange={(e) => {
-                const order = e.target.value as "asc" | "desc";
-                if (tab === "entries") setEntriesSortOrder(order);
-                else if (tab === "diet") setDietSortOrder(order);
-                else if (tab === "journal") setJournalSortOrder(order);
-                else if (tab === "places") setPlacesSortOrder(order);
-                else if (tab === "skills") setSkillsSortOrder(order);
-              }}
-              style={{ minWidth: 150 }}
-            >
-              <MenuItem value="asc">Ascending</MenuItem>
-              <MenuItem value="desc">Descending</MenuItem>
-            </Select>
-          </FormControl>
-        ) : null}
-
-        {tab === "passwords" && (
-          <FormControl variant="outlined" size="small">
-            <InputLabel>Sort by App Name</InputLabel>
-            <Select
-              label="Sort by App Name"
-              value={passwordsSortOrder}
-              onChange={(e) =>
-                setPasswordsSortOrder(e.target.value as "asc" | "desc")
-              }
-              style={{ minWidth: 150 }}
-            >
-              <MenuItem value="asc">A to Z</MenuItem>
-              <MenuItem value="desc">Z to A</MenuItem>
-            </Select>
-          </FormControl>
-        )}
-
-        {tab === "todo" && (
-          <FormControl variant="outlined" size="small">
-            <InputLabel>Sort by Task</InputLabel>
-            <Select
-              label="Sort by Task"
-              value={todoSortOrder}
-              onChange={(e) =>
-                setTodoSortOrder(e.target.value as "asc" | "desc")
-              }
-              style={{ minWidth: 150 }}
-            >
-              <MenuItem value="asc">A to Z</MenuItem>
-              <MenuItem value="desc">Z to A</MenuItem>
-            </Select>
-          </FormControl>
-        )}
-
-        {tab === "notes" && (
-          <FormControl variant="outlined" size="small">
-            <InputLabel>Sort by Name</InputLabel>
-            <Select
-              label="Sort by Name"
-              value={notesSortOrder}
-              onChange={(e) => setNotesSortOrder(e.target.value as "asc" | "desc")}
-              style={{ minWidth: 150 }}
-            >
-              <MenuItem value="asc">A to Z</MenuItem>
-              <MenuItem value="desc">Z to A</MenuItem>
-            </Select>
-          </FormControl>
-        )}
-
-        {tab === "links" && (
+        {tab !== "status" && ( // Sorting not needed for Status tab
           <>
-            <FormControl variant="outlined" size="small">
-              <InputLabel>Sort by App Name</InputLabel>
-              <Select
-                label="Sort by App Name"
-                value={linksSortOrder}
-                onChange={(e) =>
-                  setLinksSortOrder(e.target.value as "asc" | "desc")
-                }
-                style={{ minWidth: 150 }}
-              >
-                <MenuItem value="asc">A to Z</MenuItem>
-                <MenuItem value="desc">Z to A</MenuItem>
-              </Select>
-            </FormControl>
-
-            <TextField
-              label="Filter by App Name"
-              type="text"
-              size="small"
-              value={linksFilterApp}
-              onChange={(e) => setLinksFilterApp(e.target.value)}
-            />
-          </>
-        )}
-
-        {tab === "vision board" && (
-          <>
-            <FormControl variant="outlined" size="small">
-              <InputLabel>Sort by Goal</InputLabel>
-              <Select
-                label="Sort by Goal"
-                value={visionSortOrder}
-                onChange={(e) =>
-                  setVisionSortOrder(e.target.value as "asc" | "desc")
-                }
-                style={{ minWidth: 150 }}
-              >
-                <MenuItem value="asc">A to Z</MenuItem>
-                <MenuItem value="desc">Z to A</MenuItem>
-              </Select>
-            </FormControl>
-
-            <TextField
-              label="Filter by Goal"
-              type="text"
-              size="small"
-              value={visionFilterGoal}
-              onChange={(e) => setVisionFilterGoal(e.target.value)}
-            />
-          </>
-        )}
-
-        {tab === "calories" && (
-          <>
-            <FormControl variant="outlined" size="small">
-              <InputLabel>Sort by Calories</InputLabel>
-              <Select
-                label="Sort by Calories"
-                value={caloriesSortOrder}
-                onChange={(e) =>
-                  setCaloriesSortOrder(e.target.value as "asc" | "desc")
-                }
-                style={{ minWidth: 150 }}
-              >
-                <MenuItem value="asc">Ascending</MenuItem>
-                <MenuItem value="desc">Descending</MenuItem>
-              </Select>
-            </FormControl>
-
-            <TextField
-              label="Filter by Date"
-              type="date"
-              size="small"
-              InputLabelProps={{ shrink: true }}
-              value={caloriesFilterDate}
-              onChange={(e) => setCaloriesFilterDate(e.target.value)}
-            />
+            {(tab === "entries" ||
+              tab === "diet" ||
+              tab === "journal" ||
+              tab === "places" ||
+              tab === "skills" ||
+              tab === "passwords" ||
+              tab === "todo" ||
+              tab === "notes" ||
+              tab === "links" ||
+              tab === "vision board" ||
+              tab === "calories") && (
+              <FormControl variant="outlined" size="small">
+                <InputLabel>
+                  Sort by{" "}
+                  {tab === "skills"
+                    ? "Skill"
+                    : tab === "places"
+                    ? "Place"
+                    : tab === "diet"
+                    ? "Date"
+                    : tab === "journal"
+                    ? "Date"
+                    : tab === "passwords"
+                    ? "App Name"
+                    : tab === "todo"
+                    ? "Task"
+                    : tab === "notes"
+                    ? "Name"
+                    : tab === "links"
+                    ? "App Name"
+                    : tab === "vision board"
+                    ? "Goal"
+                    : tab === "calories"
+                    ? "Calories"
+                    : "Date"}
+                </InputLabel>
+                <Select
+                  label={`Sort by ${
+                    tab === "skills"
+                      ? "Skill"
+                      : tab === "places"
+                      ? "Place"
+                      : tab === "diet" ||
+                        tab === "journal" ||
+                        tab === "entries"
+                      ? "Date"
+                      : tab === "passwords"
+                      ? "App Name"
+                      : tab === "todo"
+                      ? "Task"
+                      : tab === "notes"
+                      ? "Name"
+                      : tab === "links"
+                      ? "App Name"
+                      : tab === "vision board"
+                      ? "Goal"
+                      : tab === "calories"
+                      ? "Calories"
+                      : "Date"
+                  }`}
+                  value={
+                    tab === "entries"
+                      ? entriesSortOrder
+                      : tab === "diet"
+                      ? dietSortOrder
+                      : tab === "journal"
+                      ? journalSortOrder
+                      : tab === "places"
+                      ? placesSortOrder
+                      : tab === "skills"
+                      ? skillsSortOrder
+                      : tab === "passwords"
+                      ? passwordsSortOrder
+                      : tab === "todo"
+                      ? todoSortOrder
+                      : tab === "notes"
+                      ? notesSortOrder
+                      : tab === "links"
+                      ? linksSortOrder
+                      : tab === "vision board"
+                      ? visionSortOrder
+                      : tab === "calories"
+                      ? caloriesSortOrder
+                      : "asc"
+                  }
+                  onChange={(e) => {
+                    const order = e.target.value as "asc" | "desc";
+                    if (tab === "entries") setEntriesSortOrder(order);
+                    else if (tab === "diet") setDietSortOrder(order);
+                    else if (tab === "journal") setJournalSortOrder(order);
+                    else if (tab === "places") setPlacesSortOrder(order);
+                    else if (tab === "skills") setSkillsSortOrder(order);
+                    else if (tab === "passwords") setPasswordsSortOrder(order);
+                    else if (tab === "todo") setTodoSortOrder(order);
+                    else if (tab === "notes") setNotesSortOrder(order);
+                    else if (tab === "links") setLinksSortOrder(order);
+                    else if (tab === "vision board") setVisionSortOrder(order);
+                    else if (tab === "calories") setCaloriesSortOrder(order);
+                  }}
+                  style={{ minWidth: 150 }}
+                >
+                  <MenuItem value="asc">Ascending</MenuItem>
+                  <MenuItem value="desc">Descending</MenuItem>
+                </Select>
+              </FormControl>
+            )}
           </>
         )}
 
         {/* Filtering */}
-        {tab === "entries" ||
-        tab === "diet" ||
-        tab === "journal" ? (
-          <TextField
-            label="Filter by Date"
-            type="date"
-            size="small"
-            InputLabelProps={{ shrink: true }}
-            value={
-              tab === "entries"
-                ? entriesFilterDate
-                : tab === "diet"
-                ? dietFilterDate
-                : tab === "journal"
-                ? journalFilterDate
-                : ""
-            }
-            onChange={(e) => {
-              const date = e.target.value;
-              if (tab === "entries") setEntriesFilterDate(date);
-              else if (tab === "diet") setDietFilterDate(date);
-              else if (tab === "journal") setJournalFilterDate(date);
-            }}
-          />
-        ) : null}
-
-        {tab === "places" && (
-          <FormControl variant="outlined" size="small">
-            <InputLabel>Filter by Visited</InputLabel>
-            <Select
-              label="Filter by Visited"
-              value={placesFilterVisited}
-              onChange={(e) =>
-                setPlacesFilterVisited(e.target.value as boolean | "")
-              }
-              style={{ minWidth: 150 }}
-            >
-              <MenuItem value="">All</MenuItem>
-              <MenuItem value={true}>Visited</MenuItem>
-              <MenuItem value={false}>Not Visited</MenuItem>
-            </Select>
-          </FormControl>
-        )}
-
-        {tab === "skills" && (
-          <FormControl variant="outlined" size="small">
-            <InputLabel>Filter by Learned</InputLabel>
-            <Select
-              label="Filter by Learned"
-              value={skillsFilterLearned}
-              onChange={(e) =>
-                setSkillsFilterLearned(e.target.value as boolean | "")
-              }
-              style={{ minWidth: 150 }}
-            >
-              <MenuItem value="">All</MenuItem>
-              <MenuItem value={true}>Learned</MenuItem>
-              <MenuItem value={false}>Not Learned</MenuItem>
-            </Select>
-          </FormControl>
-        )}
-
-        {tab === "passwords" && (
-          <TextField
-            label="Filter by App Name"
-            type="text"
-            size="small"
-            value={passwordsFilterApp}
-            onChange={(e) => setPasswordsFilterApp(e.target.value)}
-          />
-        )}
-
-        {tab === "todo" && (
-          <FormControl variant="outlined" size="small">
-            <InputLabel>Filter by State</InputLabel>
-            <Select
-              label="Filter by State"
-              value={todoFilterState}
-              onChange={(e) =>
-                setTodoFilterState(
-                  e.target.value as "todo" | "doing" | "done" | ""
-                )
-              }
-              style={{ minWidth: 150 }}
-            >
-              <MenuItem value="">All</MenuItem>
-              <MenuItem value="todo">Todo</MenuItem>
-              <MenuItem value="doing">Doing</MenuItem>
-              <MenuItem value="done">Done</MenuItem>
-            </Select>
-          </FormControl>
-        )}
-
-        {tab === "notes" && (
-          <TextField
-            label="Filter by Name"
-            type="text"
-            size="small"
-            value={notesFilterName}
-            onChange={(e) => setNotesFilterName(e.target.value)}
-          />
-        )}
-
-        {tab === "links" && (
+        {tab !== "status" && ( // Filtering not needed for Status tab
           <>
-            <TextField
-              label="Filter by App Name"
-              type="text"
-              size="small"
-              value={linksFilterApp}
-              onChange={(e) => setLinksFilterApp(e.target.value)}
-            />
+            {/* Filter by Date for specific tabs */}
+            {(tab === "entries" ||
+              tab === "diet" ||
+              tab === "journal" ||
+              tab === "calories") && (
+              <TextField
+                label={`Filter by ${
+                  tab === "calories" ? "Date" : "Date"
+                }`}
+                type="date"
+                size="small"
+                InputLabelProps={{ shrink: true }}
+                value={
+                  tab === "entries"
+                    ? entriesFilterDate
+                    : tab === "diet"
+                    ? dietFilterDate
+                    : tab === "journal"
+                    ? journalFilterDate
+                    : tab === "calories"
+                    ? caloriesFilterDate
+                    : ""
+                }
+                onChange={(e) => {
+                  const date = e.target.value;
+                  if (tab === "entries") setEntriesFilterDate(date);
+                  else if (tab === "diet") setDietFilterDate(date);
+                  else if (tab === "journal") setJournalFilterDate(date);
+                  else if (tab === "calories") setCaloriesFilterDate(date);
+                }}
+              />
+            )}
+
+            {/* Specific Filters for other tabs */}
+            {tab === "places" && (
+              <FormControl variant="outlined" size="small">
+                <InputLabel>Filter by Visited</InputLabel>
+                <Select
+                  label="Filter by Visited"
+                  value={placesFilterVisited}
+                  onChange={(e) =>
+                    setPlacesFilterVisited(e.target.value as boolean | "")
+                  }
+                  style={{ minWidth: 150 }}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value={true}>Visited</MenuItem>
+                  <MenuItem value={false}>Not Visited</MenuItem>
+                </Select>
+              </FormControl>
+            )}
+
+            {tab === "skills" && (
+              <FormControl variant="outlined" size="small">
+                <InputLabel>Filter by Learned</InputLabel>
+                <Select
+                  label="Filter by Learned"
+                  value={skillsFilterLearned}
+                  onChange={(e) =>
+                    setSkillsFilterLearned(e.target.value as boolean | "")
+                  }
+                  style={{ minWidth: 150 }}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value={true}>Learned</MenuItem>
+                  <MenuItem value={false}>Not Learned</MenuItem>
+                </Select>
+              </FormControl>
+            )}
+
+            {tab === "passwords" && (
+              <TextField
+                label="Filter by App Name"
+                type="text"
+                size="small"
+                value={passwordsFilterApp}
+                onChange={(e) => setPasswordsFilterApp(e.target.value)}
+              />
+            )}
+
+            {tab === "todo" && (
+              <FormControl variant="outlined" size="small">
+                <InputLabel>Filter by State</InputLabel>
+                <Select
+                  label="Filter by State"
+                  value={todoFilterState}
+                  onChange={(e) =>
+                    setTodoFilterState(
+                      e.target.value as "todo" | "doing" | "done" | ""
+                    )
+                  }
+                  style={{ minWidth: 150 }}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="todo">Todo</MenuItem>
+                  <MenuItem value="doing">Doing</MenuItem>
+                  <MenuItem value="done">Done</MenuItem>
+                </Select>
+              </FormControl>
+            )}
+
+            {tab === "notes" && (
+              <TextField
+                label="Filter by Name"
+                type="text"
+                size="small"
+                value={notesFilterName}
+                onChange={(e) => setNotesFilterName(e.target.value)}
+              />
+            )}
+
+            {tab === "links" && (
+              <>
+                <TextField
+                  label="Filter by App Name"
+                  type="text"
+                  size="small"
+                  value={linksFilterApp}
+                  onChange={(e) => setLinksFilterApp(e.target.value)}
+                />
+              </>
+            )}
+
+            {tab === "vision board" && (
+              <TextField
+                label="Filter by Goal"
+                type="text"
+                size="small"
+                value={visionFilterGoal}
+                onChange={(e) => setVisionFilterGoal(e.target.value)}
+              />
+            )}
           </>
         )}
 
-        {tab === "vision board" && (
-          <TextField
-            label="Filter by Goal"
-            type="text"
-            size="small"
-            value={visionFilterGoal}
-            onChange={(e) => setVisionFilterGoal(e.target.value)}
-          />
-        )}
-
-        {tab === "calories" && null}
-
         {/* Reset Filter Button */}
-        <Button
-          variant="text"
-          onClick={() => {
-            // Reset all filters based on current tab
-            switch (tab) {
-              case "entries":
-                setEntriesFilterDate("");
-                setEntriesSortOrder("asc");
-                break;
-              case "diet":
-                setDietFilterDate("");
-                setDietSortOrder("asc");
-                break;
-              case "journal":
-                setJournalFilterDate("");
-                setJournalSortOrder("asc");
-                break;
-              case "places":
-                setPlacesFilterVisited("");
-                setPlacesSortOrder("asc");
-                break;
-              case "skills":
-                setSkillsFilterLearned("");
-                setSkillsSortOrder("asc");
-                break;
-              case "passwords":
-                setPasswordsFilterApp("");
-                setPasswordsSortOrder("asc");
-                break;
-              case "todo":
-                setTodoFilterState("");
-                setTodoSortOrder("asc");
-                break;
-              case "notes":
-                setNotesFilterName("");
-                setNotesSortOrder("asc");
-                break;
-              case "links":
-                setLinksFilterApp("");
-                setLinksSortOrder("asc");
-                break;
-              case "vision board":
-                setVisionFilterGoal("");
-                setVisionSortOrder("asc");
-                break;
-              case "calories":
-                setCaloriesFilterDate("");
-                setCaloriesSortOrder("asc");
-                break;
-              default:
-                break;
-            }
-          }}
-        >
-          Reset Filter
-        </Button>
+        {tab !== "status" && (
+          <Button
+            variant="text"
+            onClick={() => {
+              // Reset all filters based on current tab
+              switch (tab) {
+                case "entries":
+                  setEntriesFilterDate("");
+                  setEntriesSortOrder("asc");
+                  break;
+                case "diet":
+                  setDietFilterDate("");
+                  setDietSortOrder("asc");
+                  break;
+                case "journal":
+                  setJournalFilterDate("");
+                  setJournalSortOrder("asc");
+                  break;
+                case "places":
+                  setPlacesFilterVisited("");
+                  setPlacesSortOrder("asc");
+                  break;
+                case "skills":
+                  setSkillsFilterLearned("");
+                  setSkillsSortOrder("asc");
+                  break;
+                case "passwords":
+                  setPasswordsFilterApp("");
+                  setPasswordsSortOrder("asc");
+                  break;
+                case "todo":
+                  setTodoFilterState("");
+                  setTodoSortOrder("asc");
+                  break;
+                case "notes":
+                  setNotesFilterName("");
+                  setNotesSortOrder("asc");
+                  break;
+                case "links":
+                  setLinksFilterApp("");
+                  setLinksSortOrder("asc");
+                  break;
+                case "vision board":
+                  setVisionFilterGoal("");
+                  setVisionSortOrder("asc");
+                  break;
+                case "calories":
+                  setCaloriesFilterDate("");
+                  setCaloriesSortOrder("asc");
+                  break;
+                default:
+                  break;
+              }
+            }}
+          >
+            Reset Filter
+          </Button>
+        )}
       </div>
 
       {/* Modal for Adding/Editing */}
@@ -2030,18 +2032,143 @@ function App() {
           ) : tab === "calories" ? (
             <>
               {/* Optional: Implement form for adding/calculating calories if needed */}
-              <Typography variant="h6">Calories are calculated automatically based on Diet entries.</Typography>
+              <Typography variant="h6">
+                Calories are calculated automatically based on Diet entries.
+              </Typography>
+            </>
+          ) : tab === "status" ? (
+            <>
+              {/* Status Tab: Display Statistics */}
+              {data.length === 0 ? (
+                <Typography>No entries available to generate status.</Typography>
+              ) : (
+                <>
+                  <Box mb={2}>
+                    <Typography variant="h6">Tracking Period</Typography>
+                    <Typography variant="body1">
+                      Start Date: {getStartDate()}
+                    </Typography>
+                    <Typography variant="body1">
+                      Latest Date: {getLatestDate()}
+                    </Typography>
+                  </Box>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <Card>
+                        <CardContent>
+                          <Typography variant="h6">Pray Morning</Typography>
+                          <Typography variant="body1">
+                            {data.filter(entry => entry.prayMorning).length}/{data.length} (
+                            {((data.filter(entry => entry.prayMorning).length / data.length) * 100).toFixed(2)}%)
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Card>
+                        <CardContent>
+                          <Typography variant="h6">Pray Evening</Typography>
+                          <Typography variant="body1">
+                            {data.filter(entry => entry.prayEvening).length}/{data.length} (
+                            {((data.filter(entry => entry.prayEvening).length / data.length) * 100).toFixed(2)}%)
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Card>
+                        <CardContent>
+                          <Typography variant="h6">Workout</Typography>
+                          <Typography variant="body1">
+                            {data.filter(entry => entry.workout).length}/{data.length} (
+                            {((data.filter(entry => entry.workout).length / data.length) * 100).toFixed(2)}%)
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Card>
+                        <CardContent>
+                          <Typography variant="h6">Mast</Typography>
+                          <Typography variant="body1">
+                            {data.filter(entry => entry.mast).length}/{data.length} (
+                            {((data.filter(entry => entry.mast).length / data.length) * 100).toFixed(2)}%)
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Card>
+                        <CardContent>
+                          <Typography variant="h6">PN</Typography>
+                          <Typography variant="body1">
+                            {data.filter(entry => entry.pn).length}/{data.length} (
+                            {((data.filter(entry => entry.pn).length / data.length) * 100).toFixed(2)}%)
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Card>
+                        <CardContent>
+                          <Typography variant="h6">Stretch</Typography>
+                          <Typography variant="body1">
+                            {data.filter(entry => entry.stretch).length}/{data.length} (
+                            {((data.filter(entry => entry.stretch).length / data.length) * 100).toFixed(2)}%)
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Card>
+                        <CardContent>
+                          <Typography variant="h6">PE</Typography>
+                          <Typography variant="body1">
+                            {data.filter(entry => entry.pe).length}/{data.length} (
+                            {((data.filter(entry => entry.pe).length / data.length) * 100).toFixed(2)}%)
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Card>
+                        <CardContent>
+                          <Typography variant="h6">Kegels</Typography>
+                          <Typography variant="body1">
+                            {data.filter(entry => entry.kegels).length}/{data.length} (
+                            {((data.filter(entry => entry.kegels).length / data.length) * 100).toFixed(2)}%)
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Card>
+                        <CardContent>
+                          <Typography variant="h6">Coding (minutes)</Typography>
+                          <Typography variant="body1">
+                            {data.filter(entry => entry.coding && entry.coding > 0).length}/{data.length} (
+                            {((data.filter(entry => entry.coding && entry.coding > 0).length / data.length) * 100).toFixed(2)}%)
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  </Grid>
+                </>
+              )}
             </>
           ) : null}
 
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSave}
-            style={{ marginTop: "10px" }}
-          >
-            Save
-          </Button>
+          {/* Save Button for non-Status Tabs */}
+          {tab !== "status" && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSave}
+              style={{ marginTop: "10px" }}
+            >
+              Save
+            </Button>
+          )}
         </Box>
       </Modal>
 
@@ -2512,6 +2639,127 @@ function App() {
             </TableBody>
           </Table>
         </TableContainer>
+      ) : tab === "status" ? (
+        <Box sx={{ marginTop: 4 }}>
+          {data.length === 0 ? (
+            <Typography>No entries available to generate status.</Typography>
+          ) : (
+            <>
+              {/* Display Tracking Period */}
+              <Box mb={2}>
+                <Typography variant="h6">Tracking Period</Typography>
+                <Typography variant="body1">
+                  Start Date: {getStartDate()}
+                </Typography>
+                <Typography variant="body1">
+                  Latest Date: {getLatestDate()}
+                </Typography>
+              </Box>
+              {/* Display Statistics */}
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6">Pray Morning</Typography>
+                      <Typography variant="body1">
+                        {data.filter(entry => entry.prayMorning).length}/{data.length} (
+                        {((data.filter(entry => entry.prayMorning).length / data.length) * 100).toFixed(2)}%)
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6">Pray Evening</Typography>
+                      <Typography variant="body1">
+                        {data.filter(entry => entry.prayEvening).length}/{data.length} (
+                        {((data.filter(entry => entry.prayEvening).length / data.length) * 100).toFixed(2)}%)
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6">Workout</Typography>
+                      <Typography variant="body1">
+                        {data.filter(entry => entry.workout).length}/{data.length} (
+                        {((data.filter(entry => entry.workout).length / data.length) * 100).toFixed(2)}%)
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6">Mast</Typography>
+                      <Typography variant="body1">
+                        {data.filter(entry => entry.mast).length}/{data.length} (
+                        {((data.filter(entry => entry.mast).length / data.length) * 100).toFixed(2)}%)
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6">PN</Typography>
+                      <Typography variant="body1">
+                        {data.filter(entry => entry.pn).length}/{data.length} (
+                        {((data.filter(entry => entry.pn).length / data.length) * 100).toFixed(2)}%)
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6">Stretch</Typography>
+                      <Typography variant="body1">
+                        {data.filter(entry => entry.stretch).length}/{data.length} (
+                        {((data.filter(entry => entry.stretch).length / data.length) * 100).toFixed(2)}%)
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6">PE</Typography>
+                      <Typography variant="body1">
+                        {data.filter(entry => entry.pe).length}/{data.length} (
+                        {((data.filter(entry => entry.pe).length / data.length) * 100).toFixed(2)}%)
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6">Kegels</Typography>
+                      <Typography variant="body1">
+                        {data.filter(entry => entry.kegels).length}/{data.length} (
+                        {((data.filter(entry => entry.kegels).length / data.length) * 100).toFixed(2)}%)
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6">Coding (minutes)</Typography>
+                      <Typography variant="body1">
+                        {data.filter(entry => entry.coding && entry.coding > 0).length}/{data.length} (
+                        {((data.filter(entry => entry.coding && entry.coding > 0).length / data.length) * 100).toFixed(2)}%)
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
+            </>
+          )}
+        </Box>
       ) : null}
     </div>
   );

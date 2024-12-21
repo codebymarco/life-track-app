@@ -1,7 +1,8 @@
-todo:
-search filter on all tabs
-weekly stats
-monthly stats
-how many dyas i prayed or not prayed or worked pout
-how juch sun time i get a month 
-how much workout i get
+create pages for each tab
+the issue when we try to select a item after chaning tabs
+it like keeps the date from before
+fill in rest of dates
+delete popup for confirmation
+tabs for my favoutite music
+gospel and old and now
+Google Wear OS:  for my mobile app
