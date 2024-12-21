@@ -53,6 +53,12 @@ type JournalData = {
   body: string;
 };
 
+// Places To Visit data type (Date removed)
+type PlacesData = {
+  place: string;
+  visited: boolean;
+};
+
 const style = {
   position: "absolute" as const,
   top: "50%",
@@ -68,12 +74,13 @@ const style = {
 };
 
 function App() {
-  const [tab, setTab] = useState<"entries" | "diet" | "journal">("entries");
+  const [tab, setTab] = useState<"entries" | "diet" | "journal" | "places">("entries");
   const [open, setOpen] = useState<boolean>(false);
   const [data, setData] = useState<FormData[]>([]);
   const [dietData, setDietData] = useState<DietData[]>([]);
   const [journalData, setJournalData] = useState<JournalData[]>([]);
-  
+  const [placesData, setPlacesData] = useState<PlacesData[]>([]); // === Places To Visit ===
+
   // Modify formData to handle 'coding' as string for input purposes
   const [formData, setFormData] = useState<Omit<FormData, 'coding'> & { coding: string }>({
     date: "",
@@ -100,6 +107,10 @@ function App() {
     date: "",
     body: "",
   });
+  const [placesForm, setPlacesForm] = useState<PlacesData>({
+    place: "",
+    visited: false,
+  }); // === Places To Visit ===
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
   // Sorting and Filtering State
@@ -111,6 +122,10 @@ function App() {
 
   const [journalSortOrder, setJournalSortOrder] = useState<"asc" | "desc">("asc");
   const [journalFilterDate, setJournalFilterDate] = useState<string>("");
+
+  // === Places To Visit Sorting and Filtering ===
+  const [placesSortOrder, setPlacesSortOrder] = useState<"asc" | "desc">("asc");
+  const [placesFilterVisited, setPlacesFilterVisited] = useState<boolean | "">("");
 
   useEffect(() => {
     try {
@@ -135,10 +150,20 @@ function App() {
 
       const storedJournal = JSON.parse(localStorage.getItem("journalEntries") || "[]") as JournalData[];
       setJournalData(storedJournal);
+
+      const storedPlaces = JSON.parse(localStorage.getItem("placesEntries") || "[]") as PlacesData[]; // === Places To Visit ===
+      setPlacesData(
+        storedPlaces.map((entry) => ({
+          ...entry,
+          place: entry.place || "",
+          visited: entry.visited || false,
+        }))
+      );
     } catch {
       setData([]);
       setDietData([]);
       setJournalData([]);
+      setPlacesData([]); // === Places To Visit ===
     }
   }, []);
 
@@ -163,6 +188,7 @@ function App() {
     });
     setDietForm({ date: "", foods: [], water: "" });
     setJournalForm({ date: "", body: "" });
+    setPlacesForm({ place: "", visited: false }); // === Places To Visit ===
     setEditIndex(null);
   };
 
@@ -201,6 +227,20 @@ function App() {
         ...journalForm,
         [name!]: value,
       });
+    } 
+    // === Places To Visit ===
+    else if (tab === "places") {
+      if (name === "visited") {
+        setPlacesForm({
+          ...placesForm,
+          visited: checked,
+        });
+      } else {
+        setPlacesForm({
+          ...placesForm,
+          [name!]: value,
+        });
+      }
     }
   };
 
@@ -208,14 +248,14 @@ function App() {
     if (tab === "entries") {
       // Convert 'coding' to number if possible
       const codingNumber = formData.coding ? Number(formData.coding) : undefined;
-      if (isNaN(codingNumber!)) {
+      if (formData.coding && isNaN(codingNumber!)) {
         alert("Please enter a valid number for Coding (minutes).");
         return;
       }
 
       const entryToSave: FormData = {
         ...formData,
-        coding: codingNumber,
+        coding: formData.coding ? codingNumber : undefined,
       };
 
       if (editIndex !== null) {
@@ -250,7 +290,26 @@ function App() {
         setJournalData(newJournal);
         localStorage.setItem("journalEntries", JSON.stringify(newJournal));
       }
+    } 
+    // === Places To Visit ===
+    else if (tab === "places") {
+      if (!placesForm.place.trim()) {
+        alert("Place name cannot be empty.");
+        return;
+      }
+
+      if (editIndex !== null) {
+        const updatedPlaces = [...placesData];
+        updatedPlaces[editIndex] = placesForm;
+        setPlacesData(updatedPlaces);
+        localStorage.setItem("placesEntries", JSON.stringify(updatedPlaces));
+      } else {
+        const newPlaces = [...placesData, placesForm];
+        setPlacesData(newPlaces);
+        localStorage.setItem("placesEntries", JSON.stringify(newPlaces));
+      }
     }
+
     handleClose();
   };
 
@@ -267,6 +326,12 @@ function App() {
       const filteredJournal = journalData.filter((_, i) => i !== index);
       setJournalData(filteredJournal);
       localStorage.setItem("journalEntries", JSON.stringify(filteredJournal));
+    } 
+    // === Places To Visit ===
+    else if (tab === "places") {
+      const filteredPlaces = placesData.filter((_, i) => i !== index);
+      setPlacesData(filteredPlaces);
+      localStorage.setItem("placesEntries", JSON.stringify(filteredPlaces));
     }
   };
 
@@ -284,17 +349,24 @@ function App() {
     } else if (tab === "journal") {
       setJournalForm(journalData[index]);
       setEditIndex(index);
+    } 
+    // === Places To Visit ===
+    else if (tab === "places") {
+      setPlacesForm(placesData[index]);
+      setEditIndex(index);
     }
     handleOpen();
   };
 
-  const handleDownload = (type: "entries" | "diet" | "journal") => {
+  const handleDownload = (type: "entries" | "diet" | "journal" | "places") => {
     const jsonData =
       type === "entries"
         ? JSON.stringify(data, null, 2)
         : type === "diet"
         ? JSON.stringify(dietData, null, 2)
-        : JSON.stringify(journalData, null, 2);
+        : type === "journal"
+        ? JSON.stringify(journalData, null, 2)
+        : JSON.stringify(placesData, null, 2); // === Places To Visit ===
     const blob = new Blob([jsonData], { type: "application/json" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -303,38 +375,48 @@ function App() {
   };
 
   // Sorting and Filtering Functions
-  const sortData = <T extends { date: string }>(
+  const sortData = <T extends { [key: string]: any }>(
     data: T[],
+    key: keyof T,
     order: "asc" | "desc"
   ): T[] => {
     return [...data].sort((a, b) => {
-      if (a.date < b.date) return order === "asc" ? -1 : 1;
-      if (a.date > b.date) return order === "asc" ? 1 : -1;
+      if (a[key] < b[key]) return order === "asc" ? -1 : 1;
+      if (a[key] > b[key]) return order === "asc" ? 1 : -1;
       return 0;
     });
   };
 
-  const filterData = <T extends { date: string }>(
+  const filterData = <T extends { [key: string]: any }>(
     data: T[],
-    filterDate: string
+    key: keyof T,
+    filterValue: any
   ): T[] => {
-    if (!filterDate) return data;
-    return data.filter((item) => item.date === filterDate);
+    if (filterValue === "" || filterValue === null) return data;
+    return data.filter((item) => item[key] === filterValue);
   };
 
   // Processed Data for Rendering
   const processedEntries = sortData(
-    filterData(data, entriesFilterDate),
+    filterData(data, "date", entriesFilterDate),
+    "date",
     entriesSortOrder
   );
   const processedDiet = sortData(
-    filterData(dietData, dietFilterDate),
+    filterData(dietData, "date", dietFilterDate),
+    "date",
     dietSortOrder
   );
   const processedJournal = sortData(
-    filterData(journalData, journalFilterDate),
+    filterData(journalData, "date", journalFilterDate),
+    "date",
     journalSortOrder
   );
+  const processedPlaces = sortData(
+    filterData(placesData, "visited", placesFilterVisited),
+    "place",
+    placesSortOrder
+  ); // === Places To Visit ===
 
   return (
     <div style={{ padding: "20px" }}>
@@ -359,6 +441,13 @@ function App() {
         >
           Day Journal
         </Button>
+        <Button
+          variant={tab === "places" ? "contained" : "outlined"}
+          onClick={() => setTab("places")}
+          style={{ marginLeft: "10px" }}
+        >
+          Places to Visit
+        </Button>
       </div>
 
       <div style={{ marginBottom: "10px" }}>
@@ -367,7 +456,9 @@ function App() {
             ? "Add Entry"
             : tab === "diet"
             ? "Enter Day Diet"
-            : "Add Journal"}
+            : tab === "journal"
+            ? "Add Journal"
+            : "Add Place"} {/* Updated for Places */}
         </Button>
 
         <Button
@@ -381,7 +472,9 @@ function App() {
             ? "Entries"
             : tab === "diet"
             ? "Diet"
-            : "Journal"}{" "}
+            : tab === "journal"
+            ? "Journal"
+            : "Places"}{" "}
           as JSON
         </Button>
       </div>
@@ -396,50 +489,89 @@ function App() {
         }}
       >
         {/* Sorting */}
-        <FormControl variant="outlined" size="small">
-          <InputLabel>Sort by Date</InputLabel>
-          <Select
-            label="Sort by Date"
-            value={
-              tab === "entries"
-                ? entriesSortOrder
-                : tab === "diet"
-                ? dietSortOrder
-                : journalSortOrder
-            }
-            onChange={(e) => {
-              const order = e.target.value as "asc" | "desc";
-              if (tab === "entries") setEntriesSortOrder(order);
-              else if (tab === "diet") setDietSortOrder(order);
-              else setJournalSortOrder(order);
-            }}
-            style={{ minWidth: 150 }}
-          >
-            <MenuItem value="asc">Ascending</MenuItem>
-            <MenuItem value="desc">Descending</MenuItem>
-          </Select>
-        </FormControl>
+        {tab !== "places" && (
+          <FormControl variant="outlined" size="small">
+            <InputLabel>Sort by Date</InputLabel>
+            <Select
+              label="Sort by Date"
+              value={
+                tab === "entries"
+                  ? entriesSortOrder
+                  : tab === "diet"
+                  ? dietSortOrder
+                  : tab === "journal"
+                  ? journalSortOrder
+                  : undefined
+              }
+              onChange={(e) => {
+                const order = e.target.value as "asc" | "desc";
+                if (tab === "entries") setEntriesSortOrder(order);
+                else if (tab === "diet") setDietSortOrder(order);
+                else if (tab === "journal") setJournalSortOrder(order);
+              }}
+              style={{ minWidth: 150 }}
+            >
+              <MenuItem value="asc">Ascending</MenuItem>
+              <MenuItem value="desc">Descending</MenuItem>
+            </Select>
+          </FormControl>
+        )}
+
+        {tab === "places" && (
+          <FormControl variant="outlined" size="small">
+            <InputLabel>Sort by Place</InputLabel>
+            <Select
+              label="Sort by Place"
+              value={placesSortOrder}
+              onChange={(e) => setPlacesSortOrder(e.target.value as "asc" | "desc")}
+              style={{ minWidth: 150 }}
+            >
+              <MenuItem value="asc">A to Z</MenuItem>
+              <MenuItem value="desc">Z to A</MenuItem>
+            </Select>
+          </FormControl>
+        )}
 
         {/* Filtering */}
-        <TextField
-          label="Filter by Date"
-          type="date"
-          size="small"
-          InputLabelProps={{ shrink: true }}
-          value={
-            tab === "entries"
-              ? entriesFilterDate
-              : tab === "diet"
-              ? dietFilterDate
-              : journalFilterDate
-          }
-          onChange={(e) => {
-            const date = e.target.value;
-            if (tab === "entries") setEntriesFilterDate(date);
-            else if (tab === "diet") setDietFilterDate(date);
-            else setJournalFilterDate(date);
-          }}
-        />
+        {tab !== "places" && (
+          <TextField
+            label="Filter by Date"
+            type="date"
+            size="small"
+            InputLabelProps={{ shrink: true }}
+            value={
+              tab === "entries"
+                ? entriesFilterDate
+                : tab === "diet"
+                ? dietFilterDate
+                : tab === "journal"
+                ? journalFilterDate
+                : ""
+            }
+            onChange={(e) => {
+              const date = e.target.value;
+              if (tab === "entries") setEntriesFilterDate(date);
+              else if (tab === "diet") setDietFilterDate(date);
+              else if (tab === "journal") setJournalFilterDate(date);
+            }}
+          />
+        )}
+
+        {tab === "places" && (
+          <FormControl variant="outlined" size="small">
+            <InputLabel>Filter by Visited</InputLabel>
+            <Select
+              label="Filter by Visited"
+              value={placesFilterVisited}
+              onChange={(e) => setPlacesFilterVisited(e.target.value as boolean | "")}
+              style={{ minWidth: 150 }}
+            >
+              <MenuItem value="">All</MenuItem>
+              <MenuItem value={true}>Visited</MenuItem>
+              <MenuItem value={false}>Not Visited</MenuItem>
+            </Select>
+          </FormControl>
+        )}
 
         {/* Reset Filter Button */}
         <Button
@@ -447,7 +579,8 @@ function App() {
           onClick={() => {
             if (tab === "entries") setEntriesFilterDate("");
             else if (tab === "diet") setDietFilterDate("");
-            else setJournalFilterDate("");
+            else if (tab === "journal") setJournalFilterDate("");
+            else if (tab === "places") setPlacesFilterVisited("");
           }}
         >
           Reset Filter
@@ -558,10 +691,10 @@ function App() {
                 onChange={handleChange}
                 inputProps={{ min: 0 }}
               />
-                            <TextField
+              <TextField
                 fullWidth
                 margin="normal"
-                label="Jeqls(strokes)"
+                label="Jelqs (strokes)"
                 type="number"
                 name="jelqs"
                 value={formData.jelqs}
@@ -642,7 +775,7 @@ function App() {
                 inputProps={{ min: 0, step: "0.1" }}
               />
             </>
-          ) : (
+          ) : tab === "journal" ? (
             <>
               <TextField
                 fullWidth
@@ -666,7 +799,29 @@ function App() {
                 rows={4}
               />
             </>
-          )}
+          ) : tab === "places" ? ( // === Places To Visit ===
+            <>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Place"
+                name="place"
+                value={placesForm.place}
+                onChange={handleChange}
+                required
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={placesForm.visited}
+                    name="visited"
+                    onChange={handleChange}
+                  />
+                }
+                label="Visited"
+              />
+            </>
+          ) : null}
           <Button
             variant="contained"
             color="primary"
@@ -733,7 +888,7 @@ function App() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={13} align="center">
+                  <TableCell colSpan={14} align="center">
                     No entries found.
                   </TableCell>
                 </TableRow>
@@ -779,7 +934,7 @@ function App() {
             </TableBody>
           </Table>
         </TableContainer>
-      ) : (
+      ) : tab === "journal" ? (
         <TableContainer component={Paper} sx={{ marginTop: 4 }}>
           <Table>
             <TableHead>
@@ -815,7 +970,43 @@ function App() {
             </TableBody>
           </Table>
         </TableContainer>
-      )}
+      ) : tab === "places" ? ( // === Places To Visit ===
+        <TableContainer component={Paper} sx={{ marginTop: 4 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Place</TableCell>
+                <TableCell>Visited</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {processedPlaces.length > 0 ? (
+                processedPlaces.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{row.place}</TableCell>
+                    <TableCell>{row.visited ? "Yes" : "No"}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => handleEdit(index)}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton onClick={() => handleDelete(index)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={3} align="center">
+                    No places to visit found.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : null}
     </div>
   );
 }
