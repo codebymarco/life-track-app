@@ -18,9 +18,12 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
+  InputAdornment,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 // Existing Form data types
 type FormData = {
@@ -225,6 +228,11 @@ function App() {
   const [notesSortOrder, setNotesSortOrder] = useState<"asc" | "desc">("asc");
   const [notesFilterName, setNotesFilterName] = useState<string>("");
 
+  // State to track visibility of passwords
+  const [visiblePasswords, setVisiblePasswords] = useState<Set<number>>(
+    new Set()
+  );
+
   useEffect(() => {
     try {
       // Existing Data Retrieval
@@ -349,7 +357,12 @@ function App() {
     setJournalForm({ date: "", body: "" });
     setPlacesForm({ place: "", visited: false });
     setSkillsForm({ skill: "", learned: false });
-    setPasswordForm({ appName: "", email: "", username: "", password: "" });
+    setPasswordForm({
+      appName: "",
+      email: "",
+      username: "",
+      password: "",
+    });
     setTodoForm({ task: "", state: "todo" });
     setNoteForm({ name: "", body: "" });
     setEditIndex(null);
@@ -758,7 +771,14 @@ function App() {
     filterValue: any
   ): T[] => {
     if (filterValue === "" || filterValue === null) return data;
-    return data.filter((item) => item[key] === filterValue);
+    return data.filter((item) => {
+      if (typeof filterValue === "boolean") {
+        return item[key] === filterValue;
+      } else if (typeof filterValue === "string") {
+        return item[key].toString().toLowerCase().includes(filterValue.toLowerCase());
+      }
+      return item[key] === filterValue;
+    });
   };
 
   // Processed Data for Rendering
@@ -810,6 +830,19 @@ function App() {
     "name",
     notesSortOrder
   );
+
+  // Function to toggle password visibility
+  const togglePasswordVisibility = (index: number) => {
+    setVisiblePasswords((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
+  };
 
   return (
     <div style={{ padding: "20px" }}>
@@ -933,41 +966,54 @@ function App() {
         }}
       >
         {/* Sorting */}
-        {tab !== "passwords" && tab !== "todo" && tab !== "notes" && (
-          <FormControl variant="outlined" size="small">
-            <InputLabel>Sort by {tab === "skills" ? "Skill" : tab === "places" ? "Place" : "Date"}</InputLabel>
-            <Select
-              label={`Sort by ${
-                tab === "skills" ? "Skill" : tab === "places" ? "Place" : "Date"
-              }`}
-              value={
-                tab === "entries"
-                  ? entriesSortOrder
-                  : tab === "diet"
-                  ? dietSortOrder
-                  : tab === "journal"
-                  ? journalSortOrder
+        {tab !== "passwords" &&
+          tab !== "todo" &&
+          tab !== "notes" && (
+            <FormControl variant="outlined" size="small">
+              <InputLabel>
+                Sort by{" "}
+                {tab === "skills"
+                  ? "Skill"
                   : tab === "places"
-                  ? placesSortOrder
-                  : tab === "skills"
-                  ? skillsSortOrder
-                  : ""
-              }
-              onChange={(e) => {
-                const order = e.target.value as "asc" | "desc";
-                if (tab === "entries") setEntriesSortOrder(order);
-                else if (tab === "diet") setDietSortOrder(order);
-                else if (tab === "journal") setJournalSortOrder(order);
-                else if (tab === "places") setPlacesSortOrder(order);
-                else if (tab === "skills") setSkillsSortOrder(order);
-              }}
-              style={{ minWidth: 150 }}
-            >
-              <MenuItem value="asc">Ascending</MenuItem>
-              <MenuItem value="desc">Descending</MenuItem>
-            </Select>
-          </FormControl>
-        )}
+                  ? "Place"
+                  : "Date"}
+              </InputLabel>
+              <Select
+                label={`Sort by ${
+                  tab === "skills"
+                    ? "Skill"
+                    : tab === "places"
+                    ? "Place"
+                    : "Date"
+                }`}
+                value={
+                  tab === "entries"
+                    ? entriesSortOrder
+                    : tab === "diet"
+                    ? dietSortOrder
+                    : tab === "journal"
+                    ? journalSortOrder
+                    : tab === "places"
+                    ? placesSortOrder
+                    : tab === "skills"
+                    ? skillsSortOrder
+                    : ""
+                }
+                onChange={(e) => {
+                  const order = e.target.value as "asc" | "desc";
+                  if (tab === "entries") setEntriesSortOrder(order);
+                  else if (tab === "diet") setDietSortOrder(order);
+                  else if (tab === "journal") setJournalSortOrder(order);
+                  else if (tab === "places") setPlacesSortOrder(order);
+                  else if (tab === "skills") setSkillsSortOrder(order);
+                }}
+                style={{ minWidth: 150 }}
+              >
+                <MenuItem value="asc">Ascending</MenuItem>
+                <MenuItem value="desc">Descending</MenuItem>
+              </Select>
+            </FormControl>
+          )}
 
         {tab === "passwords" && (
           <FormControl variant="outlined" size="small">
@@ -975,7 +1021,9 @@ function App() {
             <Select
               label="Sort by App Name"
               value={passwordsSortOrder}
-              onChange={(e) => setPasswordsSortOrder(e.target.value as "asc" | "desc")}
+              onChange={(e) =>
+                setPasswordsSortOrder(e.target.value as "asc" | "desc")
+              }
               style={{ minWidth: 150 }}
             >
               <MenuItem value="asc">A to Z</MenuItem>
@@ -990,7 +1038,9 @@ function App() {
             <Select
               label="Sort by Task"
               value={todoSortOrder}
-              onChange={(e) => setTodoSortOrder(e.target.value as "asc" | "desc")}
+              onChange={(e) =>
+                setTodoSortOrder(e.target.value as "asc" | "desc")
+              }
               style={{ minWidth: 150 }}
             >
               <MenuItem value="asc">A to Z</MenuItem>
@@ -1015,29 +1065,33 @@ function App() {
         )}
 
         {/* Filtering */}
-        {tab !== "places" && tab !== "skills" && tab !== "passwords" && tab !== "notes" && tab !== "todo" && (
-          <TextField
-            label="Filter by Date"
-            type="date"
-            size="small"
-            InputLabelProps={{ shrink: true }}
-            value={
-              tab === "entries"
-                ? entriesFilterDate
-                : tab === "diet"
-                ? dietFilterDate
-                : tab === "journal"
-                ? journalFilterDate
-                : ""
-            }
-            onChange={(e) => {
-              const date = e.target.value;
-              if (tab === "entries") setEntriesFilterDate(date);
-              else if (tab === "diet") setDietFilterDate(date);
-              else if (tab === "journal") setJournalFilterDate(date);
-            }}
-          />
-        )}
+        {tab !== "places" &&
+          tab !== "skills" &&
+          tab !== "passwords" &&
+          tab !== "notes" &&
+          tab !== "todo" && (
+            <TextField
+              label="Filter by Date"
+              type="date"
+              size="small"
+              InputLabelProps={{ shrink: true }}
+              value={
+                tab === "entries"
+                  ? entriesFilterDate
+                  : tab === "diet"
+                  ? dietFilterDate
+                  : tab === "journal"
+                  ? journalFilterDate
+                  : ""
+              }
+              onChange={(e) => {
+                const date = e.target.value;
+                if (tab === "entries") setEntriesFilterDate(date);
+                else if (tab === "diet") setDietFilterDate(date);
+                else if (tab === "journal") setJournalFilterDate(date);
+              }}
+            />
+          )}
 
         {tab === "places" && (
           <FormControl variant="outlined" size="small">
@@ -1045,7 +1099,9 @@ function App() {
             <Select
               label="Filter by Visited"
               value={placesFilterVisited}
-              onChange={(e) => setPlacesFilterVisited(e.target.value as boolean | "")}
+              onChange={(e) =>
+                setPlacesFilterVisited(e.target.value as boolean | "")
+              }
               style={{ minWidth: 150 }}
             >
               <MenuItem value="">All</MenuItem>
@@ -1061,7 +1117,9 @@ function App() {
             <Select
               label="Filter by Learned"
               value={skillsFilterLearned}
-              onChange={(e) => setSkillsFilterLearned(e.target.value as boolean | "")}
+              onChange={(e) =>
+                setSkillsFilterLearned(e.target.value as boolean | "")
+              }
               style={{ minWidth: 150 }}
             >
               <MenuItem value="">All</MenuItem>
@@ -1087,7 +1145,11 @@ function App() {
             <Select
               label="Filter by State"
               value={todoFilterState}
-              onChange={(e) => setTodoFilterState(e.target.value as "todo" | "doing" | "done" | "")}
+              onChange={(e) =>
+                setTodoFilterState(
+                  e.target.value as "todo" | "doing" | "done" | ""
+                )
+              }
               style={{ minWidth: 150 }}
             >
               <MenuItem value="">All</MenuItem>
@@ -1741,11 +1803,33 @@ function App() {
                     <TableCell>{row.email}</TableCell>
                     <TableCell>{row.username}</TableCell>
                     <TableCell>
-                      <input
-                        type="password"
+                      <TextField
+                        type={visiblePasswords.has(index) ? "text" : "password"}
                         value={row.password}
-                        readOnly
-                        style={{ border: "none", background: "transparent" }}
+                        InputProps={{
+                          readOnly: true,
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                onClick={() => togglePasswordVisibility(index)}
+                                edge="end"
+                                aria-label={
+                                  visiblePasswords.has(index)
+                                    ? "Hide password"
+                                    : "Show password"
+                                }
+                              >
+                                {visiblePasswords.has(index) ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                        variant="standard"
+                        fullWidth
                       />
                     </TableCell>
                     <TableCell>
