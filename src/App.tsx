@@ -88,6 +88,19 @@ type NoteData = {
   body: string;
 };
 
+// Links data type
+type LinkData = {
+  appName: string;
+  url: string;
+};
+
+// Vision Board data type
+type VisionData = {
+  goal: string;
+  currentStatus: string;
+  goalStatus: string;
+};
+
 // Modal styling
 const style = {
   position: "absolute" as const,
@@ -114,6 +127,8 @@ function App() {
     | "passwords"
     | "todo"
     | "notes"
+    | "links"
+    | "vision board"
   >("entries");
 
   const [open, setOpen] = useState<boolean>(false);
@@ -129,6 +144,8 @@ function App() {
   const [passwordsData, setPasswordsData] = useState<PasswordData[]>([]);
   const [todoData, setTodoData] = useState<TodoData[]>([]);
   const [notesData, setNotesData] = useState<NoteData[]>([]);
+  const [linksData, setLinksData] = useState<LinkData[]>([]);
+  const [visionData, setVisionData] = useState<VisionData[]>([]);
 
   // Existing Form States
   const [formData, setFormData] = useState<
@@ -189,6 +206,17 @@ function App() {
     body: "",
   });
 
+  const [linksForm, setLinksForm] = useState<LinkData>({
+    appName: "",
+    url: "",
+  });
+
+  const [visionForm, setVisionForm] = useState<VisionData>({
+    goal: "",
+    currentStatus: "",
+    goalStatus: "",
+  });
+
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
   // Existing Sorting and Filtering State
@@ -227,6 +255,14 @@ function App() {
   // Notes Sorting and Filtering
   const [notesSortOrder, setNotesSortOrder] = useState<"asc" | "desc">("asc");
   const [notesFilterName, setNotesFilterName] = useState<string>("");
+
+  // Links Sorting and Filtering
+  const [linksSortOrder, setLinksSortOrder] = useState<"asc" | "desc">("asc");
+  const [linksFilterApp, setLinksFilterApp] = useState<string>("");
+
+  // Vision Board Sorting and Filtering
+  const [visionSortOrder, setVisionSortOrder] = useState<"asc" | "desc">("asc");
+  const [visionFilterGoal, setVisionFilterGoal] = useState<string>("");
 
   // State to track visibility of passwords
   const [visiblePasswords, setVisiblePasswords] = useState<Set<number>>(
@@ -320,6 +356,30 @@ function App() {
           body: entry.body || "",
         }))
       );
+
+      // New Data Retrieval
+      const storedLinks = JSON.parse(
+        localStorage.getItem("linksEntries") || "[]"
+      ) as LinkData[];
+      setLinksData(
+        storedLinks.map((entry) => ({
+          ...entry,
+          appName: entry.appName || "",
+          url: entry.url || "",
+        }))
+      );
+
+      const storedVision = JSON.parse(
+        localStorage.getItem("visionEntries") || "[]"
+      ) as VisionData[];
+      setVisionData(
+        storedVision.map((entry) => ({
+          ...entry,
+          goal: entry.goal || "",
+          currentStatus: entry.currentStatus || "",
+          goalStatus: entry.goalStatus || "",
+        }))
+      );
     } catch {
       // Reset all data if parsing fails
       setData([]);
@@ -330,6 +390,8 @@ function App() {
       setPasswordsData([]);
       setTodoData([]);
       setNotesData([]);
+      setLinksData([]);
+      setVisionData([]);
     }
   }, []);
 
@@ -365,6 +427,8 @@ function App() {
     });
     setTodoForm({ task: "", state: "todo" });
     setNoteForm({ name: "", body: "" });
+    setLinksForm({ appName: "", url: "" });
+    setVisionForm({ goal: "", currentStatus: "", goalStatus: "" });
     setEditIndex(null);
   };
 
@@ -457,6 +521,18 @@ function App() {
       case "notes":
         setNoteForm({
           ...noteForm,
+          [name!]: value,
+        });
+        break;
+      case "links":
+        setLinksForm({
+          ...linksForm,
+          [name!]: value,
+        });
+        break;
+      case "vision board":
+        setVisionForm({
+          ...visionForm,
           [name!]: value,
         });
         break;
@@ -613,6 +689,54 @@ function App() {
         }
         break;
 
+      case "links":
+        if (!linksForm.appName.trim() || !linksForm.url.trim()) {
+          alert("App Name and URL are required.");
+          return;
+        }
+
+        // Optional: validate URL format
+        const urlPattern = new RegExp(
+          "^(https?:\\/\\/)?" + // protocol
+            "(([a-zA-Z0-9$-_@.&+!*\(\),]|(%[0-9a-fA-F]{2}))+)" + // domain name and path
+            "(\\/?|\\S+)$",
+          "i"
+        );
+        if (!urlPattern.test(linksForm.url)) {
+          alert("Please enter a valid URL.");
+          return;
+        }
+
+        if (editIndex !== null) {
+          const updatedLinks = [...linksData];
+          updatedLinks[editIndex] = linksForm;
+          setLinksData(updatedLinks);
+          localStorage.setItem("linksEntries", JSON.stringify(updatedLinks));
+        } else {
+          const newLinks = [...linksData, linksForm];
+          setLinksData(newLinks);
+          localStorage.setItem("linksEntries", JSON.stringify(newLinks));
+        }
+        break;
+
+      case "vision board":
+        if (!visionForm.goal.trim()) {
+          alert("Goal cannot be empty.");
+          return;
+        }
+
+        if (editIndex !== null) {
+          const updatedVision = [...visionData];
+          updatedVision[editIndex] = visionForm;
+          setVisionData(updatedVision);
+          localStorage.setItem("visionEntries", JSON.stringify(updatedVision));
+        } else {
+          const newVision = [...visionData, visionForm];
+          setVisionData(newVision);
+          localStorage.setItem("visionEntries", JSON.stringify(newVision));
+        }
+        break;
+
       default:
         break;
     }
@@ -662,6 +786,16 @@ function App() {
         setNotesData(filteredNotes);
         localStorage.setItem("notesEntries", JSON.stringify(filteredNotes));
         break;
+      case "links":
+        const filteredLinks = linksData.filter((_, i) => i !== index);
+        setLinksData(filteredLinks);
+        localStorage.setItem("linksEntries", JSON.stringify(filteredLinks));
+        break;
+      case "vision board":
+        const filteredVision = visionData.filter((_, i) => i !== index);
+        setVisionData(filteredVision);
+        localStorage.setItem("visionEntries", JSON.stringify(filteredVision));
+        break;
       default:
         break;
     }
@@ -697,6 +831,12 @@ function App() {
       case "notes":
         setNoteForm(notesData[index]);
         break;
+      case "links":
+        setLinksForm(linksData[index]);
+        break;
+      case "vision board":
+        setVisionForm(visionData[index]);
+        break;
       default:
         break;
     }
@@ -712,7 +852,9 @@ function App() {
     | "skills"
     | "passwords"
     | "todo"
-    | "notes") => {
+    | "notes"
+    | "links"
+    | "vision board") => {
     let jsonData = "";
     switch (type) {
       case "entries":
@@ -738,6 +880,12 @@ function App() {
         break;
       case "notes":
         jsonData = JSON.stringify(notesData, null, 2);
+        break;
+      case "links":
+        jsonData = JSON.stringify(linksData, null, 2);
+        break;
+      case "vision board":
+        jsonData = JSON.stringify(visionData, null, 2);
         break;
       default:
         break;
@@ -831,6 +979,18 @@ function App() {
     notesSortOrder
   );
 
+  const processedLinks = sortData(
+    filterData(linksData, "appName", linksFilterApp),
+    "appName",
+    linksSortOrder
+  );
+
+  const processedVision = sortData(
+    filterData(visionData, "goal", visionFilterGoal),
+    "goal",
+    visionSortOrder
+  );
+
   // Function to toggle password visibility
   const togglePasswordVisibility = (index: number) => {
     setVisiblePasswords((prev) => {
@@ -903,6 +1063,20 @@ function App() {
         >
           Notes
         </Button>
+        <Button
+          variant={tab === "links" ? "contained" : "outlined"}
+          onClick={() => setTab("links")}
+          style={{ marginLeft: "10px" }}
+        >
+          Links
+        </Button>
+        <Button
+          variant={tab === "vision board" ? "contained" : "outlined"}
+          onClick={() => setTab("vision board")}
+          style={{ marginLeft: "10px" }}
+        >
+          Vision Board
+        </Button>
       </div>
 
       {/* Add and Download Buttons */}
@@ -924,6 +1098,10 @@ function App() {
             ? "Add Task"
             : tab === "notes"
             ? "Add Note"
+            : tab === "links"
+            ? "Add Link"
+            : tab === "vision board"
+            ? "Add Goal"
             : "Add"}
         </Button>
 
@@ -950,6 +1128,10 @@ function App() {
             ? "Todo"
             : tab === "notes"
             ? "Notes"
+            : tab === "links"
+            ? "Links"
+            : tab === "vision board"
+            ? "Vision Board"
             : ""}
           {" as JSON"}
         </Button>
@@ -968,7 +1150,9 @@ function App() {
         {/* Sorting */}
         {tab !== "passwords" &&
           tab !== "todo" &&
-          tab !== "notes" && (
+          tab !== "notes" &&
+          tab !== "links" &&
+          tab !== "vision board" && (
             <FormControl variant="outlined" size="small">
               <InputLabel>
                 Sort by{" "}
@@ -1064,12 +1248,68 @@ function App() {
           </FormControl>
         )}
 
+        {tab === "links" && (
+          <>
+            <FormControl variant="outlined" size="small">
+              <InputLabel>Sort by App Name</InputLabel>
+              <Select
+                label="Sort by App Name"
+                value={linksSortOrder}
+                onChange={(e) =>
+                  setLinksSortOrder(e.target.value as "asc" | "desc")
+                }
+                style={{ minWidth: 150 }}
+              >
+                <MenuItem value="asc">A to Z</MenuItem>
+                <MenuItem value="desc">Z to A</MenuItem>
+              </Select>
+            </FormControl>
+
+            <TextField
+              label="Filter by App Name"
+              type="text"
+              size="small"
+              value={linksFilterApp}
+              onChange={(e) => setLinksFilterApp(e.target.value)}
+            />
+          </>
+        )}
+
+        {tab === "vision board" && (
+          <>
+            <FormControl variant="outlined" size="small">
+              <InputLabel>Sort by Goal</InputLabel>
+              <Select
+                label="Sort by Goal"
+                value={visionSortOrder}
+                onChange={(e) =>
+                  setVisionSortOrder(e.target.value as "asc" | "desc")
+                }
+                style={{ minWidth: 150 }}
+              >
+                <MenuItem value="asc">A to Z</MenuItem>
+                <MenuItem value="desc">Z to A</MenuItem>
+              </Select>
+            </FormControl>
+
+            <TextField
+              label="Filter by Goal"
+              type="text"
+              size="small"
+              value={visionFilterGoal}
+              onChange={(e) => setVisionFilterGoal(e.target.value)}
+            />
+          </>
+        )}
+
         {/* Filtering */}
         {tab !== "places" &&
           tab !== "skills" &&
           tab !== "passwords" &&
           tab !== "notes" &&
-          tab !== "todo" && (
+          tab !== "todo" &&
+          tab !== "links" &&
+          tab !== "vision board" && (
             <TextField
               label="Filter by Date"
               type="date"
@@ -1170,6 +1410,16 @@ function App() {
           />
         )}
 
+        {tab === "vision board" && (
+          <TextField
+            label="Filter by Goal"
+            type="text"
+            size="small"
+            value={visionFilterGoal}
+            onChange={(e) => setVisionFilterGoal(e.target.value)}
+          />
+        )}
+
         {/* Reset Filter Button */}
         <Button
           variant="text"
@@ -1199,6 +1449,12 @@ function App() {
                 break;
               case "notes":
                 setNotesFilterName("");
+                break;
+              case "links":
+                setLinksFilterApp("");
+                break;
+              case "vision board":
+                setVisionFilterGoal("");
                 break;
               default:
                 break;
@@ -1561,6 +1817,61 @@ function App() {
                 rows={4}
               />
             </>
+          ) : tab === "links" ? (
+            <>
+              {/* Links Form Fields */}
+              <TextField
+                fullWidth
+                margin="normal"
+                label="App Name"
+                name="appName"
+                value={linksForm.appName}
+                onChange={handleChange}
+                required
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="URL"
+                name="url"
+                value={linksForm.url}
+                onChange={handleChange}
+                required
+              />
+            </>
+          ) : tab === "vision board" ? (
+            <>
+              {/* Vision Board Form Fields */}
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Goal"
+                name="goal"
+                value={visionForm.goal}
+                onChange={handleChange}
+                required
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Current Status"
+                name="currentStatus"
+                value={visionForm.currentStatus}
+                onChange={handleChange}
+                multiline
+                rows={2}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Goal Status"
+                name="goalStatus"
+                value={visionForm.goalStatus}
+                onChange={handleChange}
+                multiline
+                rows={2}
+              />
+            </>
           ) : null}
 
           <Button
@@ -1918,6 +2229,84 @@ function App() {
                 <TableRow>
                   <TableCell colSpan={3} align="center">
                     No notes found.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : tab === "links" ? (
+        <TableContainer component={Paper} sx={{ marginTop: 4 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>App Name</TableCell>
+                <TableCell>URL</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {processedLinks.length > 0 ? (
+                processedLinks.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{row.appName}</TableCell>
+                    <TableCell>
+                      <a href={row.url} target="_blank" rel="noopener noreferrer">
+                        {row.url}
+                      </a>
+                    </TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => handleEdit(index)}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton onClick={() => handleDelete(index)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={3} align="center">
+                    No links found.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : tab === "vision board" ? (
+        <TableContainer component={Paper} sx={{ marginTop: 4 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Goal</TableCell>
+                <TableCell>Current Status</TableCell>
+                <TableCell>Goal Status</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {processedVision.length > 0 ? (
+                processedVision.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{row.goal}</TableCell>
+                    <TableCell>{row.currentStatus}</TableCell>
+                    <TableCell>{row.goalStatus}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => handleEdit(index)}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton onClick={() => handleDelete(index)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={4} align="center">
+                    No vision board goals found.
                   </TableCell>
                 </TableRow>
               )}
