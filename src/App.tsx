@@ -476,7 +476,7 @@ function App() {
     >
   ) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;
-
+  
     switch (tab) {
       case "entries":
         setFormData((prev) => ({
@@ -490,18 +490,87 @@ function App() {
         }));
         break;
       case "diet":
-        if (name === "water") {
+        if (name === "water" || name === "date") {
           setDietForm({
             ...dietForm,
             [name!]: value,
           });
+        } else {
+          // Handle other diet-specific fields if any
         }
         break;
-      // Handle other tabs as before
+      case "journal":
+        if (name === "body" || name === "date") {
+          setJournalForm({
+            ...journalForm,
+            [name!]: value,
+          });
+        }
+        break;
+      case "places":
+        if (name === "place" || name === "visited") {
+          setPlacesForm({
+            ...placesForm,
+            [name!]: type === "checkbox" ? checked : value,
+          });
+        }
+        break;
+      case "skills":
+        if (name === "skill" || name === "learned") {
+          setSkillsForm({
+            ...skillsForm,
+            [name!]: type === "checkbox" ? checked : value,
+          });
+        }
+        break;
+      case "passwords":
+        if (["appName", "email", "username", "password"].includes(name!)) {
+          setPasswordForm({
+            ...passwordForm,
+            [name!]: value,
+          });
+        }
+        break;
+      case "todo":
+        if (name === "task" || name === "state") {
+          setTodoForm({
+            ...todoForm,
+            [name!]: value,
+          });
+        }
+        break;
+      case "notes":
+        if (name === "name" || name === "body") {
+          setNoteForm({
+            ...noteForm,
+            [name!]: value,
+          });
+        }
+        break;
+      case "links":
+        if (["appName", "url"].includes(name!)) {
+          setLinksForm({
+            ...linksForm,
+            [name!]: value,
+          });
+        }
+        break;
+      case "vision board":
+        if (["goal", "currentStatus", "goalStatus"].includes(name!)) {
+          setVisionForm({
+            ...visionForm,
+            [name!]: value,
+          });
+        }
+        break;
+      case "calories":
+        // Handle any specific fields if you implement an add form for calories
+        break;
       default:
         break;
     }
   };
+  
 
   // Function to handle changes in food entries
   const handleFoodChange = (
