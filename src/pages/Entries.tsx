@@ -49,6 +49,12 @@ type FormData = {
   coding?: number;
 };
 
+// New Type for Processed Entries
+type ProcessedEntry = {
+  entry: FormData;
+  originalIndex: number;
+};
+
 // Styles using makeStyles
 const useStyles = makeStyles({
   container: {
@@ -247,8 +253,9 @@ const Entries: React.FC = () => {
 
     if (editIndex !== null) {
       // Edit Existing Entry
-      const updatedData = [...data];
-      updatedData[editIndex] = entryToSave;
+      const updatedData = data.map((entry, idx) =>
+        idx === editIndex ? entryToSave : entry
+      );
       setData(updatedData);
       localStorage.setItem("entries", JSON.stringify(updatedData));
     } else {
@@ -261,26 +268,26 @@ const Entries: React.FC = () => {
     handleClose();
   };
 
-  // Handle Delete
-  const handleDelete = (index: number) => {
+  // Handle Delete using Original Index
+  const handleDelete = (originalIndex: number) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this entry?"
     );
     if (!confirmDelete) return;
 
-    const filteredData = data.filter((_, i) => i !== index);
+    const filteredData = data.filter((_, i) => i !== originalIndex);
     setData(filteredData);
     localStorage.setItem("entries", JSON.stringify(filteredData));
   };
 
-  // Handle Edit
-  const handleEdit = (index: number) => {
-    const entry = data[index];
+  // Handle Edit using Original Index
+  const handleEdit = (originalIndex: number) => {
+    const entry = data[originalIndex];
     setFormData({
       ...entry,
       coding: entry.coding !== undefined ? String(entry.coding) : "",
     });
-    setEditIndex(index);
+    setEditIndex(originalIndex);
     handleOpen();
   };
 
@@ -294,42 +301,46 @@ const Entries: React.FC = () => {
     link.click();
   };
 
-  // Sorting Function
-  const sortData = <T extends { [key: string]: any }>(
-    data: T[],
-    key: keyof T,
+  // Sorting Function for ProcessedEntry
+  const sortData = (
+    data: ProcessedEntry[],
+    key: keyof FormData,
     order: "asc" | "desc"
-  ): T[] => {
+  ): ProcessedEntry[] => {
     return [...data].sort((a, b) => {
-      if (a[key] < b[key]) return order === "asc" ? -1 : 1;
-      if (a[key] > b[key]) return order === "asc" ? 1 : -1;
+      if (a.entry[key] < b.entry[key]) return order === "asc" ? -1 : 1;
+      if (a.entry[key] > b.entry[key]) return order === "asc" ? 1 : -1;
       return 0;
     });
   };
 
-  // Filtering Function
-  const filterData = <T extends { [key: string]: any }>(
-    data: T[],
-    key: keyof T,
+  // Filtering Function for ProcessedEntry
+  const filterData = (
+    data: ProcessedEntry[],
+    key: keyof FormData,
     filterValue: any
-  ): T[] => {
+  ): ProcessedEntry[] => {
     if (filterValue === "" || filterValue === null) return data;
     return data.filter((item) => {
       if (typeof filterValue === "boolean") {
-        return item[key] === filterValue;
+        return item.entry[key] === filterValue;
       } else if (typeof filterValue === "string") {
-        return item[key]
+        return item.entry[key]
           .toString()
           .toLowerCase()
           .includes(filterValue.toLowerCase());
       }
-      return item[key] === filterValue;
+      return item.entry[key] === filterValue;
     });
   };
 
-  // Processed Data for Rendering
-  const processedEntries = sortData(
-    filterData(data, "date", filterDate),
+  // Processed Entries with Original Indices
+  const processedEntries: ProcessedEntry[] = sortData(
+    filterData(
+      data.map((entry, index) => ({ entry, originalIndex: index })),
+      "date",
+      filterDate
+    ),
     "date",
     sortOrder
   );
@@ -704,66 +715,66 @@ const Entries: React.FC = () => {
               <TableCell className={classes.tableHeader}>Sleep</TableCell>
               <TableCell className={classes.tableHeader}>Poop</TableCell>
               <TableCell className={classes.tableHeader}>Showers</TableCell>
-              <TableCell className={classes.tableHeader}>Kegels</TableCell>
+              <TableCell className={classes.tableHeader}>Kegels Count</TableCell> {/* Renamed */}
               <TableCell className={classes.tableHeader}>Suntime</TableCell>
               <TableCell className={classes.tableHeader}>Jelqs</TableCell>
               <TableCell className={classes.tableHeader}>Stretch</TableCell>
               <TableCell className={classes.tableHeader}>PE</TableCell>
-              <TableCell className={classes.tableHeader}>Kegels</TableCell>
+              <TableCell className={classes.tableHeader}>Kegels Done</TableCell> {/* Renamed */}
               <TableCell className={classes.tableHeader}>Coding</TableCell>
               <TableCell className={classes.tableHeader}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {processedEntries.length > 0 ? (
-              processedEntries.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell className={classes.tableCell}>{row.date}</TableCell>
+              processedEntries.map(({ entry, originalIndex }) => (
+                <TableRow key={originalIndex}>
+                  <TableCell className={classes.tableCell}>{entry.date}</TableCell>
                   <TableCell className={classes.tableCell}>
-                    {row.prayMorning ? "Yes" : "No"}
+                    {entry.prayMorning ? "Yes" : "No"}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    {row.prayEvening ? "Yes" : "No"}
+                    {entry.prayEvening ? "Yes" : "No"}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    {row.mast ? "Yes" : "No"}
+                    {entry.mast ? "Yes" : "No"}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    {row.pn ? "Yes" : "No"}
+                    {entry.pn ? "Yes" : "No"}
                   </TableCell>
-                  <TableCell className={classes.tableCell}>{row.steps}</TableCell>
+                  <TableCell className={classes.tableCell}>{entry.steps}</TableCell>
                   <TableCell className={classes.tableCell}>
-                    {row.workout ? "Yes" : "No"}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {row.workoutDetails.join(", ")}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>{row.workoutTime}</TableCell>
-                  <TableCell className={classes.tableCell}>{row.sleepTime}</TableCell>
-                  <TableCell className={classes.tableCell}>{row.poop}</TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {row.numberOfShowers}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>{row.no_of_kegels}</TableCell>
-                  <TableCell className={classes.tableCell}>{row.suntime}</TableCell>
-                  <TableCell className={classes.tableCell}>{row.jelqs}</TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {row.stretch ? "Yes" : "No"}
+                    {entry.workout ? "Yes" : "No"}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    {row.pe ? "Yes" : "No"}
+                    {entry.workoutDetails.join(", ")}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>{entry.workoutTime}</TableCell>
+                  <TableCell className={classes.tableCell}>{entry.sleepTime}</TableCell>
+                  <TableCell className={classes.tableCell}>{entry.poop}</TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.numberOfShowers}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>{entry.no_of_kegels}</TableCell>
+                  <TableCell className={classes.tableCell}>{entry.suntime}</TableCell>
+                  <TableCell className={classes.tableCell}>{entry.jelqs}</TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.stretch ? "Yes" : "No"}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    {row.kegels ? "Yes" : "No"}
+                    {entry.pe ? "Yes" : "No"}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    {row.coding !== undefined ? row.coding : "-"}
+                    {entry.kegels ? "Yes" : "No"}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    <IconButton onClick={() => handleEdit(index)} size="small">
+                    {entry.coding !== undefined ? entry.coding : "-"}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    <IconButton onClick={() => handleEdit(originalIndex)} size="small">
                       <EditIcon fontSize="small" />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(index)} size="small">
+                    <IconButton onClick={() => handleDelete(originalIndex)} size="small">
                       <DeleteIcon fontSize="small" />
                     </IconButton>
                   </TableCell>
