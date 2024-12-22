@@ -24,6 +24,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { makeStyles } from "@mui/styles";
 
 // Type Definitions
 type FormData = {
@@ -48,22 +49,72 @@ type FormData = {
   coding?: number;
 };
 
-// Modal Styling
-const style = {
-  position: "absolute" as const,
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 600,
-  maxHeight: "90vh",
-  overflowY: "auto",
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
+// Styles using makeStyles
+const useStyles = makeStyles({
+  container: {
+    padding: "8px",
+  },
+  title: {
+    fontSize: "1.25rem", // Reduced from h5
+    marginBottom: "8px",
+  },
+  button: {
+    marginRight: "6px",
+    padding: "4px 8px",
+    minWidth: "80px",
+    fontSize: "0.75rem",
+  },
+  formControl: {
+    minWidth: 100,
+  },
+  selectInput: {
+    fontSize: "0.75rem",
+  },
+  textField: {
+    marginTop: "4px",
+    marginBottom: "4px",
+  },
+  checkboxLabel: {
+    fontSize: "0.75rem",
+  },
+  modalBox: {
+    position: "absolute" as const,
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400, // Further reduced width
+    maxHeight: "80vh",
+    overflowY: "auto",
+    backgroundColor: "#fff",
+    border: "1px solid #000",
+    boxShadow: 24,
+    padding: "8px", // Further reduced padding
+  },
+  tableContainer: {
+    marginTop: "16px",
+    overflowX: "auto",
+  },
+  table: {
+    minWidth: 800,
+    fontSize: "0.65rem",
+  },
+  tableCell: {
+    padding: "4px 8px",
+    fontSize: "0.65rem",
+  },
+  tableHeader: {
+    fontSize: "0.7rem",
+    padding: "4px 8px",
+  },
+  trackingBox: {
+    marginTop: "16px",
+    fontSize: "0.7rem",
+  },
+});
 
 const Entries: React.FC = () => {
+  const classes = useStyles();
+
   // State Management
   const [data, setData] = useState<FormData[]>([]);
   const [open, setOpen] = useState<boolean>(false);
@@ -301,24 +352,31 @@ const Entries: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <Typography variant="h4" gutterBottom>
+    <div className={classes.container}>
+      <Typography className={classes.title} gutterBottom>
         General
       </Typography>
 
       {/* Add and Download Buttons */}
-      <div style={{ marginBottom: "10px" }}>
-        <Button variant="contained" color="primary" onClick={handleOpen}>
-          {editIndex !== null ? "Edit Entry" : "Add Entry"}
+      <div style={{ marginBottom: "6px" }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOpen}
+          className={classes.button}
+          size="small"
+        >
+          {editIndex !== null ? "Edit" : "Add"}
         </Button>
 
         <Button
           variant="outlined"
           color="secondary"
           onClick={handleDownload}
-          style={{ marginLeft: "10px" }}
+          className={classes.button}
+          size="small"
         >
-          Download Entries as JSON
+          JSON
         </Button>
       </div>
 
@@ -327,33 +385,43 @@ const Entries: React.FC = () => {
         style={{
           display: "flex",
           alignItems: "center",
-          marginBottom: "20px",
+          marginBottom: "12px",
           flexWrap: "wrap",
-          gap: "20px",
+          gap: "8px",
         }}
       >
         {/* Sorting */}
-        <FormControl variant="outlined" size="small">
-          <InputLabel>Sort Order</InputLabel>
+        <FormControl
+          variant="outlined"
+          size="small"
+          className={classes.formControl}
+        >
+          <InputLabel style={{ fontSize: '0.65rem' }}>Sort</InputLabel>
           <Select
-            label="Sort Order"
+            label="Sort"
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
-            style={{ minWidth: 150 }}
+            classes={{ icon: classes.selectInput, select: classes.selectInput }}
           >
-            <MenuItem value="asc">Ascending</MenuItem>
-            <MenuItem value="desc">Descending</MenuItem>
+            <MenuItem value="asc">Asc</MenuItem>
+            <MenuItem value="desc">Desc</MenuItem>
           </Select>
         </FormControl>
 
         {/* Filter by Date */}
         <TextField
-          label="Filter by Date"
+          label="Filter"
           type="date"
           size="small"
-          InputLabelProps={{ shrink: true }}
+          variant="outlined"
+          className={classes.textField}
+          InputLabelProps={{
+            shrink: true,
+            style: { fontSize: "0.65rem" },
+          }}
           value={filterDate}
           onChange={(e) => setFilterDate(e.target.value)}
+          style={{ maxWidth: 140 }}
         />
 
         {/* Reset Filter Button */}
@@ -363,27 +431,34 @@ const Entries: React.FC = () => {
             setFilterDate("");
             setSortOrder("asc");
           }}
+          size="small"
+          className={classes.button}
         >
-          Reset Filter
+          Reset
         </Button>
       </div>
 
       {/* Modal for Adding/Editing Entries */}
       <Modal open={open} onClose={handleClose}>
-        <Box sx={style}>
-          <Typography variant="h6" gutterBottom>
-            {editIndex !== null ? "Edit Entry" : "Add New Entry"}
+        <Box className={classes.modalBox}>
+          <Typography gutterBottom style={{ fontSize: "0.85rem" }}>
+            {editIndex !== null ? "Edit Entry" : "Add Entry"}
           </Typography>
           {/* Entry Form Fields */}
           <TextField
             fullWidth
-            margin="normal"
+            variant="outlined"
+            size="small"
+            className={classes.textField}
             label="Date"
             type="date"
             name="date"
             value={formData.date}
             onChange={handleChange}
-            InputLabelProps={{ shrink: true }}
+            InputLabelProps={{
+              shrink: true,
+              style: { fontSize: "0.65rem" },
+            }}
             required
           />
           <FormControlLabel
@@ -392,9 +467,10 @@ const Entries: React.FC = () => {
                 checked={formData.prayMorning}
                 name="prayMorning"
                 onChange={handleChange}
+                size="small"
               />
             }
-            label="Pray Morning"
+            label={<Typography className={classes.checkboxLabel}>Pray Morning</Typography>}
           />
           <FormControlLabel
             control={
@@ -402,24 +478,30 @@ const Entries: React.FC = () => {
                 checked={formData.workout}
                 name="workout"
                 onChange={handleChange}
+                size="small"
               />
             }
-            label="Workout"
+            label={<Typography className={classes.checkboxLabel}>Workout</Typography>}
           />
           {formData.workout && (
             <>
               <TextField
                 fullWidth
-                margin="normal"
-                label="Workout Details (comma-separated)"
+                variant="outlined"
+                size="small"
+                className={classes.textField}
+                label="Workout Details"
                 name="workoutDetails"
                 value={formData.workoutDetails.join(",")}
                 onChange={handleWorkoutDetailsChange}
+                placeholder="Comma-separated"
               />
               <TextField
                 fullWidth
-                margin="normal"
-                label="Workout Time (minutes)"
+                variant="outlined"
+                size="small"
+                className={classes.textField}
+                label="Workout Time"
                 type="number"
                 name="workoutTime"
                 value={formData.workoutTime}
@@ -434,9 +516,10 @@ const Entries: React.FC = () => {
                 checked={formData.prayEvening}
                 name="prayEvening"
                 onChange={handleChange}
+                size="small"
               />
             }
-            label="Pray Evening"
+            label={<Typography className={classes.checkboxLabel}>Pray Evening</Typography>}
           />
           <FormControlLabel
             control={
@@ -444,9 +527,10 @@ const Entries: React.FC = () => {
                 checked={formData.mast}
                 name="mast"
                 onChange={handleChange}
+                size="small"
               />
             }
-            label="Mast"
+            label={<Typography className={classes.checkboxLabel}>Mast</Typography>}
           />
           <FormControlLabel
             control={
@@ -454,13 +538,16 @@ const Entries: React.FC = () => {
                 checked={formData.pn}
                 name="pn"
                 onChange={handleChange}
+                size="small"
               />
             }
-            label="PN"
+            label={<Typography className={classes.checkboxLabel}>PN</Typography>}
           />
           <TextField
             fullWidth
-            margin="normal"
+            variant="outlined"
+            size="small"
+            className={classes.textField}
             label="Steps"
             type="number"
             name="steps"
@@ -470,8 +557,10 @@ const Entries: React.FC = () => {
           />
           <TextField
             fullWidth
-            margin="normal"
-            label="Sleep Time (hours)"
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="Sleep Time"
             type="number"
             name="sleepTime"
             value={formData.sleepTime}
@@ -480,7 +569,9 @@ const Entries: React.FC = () => {
           />
           <TextField
             fullWidth
-            margin="normal"
+            variant="outlined"
+            size="small"
+            className={classes.textField}
             label="Number of Poops"
             type="number"
             name="poop"
@@ -490,7 +581,9 @@ const Entries: React.FC = () => {
           />
           <TextField
             fullWidth
-            margin="normal"
+            variant="outlined"
+            size="small"
+            className={classes.textField}
             label="Number of Showers"
             type="number"
             name="numberOfShowers"
@@ -500,8 +593,10 @@ const Entries: React.FC = () => {
           />
           <TextField
             fullWidth
-            margin="normal"
-            label="Number of Kegels (5-second hold)"
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="Number of Kegels"
             type="number"
             name="no_of_kegels"
             value={formData.no_of_kegels}
@@ -510,8 +605,10 @@ const Entries: React.FC = () => {
           />
           <TextField
             fullWidth
-            margin="normal"
-            label="Suntime (minutes)"
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="Suntime"
             type="number"
             name="suntime"
             value={formData.suntime}
@@ -520,8 +617,10 @@ const Entries: React.FC = () => {
           />
           <TextField
             fullWidth
-            margin="normal"
-            label="Jelqs (strokes)"
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="Jelqs"
             type="number"
             name="jelqs"
             value={formData.jelqs}
@@ -534,9 +633,10 @@ const Entries: React.FC = () => {
                 checked={formData.stretch}
                 name="stretch"
                 onChange={handleChange}
+                size="small"
               />
             }
-            label="Stretch"
+            label={<Typography className={classes.checkboxLabel}>Stretch</Typography>}
           />
           <FormControlLabel
             control={
@@ -544,9 +644,10 @@ const Entries: React.FC = () => {
                 checked={formData.pe}
                 name="pe"
                 onChange={handleChange}
+                size="small"
               />
             }
-            label="PE"
+            label={<Typography className={classes.checkboxLabel}>PE</Typography>}
           />
           <FormControlLabel
             control={
@@ -554,15 +655,18 @@ const Entries: React.FC = () => {
                 checked={formData.kegels}
                 name="kegels"
                 onChange={handleChange}
+                size="small"
               />
             }
-            label="Kegels"
+            label={<Typography className={classes.checkboxLabel}>Kegels</Typography>}
           />
           {/* Coding Field */}
           <TextField
             fullWidth
-            margin="normal"
-            label="Coding (minutes)"
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="Coding"
             type="number"
             name="coding"
             value={formData.coding}
@@ -575,7 +679,8 @@ const Entries: React.FC = () => {
             variant="contained"
             color="primary"
             onClick={handleSave}
-            style={{ marginTop: "10px" }}
+            size="small"
+            style={{ marginTop: "6px", padding: "4px 8px", fontSize: "0.65rem" }}
           >
             Save
           </Button>
@@ -583,70 +688,94 @@ const Entries: React.FC = () => {
       </Modal>
 
       {/* Entries Table */}
-      <TableContainer component={Paper} sx={{ marginTop: 4 }}>
-        <Table>
+      <TableContainer component={Paper} className={classes.tableContainer}>
+        <Table className={classes.table} size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell>Pray Morning</TableCell>
-              <TableCell>Pray Evening</TableCell>
-              <TableCell>Mast</TableCell>
-              <TableCell>PN</TableCell>
-              <TableCell>Steps</TableCell>
-              <TableCell>Workout</TableCell>
-              <TableCell>Workout Details</TableCell>
-              <TableCell>Workout Time (min)</TableCell> {/* New Field */}
-              <TableCell>Sleep Time (hrs)</TableCell> {/* New Field */}
-              <TableCell>Poop</TableCell> {/* New Field */}
-              <TableCell>Number of Showers</TableCell> {/* New Field */}
-              <TableCell>No. of Kegels</TableCell> {/* New Field */}
-              <TableCell>Suntime</TableCell>
-              <TableCell>Jelqs</TableCell>
-              <TableCell>Stretch</TableCell>
-              <TableCell>PE</TableCell>
-              <TableCell>Kegels</TableCell>
-              <TableCell>Coding (minutes)</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell className={classes.tableHeader}>Date</TableCell>
+              <TableCell className={classes.tableHeader}>Pray M</TableCell>
+              <TableCell className={classes.tableHeader}>Pray E</TableCell>
+              <TableCell className={classes.tableHeader}>Mast</TableCell>
+              <TableCell className={classes.tableHeader}>PN</TableCell>
+              <TableCell className={classes.tableHeader}>Steps</TableCell>
+              <TableCell className={classes.tableHeader}>Workout</TableCell>
+              <TableCell className={classes.tableHeader}>Workout Details</TableCell>
+              <TableCell className={classes.tableHeader}>Workout Time</TableCell>
+              <TableCell className={classes.tableHeader}>Sleep</TableCell>
+              <TableCell className={classes.tableHeader}>Poop</TableCell>
+              <TableCell className={classes.tableHeader}>Showers</TableCell>
+              <TableCell className={classes.tableHeader}>Kegels</TableCell>
+              <TableCell className={classes.tableHeader}>Suntime</TableCell>
+              <TableCell className={classes.tableHeader}>Jelqs</TableCell>
+              <TableCell className={classes.tableHeader}>Stretch</TableCell>
+              <TableCell className={classes.tableHeader}>PE</TableCell>
+              <TableCell className={classes.tableHeader}>Kegels</TableCell>
+              <TableCell className={classes.tableHeader}>Coding</TableCell>
+              <TableCell className={classes.tableHeader}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {processedEntries.length > 0 ? (
               processedEntries.map((row, index) => (
                 <TableRow key={index}>
-                  <TableCell>{row.date}</TableCell>
-                  <TableCell>{row.prayMorning ? "Yes" : "No"}</TableCell>
-                  <TableCell>{row.prayEvening ? "Yes" : "No"}</TableCell>
-                  <TableCell>{row.mast ? "Yes" : "No"}</TableCell>
-                  <TableCell>{row.pn ? "Yes" : "No"}</TableCell>
-                  <TableCell>{row.steps}</TableCell>
-                  <TableCell>{row.workout ? "Yes" : "No"}</TableCell>
-                  <TableCell>{row.workoutDetails.join(", ")}</TableCell>
-                  <TableCell>{row.workoutTime}</TableCell> {/* New Field */}
-                  <TableCell>{row.sleepTime}</TableCell> {/* New Field */}
-                  <TableCell>{row.poop}</TableCell> {/* New Field */}
-                  <TableCell>{row.numberOfShowers}</TableCell> {/* New Field */}
-                  <TableCell>{row.no_of_kegels}</TableCell> {/* New Field */}
-                  <TableCell>{row.suntime}</TableCell>
-                  <TableCell>{row.jelqs}</TableCell>
-                  <TableCell>{row.stretch ? "Yes" : "No"}</TableCell>
-                  <TableCell>{row.pe ? "Yes" : "No"}</TableCell>
-                  <TableCell>{row.kegels ? "Yes" : "No"}</TableCell>
-                  <TableCell>
+                  <TableCell className={classes.tableCell}>{row.date}</TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {row.prayMorning ? "Yes" : "No"}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {row.prayEvening ? "Yes" : "No"}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {row.mast ? "Yes" : "No"}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {row.pn ? "Yes" : "No"}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>{row.steps}</TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {row.workout ? "Yes" : "No"}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {row.workoutDetails.join(", ")}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>{row.workoutTime}</TableCell>
+                  <TableCell className={classes.tableCell}>{row.sleepTime}</TableCell>
+                  <TableCell className={classes.tableCell}>{row.poop}</TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {row.numberOfShowers}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>{row.no_of_kegels}</TableCell>
+                  <TableCell className={classes.tableCell}>{row.suntime}</TableCell>
+                  <TableCell className={classes.tableCell}>{row.jelqs}</TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {row.stretch ? "Yes" : "No"}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {row.pe ? "Yes" : "No"}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {row.kegels ? "Yes" : "No"}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
                     {row.coding !== undefined ? row.coding : "-"}
                   </TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleEdit(index)}>
-                      <EditIcon />
+                  <TableCell className={classes.tableCell}>
+                    <IconButton onClick={() => handleEdit(index)} size="small">
+                      <EditIcon fontSize="small" />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(index)}>
-                      <DeleteIcon />
+                    <IconButton onClick={() => handleDelete(index)} size="small">
+                      <DeleteIcon fontSize="small" />
                     </IconButton>
                   </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={19} align="center">
+                <TableCell
+                  colSpan={19}
+                  align="center"
+                  className={classes.tableCell}
+                >
                   No entries found.
                 </TableCell>
               </TableRow>
@@ -656,11 +785,16 @@ const Entries: React.FC = () => {
       </TableContainer>
 
       {/* Optional: Display Tracking Period and Statistics */}
-      <Box sx={{ marginTop: 4 }}>
-        <Typography variant="h6">Tracking Period</Typography>
-        <Typography variant="body1">Start Date: {getStartDate()}</Typography>
-        <Typography variant="body1">Latest Date: {getLatestDate()}</Typography>
-
+      <Box className={classes.trackingBox}>
+        <Typography style={{ fontSize: "0.75rem", fontWeight: "bold" }}>
+          Tracking Period
+        </Typography>
+        <Typography style={{ fontSize: "0.65rem" }}>
+          Start Date: {getStartDate()}
+        </Typography>
+        <Typography style={{ fontSize: "0.65rem" }}>
+          Latest Date: {getLatestDate()}
+        </Typography>
         {/* Additional statistics can be added here if desired */}
       </Box>
     </div>

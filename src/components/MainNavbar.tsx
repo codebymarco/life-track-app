@@ -18,6 +18,7 @@ const MainNavbar: React.FC = () => {
     { title: 'Skills', path: '/skills' },
     { title: 'Passwords', path: '/passwords' },
     { title: 'ToDo', path: '/todo' },
+    { title: 'ToBuy', path: '/tobuy' },
     { title: 'Links', path: '/links' },
     { title: 'Vision', path: '/vision' },
   ];

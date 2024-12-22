@@ -11,6 +11,7 @@ import PasswordsPage from "../pages/Passwords";
 import Todo from "../pages/Todo";
 import Links from "../pages/Links";
 import VisionBoard from "../pages/VisionBoard";
+import Tobuy from "../pages/ToBuy";
 
 const routes: RouteObject[] = [
   {
@@ -98,6 +99,14 @@ const routes: RouteObject[] = [
     element: (
       <MainLayout>
         <Route index element={<VisionBoard />} />
+      </MainLayout>
+    ),
+  },
+  {
+    path: "/tobuy",
+    element: (
+      <MainLayout>
+        <Route index element={<Tobuy />} />
       </MainLayout>
     ),
   }
