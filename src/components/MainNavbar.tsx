@@ -12,8 +12,11 @@ const MainNavbar = () => {
       <h1 className="logo-navbar" onClick={() => route(`/`)}></h1>
       <div className="usernavbarlinks" id="usernavbarlinks">
         <div className="usernavbarlinks-container">
-          <Link className="login-link" to="/login">
-            login
+          <Link className="login-link" to="/entries">
+            entries
+          </Link>
+          <Link className="login-link" to="/diet">
+            diet
           </Link>
           <Link className="signup-link" to="/signup">
             signup
