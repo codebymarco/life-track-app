@@ -3,6 +3,8 @@ import MainLayout from "../layouts/MainLayout";
 import Home from "../pages/Home";
 import Entries from "../pages/Entries";
 import Diet from "../pages/Diet";
+import JournalEntries from "../pages/Journal";
+import StatusPage from "../pages/StatusPage";
 
 const routes: RouteObject[] = [
   {
@@ -29,6 +31,22 @@ const routes: RouteObject[] = [
       </MainLayout>
     ),
   },
+  {
+    path: "/journal",
+    element: (
+      <MainLayout>
+        <Route index element={<JournalEntries />} />
+      </MainLayout>
+    ),
+  },
+  {
+    path: "/status",
+    element: (
+      <MainLayout>
+        <Route index element={<StatusPage />} />
+      </MainLayout>
+    ),
+  }
 ];
 
 export default routes;

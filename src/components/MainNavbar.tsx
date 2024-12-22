@@ -18,8 +18,11 @@ const MainNavbar = () => {
           <Link className="login-link" to="/diet">
             diet
           </Link>
-          <Link className="signup-link" to="/signup">
-            signup
+          <Link className="login-link" to="/journal">
+            journal
+          </Link>
+          <Link className="login-link" to="/status">
+            status
           </Link>
         </div>
       </div>
