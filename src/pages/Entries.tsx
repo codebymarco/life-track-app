@@ -20,16 +20,10 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
-  InputAdornment,
   Typography,
-  Card,
-  CardContent,
-  Grid,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 // Type Definitions
 type FormData = {
@@ -38,6 +32,11 @@ type FormData = {
   prayEvening: boolean;
   workout: boolean;
   workoutDetails: string[];
+  workoutTime: number; // New Field
+  sleepTime: number; // New Field
+  poop: number; // New Field
+  numberOfShowers: number; // New Field
+  no_of_kegels: number; // New Field
   mast: boolean;
   pn: boolean;
   steps: string;
@@ -79,6 +78,11 @@ const Entries: React.FC = () => {
     steps: "",
     workout: false,
     workoutDetails: [],
+    workoutTime: 0, // New Field
+    sleepTime: 0, // New Field
+    poop: 0, // New Field
+    numberOfShowers: 0, // New Field
+    no_of_kegels: 0, // New Field
     suntime: 0,
     jelqs: 0,
     stretch: false,
@@ -91,9 +95,6 @@ const Entries: React.FC = () => {
   // Sorting and Filtering State
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [filterDate, setFilterDate] = useState<string>("");
-
-  // Password Visibility State (if needed)
-  // const [visiblePasswords, setVisiblePasswords] = useState<Set<number>>(new Set());
 
   // Load Data from localStorage on Mount
   useEffect(() => {
@@ -131,6 +132,11 @@ const Entries: React.FC = () => {
       steps: "",
       workout: false,
       workoutDetails: [],
+      workoutTime: 0, // New Field
+      sleepTime: 0, // New Field
+      poop: 0, // New Field
+      numberOfShowers: 0, // New Field
+      no_of_kegels: 0, // New Field
       suntime: 0,
       jelqs: 0,
       stretch: false,
@@ -161,7 +167,9 @@ const Entries: React.FC = () => {
   };
 
   // Handle Changes in Workout Details
-  const handleWorkoutDetailsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleWorkoutDetailsChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const details = e.target.value
       .split(",")
       .map((detail) => detail.trim())
@@ -204,8 +212,10 @@ const Entries: React.FC = () => {
 
   // Handle Delete
   const handleDelete = (index: number) => {
-    const confirm = window.confirm("Are you sure you want to delete this entry?");
-    if (!confirm) return;
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this entry?"
+    );
+    if (!confirmDelete) return;
 
     const filteredData = data.filter((_, i) => i !== index);
     setData(filteredData);
@@ -397,14 +407,26 @@ const Entries: React.FC = () => {
             label="Workout"
           />
           {formData.workout && (
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Workout Details (comma-separated)"
-              name="workoutDetails"
-              value={formData.workoutDetails.join(",")}
-              onChange={handleWorkoutDetailsChange}
-            />
+            <>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Workout Details (comma-separated)"
+                name="workoutDetails"
+                value={formData.workoutDetails.join(",")}
+                onChange={handleWorkoutDetailsChange}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Workout Time (minutes)"
+                type="number"
+                name="workoutTime"
+                value={formData.workoutTime}
+                onChange={handleChange}
+                inputProps={{ min: 0 }}
+              />
+            </>
           )}
           <FormControlLabel
             control={
@@ -443,6 +465,46 @@ const Entries: React.FC = () => {
             type="number"
             name="steps"
             value={formData.steps}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Sleep Time (hours)"
+            type="number"
+            name="sleepTime"
+            value={formData.sleepTime}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: 0.1 }}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Number of Poops"
+            type="number"
+            name="poop"
+            value={formData.poop}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Number of Showers"
+            type="number"
+            name="numberOfShowers"
+            value={formData.numberOfShowers}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Number of Kegels (5-second hold)"
+            type="number"
+            name="no_of_kegels"
+            value={formData.no_of_kegels}
             onChange={handleChange}
             inputProps={{ min: 0 }}
           />
@@ -533,6 +595,11 @@ const Entries: React.FC = () => {
               <TableCell>Steps</TableCell>
               <TableCell>Workout</TableCell>
               <TableCell>Workout Details</TableCell>
+              <TableCell>Workout Time (min)</TableCell> {/* New Field */}
+              <TableCell>Sleep Time (hrs)</TableCell> {/* New Field */}
+              <TableCell>Poop</TableCell> {/* New Field */}
+              <TableCell>Number of Showers</TableCell> {/* New Field */}
+              <TableCell>No. of Kegels</TableCell> {/* New Field */}
               <TableCell>Suntime</TableCell>
               <TableCell>Jelqs</TableCell>
               <TableCell>Stretch</TableCell>
@@ -554,6 +621,11 @@ const Entries: React.FC = () => {
                   <TableCell>{row.steps}</TableCell>
                   <TableCell>{row.workout ? "Yes" : "No"}</TableCell>
                   <TableCell>{row.workoutDetails.join(", ")}</TableCell>
+                  <TableCell>{row.workoutTime}</TableCell> {/* New Field */}
+                  <TableCell>{row.sleepTime}</TableCell> {/* New Field */}
+                  <TableCell>{row.poop}</TableCell> {/* New Field */}
+                  <TableCell>{row.numberOfShowers}</TableCell> {/* New Field */}
+                  <TableCell>{row.no_of_kegels}</TableCell> {/* New Field */}
                   <TableCell>{row.suntime}</TableCell>
                   <TableCell>{row.jelqs}</TableCell>
                   <TableCell>{row.stretch ? "Yes" : "No"}</TableCell>
@@ -574,7 +646,7 @@ const Entries: React.FC = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={14} align="center">
+                <TableCell colSpan={19} align="center">
                   No entries found.
                 </TableCell>
               </TableRow>
