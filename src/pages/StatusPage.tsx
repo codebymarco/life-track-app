@@ -60,6 +60,14 @@ const StatusPage: React.FC = () => {
   const [totalCodingMinutes, setTotalCodingMinutes] = useState<number>(0);
   const [averageCodingMinutes, setAverageCodingMinutes] = useState<number>(0);
 
+  // Jelqs Metrics
+  const [totalJelqs, setTotalJelqs] = useState<number>(0);
+  const [averageJelqs, setAverageJelqs] = useState<number>(0);
+
+  // Suntime Metrics
+  const [totalSuntime, setTotalSuntime] = useState<number>(0);
+  const [averageSuntime, setAverageSuntime] = useState<number>(0);
+
   // Load data from localStorage on mount
   useEffect(() => {
     try {
@@ -97,6 +105,21 @@ const StatusPage: React.FC = () => {
     const averageCoding = entries.length > 0 ? totalCoding / entries.length : 0;
     setTotalCodingMinutes(totalCoding);
     setAverageCodingMinutes(averageCoding);
+
+    // Jelqs Metrics
+    const jelqsArray = entries.map((entry) => entry.jelqs || 0);
+    const totalJelqs = jelqsArray.reduce((acc, curr) => acc + curr, 0);
+    const averageJelqs = entries.length > 0 ? totalJelqs / entries.length : 0;
+    setTotalJelqs(totalJelqs);
+    setAverageJelqs(averageJelqs);
+
+    // Suntime Metrics
+    const suntimeArray = entries.map((entry) => entry.suntime || 0);
+    const totalSuntime = suntimeArray.reduce((acc, curr) => acc + curr, 0);
+    const averageSuntime =
+      entries.length > 0 ? totalSuntime / entries.length : 0;
+    setTotalSuntime(totalSuntime);
+    setAverageSuntime(averageSuntime);
   }, [entries]);
 
   // Handle Download Statistics as JSON
@@ -106,6 +129,10 @@ const StatusPage: React.FC = () => {
       averageSteps: averageSteps.toFixed(2),
       totalCodingMinutes,
       averageCodingMinutes: averageCodingMinutes.toFixed(2),
+      totalJelqs,
+      averageJelqs: averageJelqs.toFixed(2),
+      totalSuntime,
+      averageSuntime: averageSuntime.toFixed(2),
       prayMorningCount,
       prayEveningCount,
       workoutCount,
@@ -124,10 +151,12 @@ const StatusPage: React.FC = () => {
     link.click();
   };
 
-  // Prepare data for chart
+  // Prepare data for charts
   const chartData = entries.map((entry) => ({
     date: entry.date,
     steps: entry.steps,
+    jelqs: entry.jelqs,
+    suntime: entry.suntime,
   }));
 
   // Calculate Percentages
@@ -197,6 +226,60 @@ const StatusPage: React.FC = () => {
           </Card>
         </Grid>
 
+        {/* Jelqs Statistics */}
+        <Grid item xs={12} sm={6}>
+          <Card sx={{ minWidth: 275 }}>
+            <CardContent>
+              <Typography variant="h6" component="div" gutterBottom>
+                Total Jelqs
+              </Typography>
+              <Typography variant="h4" color="text.secondary">
+                {totalJelqs}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <Card sx={{ minWidth: 275 }}>
+            <CardContent>
+              <Typography variant="h6" component="div" gutterBottom>
+                Average Jelqs per Day
+              </Typography>
+              <Typography variant="h4" color="text.secondary">
+                {averageJelqs.toFixed(2)}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Suntime Statistics */}
+        <Grid item xs={12} sm={6}>
+          <Card sx={{ minWidth: 275 }}>
+            <CardContent>
+              <Typography variant="h6" component="div" gutterBottom>
+                Total Suntime (minutes)
+              </Typography>
+              <Typography variant="h4" color="text.secondary">
+                {totalSuntime}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <Card sx={{ minWidth: 275 }}>
+            <CardContent>
+              <Typography variant="h6" component="div" gutterBottom>
+                Average Suntime per Day (minutes)
+              </Typography>
+              <Typography variant="h4" color="text.secondary">
+                {averageSuntime.toFixed(2)}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
         {/* Boolean Metrics */}
         {[
           { label: "Pray Morning", count: prayMorningCount },
@@ -224,19 +307,26 @@ const StatusPage: React.FC = () => {
         ))}
       </Grid>
 
-      {/* Steps Over Time Chart */}
+      {/* Charts Section */}
       <Box sx={{ marginTop: 4 }}>
         <Typography variant="h6" gutterBottom>
-          Steps Over Time
+          Metrics Over Time
         </Typography>
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={400}>
           <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
-            <YAxis />
+            <YAxis yAxisId="left" label={{ value: "Steps", angle: -90, position: 'insideLeft' }} />
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              label={{ value: "Jelqs & Suntime", angle: 90, position: 'insideRight' }}
+            />
             <Tooltip />
             <Legend />
-            <Line type="monotone" dataKey="steps" stroke="#8884d8" activeDot={{ r: 8 }} />
+            <Line yAxisId="left" type="monotone" dataKey="steps" stroke="#8884d8" activeDot={{ r: 8 }} />
+            <Line yAxisId="right" type="monotone" dataKey="jelqs" stroke="#82ca9d" />
+            <Line yAxisId="right" type="monotone" dataKey="suntime" stroke="#ffc658" />
           </LineChart>
         </ResponsiveContainer>
       </Box>

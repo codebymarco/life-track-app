@@ -33,6 +33,15 @@ const MainNavbar = () => {
           <Link className="login-link" to="/passwords">
             passwords
           </Link>
+          <Link className="login-link" to="/todo">
+            todo
+          </Link>
+          <Link className="login-link" to="/links">
+            links
+          </Link>
+          <Link className="login-link" to="/vision">
+            vision
+          </Link>
         </div>
       </div>
     </nav>

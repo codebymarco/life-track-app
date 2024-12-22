@@ -8,6 +8,9 @@ import StatusPage from "../pages/StatusPage";
 import PlacesPage from "../pages/PlacesPage";
 import SkillsPage from "../pages/SkillsPage";
 import PasswordsPage from "../pages/Passwords";
+import Todo from "../pages/Todo";
+import Links from "../pages/Links";
+import VisionBoard from "../pages/VisionBoard";
 
 const routes: RouteObject[] = [
   {
@@ -71,6 +74,30 @@ const routes: RouteObject[] = [
     element: (
       <MainLayout>
         <Route index element={<PasswordsPage />} />
+      </MainLayout>
+    ),
+  },
+  {
+    path: "/todo",
+    element: (
+      <MainLayout>
+        <Route index element={<Todo />} />
+      </MainLayout>
+    ),
+  },
+  {
+    path: "/links",
+    element: (
+      <MainLayout>
+        <Route index element={<Links />} />
+      </MainLayout>
+    ),
+  },
+  {
+    path: "/vision",
+    element: (
+      <MainLayout>
+        <Route index element={<VisionBoard />} />
       </MainLayout>
     ),
   }
