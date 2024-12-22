@@ -24,6 +24,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility"; // Import Visibility Icon
 import { makeStyles } from "@mui/styles";
 
 // Type Definitions
@@ -96,6 +97,19 @@ const useStyles = makeStyles({
     boxShadow: 24,
     padding: "8px", // Further reduced padding
   },
+  viewModalBox: { // Styles for the View Modal
+    position: "absolute" as const,
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "80%", // Full-page width
+    maxHeight: "90vh",
+    overflowY: "auto",
+    backgroundColor: "#fff",
+    border: "1px solid #000",
+    boxShadow: 24,
+    padding: "16px",
+  },
   tableContainer: {
     marginTop: "16px",
     overflowX: "auto",
@@ -153,6 +167,10 @@ const Entries: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [filterDate, setFilterDate] = useState<string>("");
 
+  // State for View Modal
+  const [viewOpen, setViewOpen] = useState<boolean>(false);
+  const [viewEntry, setViewEntry] = useState<FormData | null>(null);
+
   // Load Data from localStorage on Mount
   useEffect(() => {
     try {
@@ -176,6 +194,16 @@ const Entries: React.FC = () => {
   const handleClose = () => {
     setOpen(false);
     resetForm();
+  };
+
+  // Handle View Modal Open/Close
+  const handleViewOpen = (entry: FormData) => {
+    setViewEntry(entry);
+    setViewOpen(true);
+  };
+  const handleViewClose = () => {
+    setViewOpen(false);
+    setViewEntry(null);
   };
 
   // Reset Form Data
@@ -698,6 +726,89 @@ const Entries: React.FC = () => {
         </Box>
       </Modal>
 
+      {/* Modal for Viewing Entry Details */}
+      <Modal open={viewOpen} onClose={handleViewClose}>
+        <Box className={classes.viewModalBox}>
+          <Typography gutterBottom style={{ fontSize: "1rem", fontWeight: "bold" }}>
+            Entry Details
+          </Typography>
+          {viewEntry && (
+            <div>
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>Date:</strong> {viewEntry.date}
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>Pray Morning:</strong> {viewEntry.prayMorning ? "Yes" : "No"}
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>Pray Evening:</strong> {viewEntry.prayEvening ? "Yes" : "No"}
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>Mast:</strong> {viewEntry.mast ? "Yes" : "No"}
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>PN:</strong> {viewEntry.pn ? "Yes" : "No"}
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>Steps:</strong> {viewEntry.steps}
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>Workout:</strong> {viewEntry.workout ? "Yes" : "No"}
+              </Typography>
+              {viewEntry.workout && (
+                <>
+                  <Typography style={{ fontSize: "0.85rem" }}>
+                    <strong>Workout Details:</strong> {viewEntry.workoutDetails.join(", ")}
+                  </Typography>
+                  <Typography style={{ fontSize: "0.85rem" }}>
+                    <strong>Workout Time:</strong> {viewEntry.workoutTime} minutes
+                  </Typography>
+                </>
+              )}
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>Sleep Time:</strong> {viewEntry.sleepTime} hours
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>Number of Poops:</strong> {viewEntry.poop}
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>Number of Showers:</strong> {viewEntry.numberOfShowers}
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>Number of Kegels:</strong> {viewEntry.no_of_kegels}
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>Suntime:</strong> {viewEntry.suntime} minutes
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>Jelqs:</strong> {viewEntry.jelqs} minutes
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>Stretch:</strong> {viewEntry.stretch ? "Yes" : "No"}
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>PE:</strong> {viewEntry.pe ? "Yes" : "No"}
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>Kegels Done:</strong> {viewEntry.kegels ? "Yes" : "No"}
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>Coding:</strong> {viewEntry.coding !== undefined ? `${viewEntry.coding} minutes` : "-"}
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleViewClose}
+                size="small"
+                style={{ marginTop: "12px", padding: "6px 12px", fontSize: "0.75rem" }}
+              >
+                Close
+              </Button>
+            </div>
+          )}
+        </Box>
+      </Modal>
+
       {/* Entries Table */}
       <TableContainer component={Paper} className={classes.tableContainer}>
         <Table className={classes.table} size="small">
@@ -710,7 +821,7 @@ const Entries: React.FC = () => {
               <TableCell className={classes.tableHeader}>PN</TableCell>
               <TableCell className={classes.tableHeader}>Steps</TableCell>
               <TableCell className={classes.tableHeader}>Workout</TableCell>
-              <TableCell className={classes.tableHeader}>Workout Details</TableCell>
+              {/* Removed Workout Details Column */}
               <TableCell className={classes.tableHeader}>Workout Time</TableCell>
               <TableCell className={classes.tableHeader}>Sleep</TableCell>
               <TableCell className={classes.tableHeader}>Poop</TableCell>
@@ -746,9 +857,7 @@ const Entries: React.FC = () => {
                   <TableCell className={classes.tableCell}>
                     {entry.workout ? "Yes" : "No"}
                   </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.workoutDetails.join(", ")}
-                  </TableCell>
+                  {/* Removed Workout Details Cell */}
                   <TableCell className={classes.tableCell}>{entry.workoutTime}</TableCell>
                   <TableCell className={classes.tableCell}>{entry.sleepTime}</TableCell>
                   <TableCell className={classes.tableCell}>{entry.poop}</TableCell>
@@ -777,13 +886,17 @@ const Entries: React.FC = () => {
                     <IconButton onClick={() => handleDelete(originalIndex)} size="small">
                       <DeleteIcon fontSize="small" />
                     </IconButton>
+                    {/* Added View Button */}
+                    <IconButton onClick={() => handleViewOpen(entry)} size="small">
+                      <VisibilityIcon fontSize="small" />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={19}
+                  colSpan={18} // Updated colSpan after removing one column
                   align="center"
                   className={classes.tableCell}
                 >
