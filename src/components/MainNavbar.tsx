@@ -1,50 +1,56 @@
-import { Link, useNavigate } from "react-router-dom";
+import React from 'react';
+import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
 
-const MainNavbar = () => {
+const MainNavbar: React.FC = () => {
   const navigate = useNavigate();
 
-  const route = (path: string) => {
+  const handleRoute = (path: string) => {
     navigate(path);
   };
 
+  const navLinks = [
+    { title: 'General', path: '/entries' },
+    { title: 'Diet', path: '/diet' },
+    { title: 'Journal', path: '/journal' },
+    { title: 'Status', path: '/status' },
+    { title: 'Places', path: '/places' },
+    { title: 'Skills', path: '/skills' },
+    { title: 'Passwords', path: '/passwords' },
+    { title: 'ToDo', path: '/todo' },
+    { title: 'Links', path: '/links' },
+    { title: 'Vision', path: '/vision' },
+  ];
+
   return (
-    <nav className="navbar">
-      <h1 className="logo-navbar" onClick={() => route(`/`)}></h1>
-      <div className="usernavbarlinks" id="usernavbarlinks">
-        <div className="usernavbarlinks-container">
-          <Link className="login-link" to="/entries">
-            entries
-          </Link>
-          <Link className="login-link" to="/diet">
-            diet
-          </Link>
-          <Link className="login-link" to="/journal">
-            journal
-          </Link>
-          <Link className="login-link" to="/status">
-            status
-          </Link>
-          <Link className="login-link" to="/places">
-            places
-          </Link>
-          <Link className="login-link" to="/skills">
-            skills
-          </Link>
-          <Link className="login-link" to="/passwords">
-            passwords
-          </Link>
-          <Link className="login-link" to="/todo">
-            todo
-          </Link>
-          <Link className="login-link" to="/links">
-            links
-          </Link>
-          <Link className="login-link" to="/vision">
-            vision
-          </Link>
-        </div>
-      </div>
-    </nav>
+    <AppBar position="static" color="primary">
+      <Toolbar>
+        {/* Logo Section */}
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{ flexGrow: 1, cursor: 'pointer' }}
+          onClick={() => handleRoute('/')}
+        >
+          Marco
+        </Typography>
+
+        {/* Navigation Links */}
+        <Box>
+          {navLinks.map((link) => (
+            <Button
+              key={link.path}
+              color="inherit"
+              component={Link}
+              to={link.path}
+              sx={{ marginLeft: 2 }}
+            >
+              {link.title}
+            </Button>
+          ))}
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 };
 

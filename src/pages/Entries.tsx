@@ -303,7 +303,7 @@ const Entries: React.FC = () => {
   return (
     <div style={{ padding: "20px" }}>
       <Typography variant="h4" gutterBottom>
-        Entries
+        General
       </Typography>
 
       {/* Add and Download Buttons */}
