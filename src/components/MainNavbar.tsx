@@ -24,6 +24,15 @@ const MainNavbar = () => {
           <Link className="login-link" to="/status">
             status
           </Link>
+          <Link className="login-link" to="/places">
+            places
+          </Link>
+          <Link className="login-link" to="/skills">
+            skills
+          </Link>
+          <Link className="login-link" to="/passwords">
+            passwords
+          </Link>
         </div>
       </div>
     </nav>

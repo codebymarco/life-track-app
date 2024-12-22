@@ -5,6 +5,9 @@ import Entries from "../pages/Entries";
 import Diet from "../pages/Diet";
 import JournalEntries from "../pages/Journal";
 import StatusPage from "../pages/StatusPage";
+import PlacesPage from "../pages/PlacesPage";
+import SkillsPage from "../pages/SkillsPage";
+import PasswordsPage from "../pages/Passwords";
 
 const routes: RouteObject[] = [
   {
@@ -44,6 +47,30 @@ const routes: RouteObject[] = [
     element: (
       <MainLayout>
         <Route index element={<StatusPage />} />
+      </MainLayout>
+    ),
+  },
+  {
+    path: "/places",
+    element: (
+      <MainLayout>
+        <Route index element={<PlacesPage />} />
+      </MainLayout>
+    ),
+  },
+  {
+    path: "/skills",
+    element: (
+      <MainLayout>
+        <Route index element={<SkillsPage />} />
+      </MainLayout>
+    ),
+  },
+  {
+    path: "/passwords",
+    element: (
+      <MainLayout>
+        <Route index element={<PasswordsPage />} />
       </MainLayout>
     ),
   }
