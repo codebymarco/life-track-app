@@ -38,6 +38,26 @@ type EntryData = {
   coding?: number;
 };
 
+// Type Guard for EntryData
+const isValidEntry = (entry: any): entry is EntryData => {
+  return (
+    typeof entry.date === 'string' &&
+    typeof entry.prayMorning === 'boolean' &&
+    typeof entry.prayEvening === 'boolean' &&
+    typeof entry.workout === 'boolean' &&
+    Array.isArray(entry.workoutDetails) &&
+    typeof entry.mast === 'boolean' &&
+    typeof entry.pn === 'boolean' &&
+    typeof entry.steps === 'number' &&
+    typeof entry.suntime === 'number' &&
+    typeof entry.jelqs === 'number' &&
+    typeof entry.stretch === 'boolean' &&
+    typeof entry.pe === 'boolean' &&
+    typeof entry.kegels === 'boolean'
+    // Add other field validations if necessary
+  );
+};
+
 const StatusPage: React.FC = () => {
   // State to hold entries
   const [entries, setEntries] = useState<EntryData[]>([]);
@@ -73,19 +93,53 @@ const StatusPage: React.FC = () => {
     try {
       const storedEntries = JSON.parse(
         localStorage.getItem("entries") || "[]"
-      ) as EntryData[];
-      setEntries(storedEntries);
-    } catch {
+      );
+
+      const parsedEntries: EntryData[] = storedEntries
+        .map((entry: any) => ({
+          ...entry,
+          steps: Number(entry.steps) || 0,
+          jelqs: Number(entry.jelqs) || 0,
+          suntime: Number(entry.suntime) || 0,
+          coding: entry.coding !== undefined ? Number(entry.coding) : 0,
+        }))
+        .filter(isValidEntry);
+
+      setEntries(parsedEntries);
+      console.log("Loaded Entries:", parsedEntries);
+    } catch (error) {
+      console.error("Failed to parse entries from localStorage:", error);
       setEntries([]);
     }
   }, []);
 
   // Compute statistics whenever entries change
   useEffect(() => {
+    if (entries.length === 0) {
+      // Reset all statistics if there are no entries
+      setTotalSteps(0);
+      setAverageSteps(0);
+      setPrayMorningCount(0);
+      setPrayEveningCount(0);
+      setWorkoutCount(0);
+      setMastCount(0);
+      setPnCount(0);
+      setStretchCount(0);
+      setPeCount(0);
+      setKegelsCount(0);
+      setTotalCodingMinutes(0);
+      setAverageCodingMinutes(0);
+      setTotalJelqs(0);
+      setAverageJelqs(0);
+      setTotalSuntime(0);
+      setAverageSuntime(0);
+      return;
+    }
+
     // Steps Statistics
-    const stepsArray = entries.map((entry) => entry.steps);
+    const stepsArray = entries.map((entry) => entry.steps).filter(step => !isNaN(step));
     const total = stepsArray.reduce((acc, curr) => acc + curr, 0);
-    const average = entries.length > 0 ? total / entries.length : 0;
+    const average = stepsArray.length > 0 ? total / stepsArray.length : 0;
     setTotalSteps(total);
     setAverageSteps(average);
 
@@ -100,39 +154,46 @@ const StatusPage: React.FC = () => {
     setKegelsCount(entries.filter((entry) => entry.kegels).length);
 
     // Coding Metrics
-    const codingArray = entries.map((entry) => entry.coding || 0);
+    const codingArray = entries.map((entry) => entry.coding || 0).filter(c => !isNaN(c));
     const totalCoding = codingArray.reduce((acc, curr) => acc + curr, 0);
-    const averageCoding = entries.length > 0 ? totalCoding / entries.length : 0;
+    const averageCoding = codingArray.length > 0 ? totalCoding / codingArray.length : 0;
     setTotalCodingMinutes(totalCoding);
     setAverageCodingMinutes(averageCoding);
 
     // Jelqs Metrics
-    const jelqsArray = entries.map((entry) => entry.jelqs || 0);
+    const jelqsArray = entries.map((entry) => entry.jelqs).filter(j => !isNaN(j));
     const totalJelqs = jelqsArray.reduce((acc, curr) => acc + curr, 0);
-    const averageJelqs = entries.length > 0 ? totalJelqs / entries.length : 0;
+    const averageJelqs = jelqsArray.length > 0 ? totalJelqs / jelqsArray.length : 0;
     setTotalJelqs(totalJelqs);
     setAverageJelqs(averageJelqs);
 
     // Suntime Metrics
-    const suntimeArray = entries.map((entry) => entry.suntime || 0);
+    const suntimeArray = entries.map((entry) => entry.suntime).filter(s => !isNaN(s));
     const totalSuntime = suntimeArray.reduce((acc, curr) => acc + curr, 0);
-    const averageSuntime =
-      entries.length > 0 ? totalSuntime / entries.length : 0;
+    const averageSuntime = suntimeArray.length > 0 ? totalSuntime / suntimeArray.length : 0;
     setTotalSuntime(totalSuntime);
     setAverageSuntime(averageSuntime);
+
+    // Debugging Logs
+    console.log("Total Steps:", total);
+    console.log("Average Steps:", average);
+    console.log("Total Jelqs:", totalJelqs);
+    console.log("Average Jelqs:", averageJelqs);
+    console.log("Total Suntime:", totalSuntime);
+    console.log("Average Suntime:", averageSuntime);
   }, [entries]);
 
   // Handle Download Statistics as JSON
   const handleDownload = () => {
     const stats = {
       totalSteps,
-      averageSteps: averageSteps.toFixed(2),
+      averageSteps: Number(averageSteps.toFixed(2)),
       totalCodingMinutes,
-      averageCodingMinutes: averageCodingMinutes.toFixed(2),
+      averageCodingMinutes: Number(averageCodingMinutes.toFixed(2)),
       totalJelqs,
-      averageJelqs: averageJelqs.toFixed(2),
+      averageJelqs: Number(averageJelqs.toFixed(2)),
       totalSuntime,
-      averageSuntime: averageSuntime.toFixed(2),
+      averageSuntime: Number(averageSuntime.toFixed(2)),
       prayMorningCount,
       prayEveningCount,
       workoutCount,
@@ -193,7 +254,7 @@ const StatusPage: React.FC = () => {
                 Average Steps
               </Typography>
               <Typography variant="h4" color="text.secondary">
-                {averageSteps.toFixed(2)}
+                {averageSteps.toFixed(0)}
               </Typography>
             </CardContent>
           </Card>
@@ -316,7 +377,10 @@ const StatusPage: React.FC = () => {
           <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
-            <YAxis yAxisId="left" label={{ value: "Steps", angle: -90, position: 'insideLeft' }} />
+            <YAxis
+              yAxisId="left"
+              label={{ value: "Steps", angle: -90, position: 'insideLeft' }}
+            />
             <YAxis
               yAxisId="right"
               orientation="right"
@@ -324,7 +388,13 @@ const StatusPage: React.FC = () => {
             />
             <Tooltip />
             <Legend />
-            <Line yAxisId="left" type="monotone" dataKey="steps" stroke="#8884d8" activeDot={{ r: 8 }} />
+            <Line
+              yAxisId="left"
+              type="monotone"
+              dataKey="steps"
+              stroke="#8884d8"
+              activeDot={{ r: 8 }}
+            />
             <Line yAxisId="right" type="monotone" dataKey="jelqs" stroke="#82ca9d" />
             <Line yAxisId="right" type="monotone" dataKey="suntime" stroke="#ffc658" />
           </LineChart>
