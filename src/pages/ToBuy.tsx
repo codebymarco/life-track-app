@@ -48,6 +48,9 @@ type TobuyData = {
   purchaseDate: string; // ISO Date string
 };
 
+// Type for TobuyData with original index
+type TobuyDataWithIndex = TobuyData & { originalIndex: number };
+
 // Modal styling
 const style = {
   position: "absolute" as const,
@@ -87,7 +90,6 @@ function Tobuy() {
       const storedTobuy = JSON.parse(localStorage.getItem("tobuyEntries") || "[]") as TobuyData[];
       setTobuyData(
         storedTobuy.map((entry) => ({
-          ...entry,
           item: entry.item || "",
           status: entry.status || Status.ToBuy,
           price: entry.price || 0,
@@ -252,9 +254,15 @@ function Tobuy() {
     });
   };
 
-  // Processed Data for Rendering
-  const processedTobuy = sortData(
-    filterData(tobuyData, "status", filterStatus),
+  // Augment each item with its original index
+  const tobuyDataWithIndex: TobuyDataWithIndex[] = tobuyData.map((item, index) => ({
+    ...item,
+    originalIndex: index,
+  }));
+
+  // Processed Data for Rendering with original indices
+  const processedTobuy: TobuyDataWithIndex[] = sortData(
+    filterData(tobuyDataWithIndex, "status", filterStatus),
     "item",
     sortOrder
   );
@@ -262,7 +270,10 @@ function Tobuy() {
   // Calculate Totals
   const totalPrice = tobuyData.reduce((acc, item) => acc + item.price, 0);
   const totalSaving = tobuyData.reduce((acc, item) => acc + item.saving, 0);
-  const totalRemaining = tobuyData.reduce((acc, item) => acc + (item.price - item.saving), 0);
+  const totalRemaining = tobuyData.reduce(
+    (acc, item) => acc + (item.price - item.saving),
+    0
+  );
 
   return (
     <div style={{ padding: "20px" }}>
@@ -462,11 +473,11 @@ function Tobuy() {
           </TableHead>
           <TableBody>
             {processedTobuy.length > 0 ? (
-              processedTobuy.map((row, index) => {
+              processedTobuy.map((row) => {
                 const remaining = row.price - row.saving;
                 return (
                   <TableRow
-                    key={index}
+                    key={row.originalIndex} // Use original index as key
                     style={{
                       backgroundColor:
                         row.status === Status.Bought
@@ -489,10 +500,10 @@ function Tobuy() {
                     </TableCell>
                     <TableCell>{new Date(row.purchaseDate).toLocaleDateString()}</TableCell>
                     <TableCell>
-                      <IconButton onClick={() => handleEdit(index)}>
+                      <IconButton onClick={() => handleEdit(row.originalIndex)}>
                         <EditIcon />
                       </IconButton>
-                      <IconButton onClick={() => handleDelete(index)}>
+                      <IconButton onClick={() => handleDelete(row.originalIndex)}>
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>
