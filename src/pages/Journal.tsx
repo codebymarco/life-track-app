@@ -1,5 +1,3 @@
-// src/JournalEntries.tsx
-
 import React, { useState, useEffect } from "react";
 import {
   Button,
@@ -22,6 +20,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 // Type Definitions
 type JournalData = {
@@ -44,15 +43,29 @@ const style = {
   p: 4,
 };
 
+// Full-Page Modal Styling
+const fullPageStyle = {
+  position: "absolute" as const,
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  bgcolor: "background.paper",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  overflowY: "auto",
+};
+
 const JournalEntries: React.FC = () => {
   // State Management
   const [journalData, setJournalData] = useState<JournalData[]>([]);
   const [open, setOpen] = useState<boolean>(false);
-  const [journalForm, setJournalForm] = useState<JournalData>({
-    date: "",
-    body: "",
-  });
+  const [journalForm, setJournalForm] = useState<JournalData>({ date: "", body: "" });
   const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [viewOpen, setViewOpen] = useState<boolean>(false);
+  const [selectedEntry, setSelectedEntry] = useState<JournalData | null>(null);
 
   // Sorting and Filtering State
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -61,15 +74,8 @@ const JournalEntries: React.FC = () => {
   // Load Data from localStorage on Mount
   useEffect(() => {
     try {
-      const storedJournal = JSON.parse(
-        localStorage.getItem("journalEntries") || "[]"
-      ) as JournalData[];
-      setJournalData(
-        storedJournal.map((entry) => ({
-          date: entry.date || "",
-          body: entry.body || "",
-        }))
-      );
+      const storedJournal = JSON.parse(localStorage.getItem("journalEntries") || "[]") as JournalData[];
+      setJournalData(storedJournal);
     } catch {
       setJournalData([]);
     }
@@ -82,32 +88,26 @@ const JournalEntries: React.FC = () => {
     resetForm();
   };
 
+  const handleViewClose = () => setViewOpen(false);
+
   // Reset Form Data
   const resetForm = () => {
-    setJournalForm({
-      date: "",
-      body: "",
-    });
+    setJournalForm({ date: "", body: "" });
     setEditIndex(null);
   };
 
   // Handle Form Changes
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | { name?: string; value: unknown }
-    >
-  ) => {
-    const { name, value } = e.target as HTMLInputElement;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
 
     setJournalForm((prev) => ({
       ...prev,
-      [name!]: value,
+      [name]: value,
     }));
   };
 
   // Handle Save (Add/Edit)
   const handleSave = () => {
-    // Validate Form
     if (!journalForm.date.trim()) {
       alert("Date cannot be empty.");
       return;
@@ -119,13 +119,11 @@ const JournalEntries: React.FC = () => {
     }
 
     if (editIndex !== null) {
-      // Edit Existing Entry
       const updatedJournal = [...journalData];
       updatedJournal[editIndex] = journalForm;
       setJournalData(updatedJournal);
       localStorage.setItem("journalEntries", JSON.stringify(updatedJournal));
     } else {
-      // Add New Entry
       const newJournal = [...journalData, journalForm];
       setJournalData(newJournal);
       localStorage.setItem("journalEntries", JSON.stringify(newJournal));
@@ -142,6 +140,12 @@ const JournalEntries: React.FC = () => {
     const filteredJournal = journalData.filter((_, i) => i !== index);
     setJournalData(filteredJournal);
     localStorage.setItem("journalEntries", JSON.stringify(filteredJournal));
+  };
+
+  // Handle View
+  const handleView = (entry: JournalData) => {
+    setSelectedEntry(entry);
+    setViewOpen(true);
   };
 
   // Handle Edit
@@ -162,11 +166,7 @@ const JournalEntries: React.FC = () => {
   };
 
   // Sorting Function
-  const sortData = <T extends { [key: string]: any }>(
-    data: T[],
-    key: keyof T,
-    order: "asc" | "desc"
-  ): T[] => {
+  const sortData = <T extends { [key: string]: any }>(data: T[], key: keyof T, order: "asc" | "desc"): T[] => {
     return [...data].sort((a, b) => {
       if (a[key] < b[key]) return order === "asc" ? -1 : 1;
       if (a[key] > b[key]) return order === "asc" ? 1 : -1;
@@ -175,48 +175,18 @@ const JournalEntries: React.FC = () => {
   };
 
   // Filtering Function
-  const filterData = <T extends { [key: string]: any }>(
-    data: T[],
-    key: keyof T,
-    filterValue: any
-  ): T[] => {
+  const filterData = <T extends { [key: string]: any }>(data: T[], key: keyof T, filterValue: any): T[] => {
     if (filterValue === "" || filterValue === null) return data;
     return data.filter((item) => {
-      if (typeof filterValue === "boolean") {
-        return item[key] === filterValue;
-      } else if (typeof filterValue === "string") {
-        return item[key]
-          .toString()
-          .toLowerCase()
-          .includes(filterValue.toLowerCase());
+      if (typeof filterValue === "string") {
+        return item[key].toString().toLowerCase().includes(filterValue.toLowerCase());
       }
       return item[key] === filterValue;
     });
   };
 
   // Processed Data for Rendering
-  const processedJournal = sortData(
-    filterData(journalData, "date", filterDate),
-    "date",
-    sortOrder
-  );
-
-  // Utility Functions to Get Start and Latest Dates
-  const getStartDate = () => {
-    if (journalData.length === 0) return "N/A";
-    const sorted = [...journalData].sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-    );
-    return sorted[0].date;
-  };
-
-  const getLatestDate = () => {
-    if (journalData.length === 0) return "N/A";
-    const sorted = [...journalData].sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
-    return sorted[0].date;
-  };
+  const processedJournal = sortData(filterData(journalData, "date", filterDate), "date", sortOrder);
 
   return (
     <div style={{ padding: "20px" }}>
@@ -224,12 +194,10 @@ const JournalEntries: React.FC = () => {
         Journal Entries
       </Typography>
 
-      {/* Add and Download Buttons */}
       <div style={{ marginBottom: "10px" }}>
         <Button variant="contained" color="primary" onClick={handleOpen}>
-          {editIndex !== null ? "Edit Journal Entry" : "Add Journal Entry"}
+          Add Journal Entry
         </Button>
-
         <Button
           variant="outlined"
           color="secondary"
@@ -240,59 +208,47 @@ const JournalEntries: React.FC = () => {
         </Button>
       </div>
 
-      {/* Sorting and Filtering Controls */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          marginBottom: "20px",
-          flexWrap: "wrap",
-          gap: "20px",
-        }}
-      >
-        {/* Sorting */}
-        <FormControl variant="outlined" size="small">
-          <InputLabel>Sort Order</InputLabel>
-          <Select
-            label="Sort Order"
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
-            style={{ minWidth: 150 }}
-          >
-            <MenuItem value="asc">Ascending</MenuItem>
-            <MenuItem value="desc">Descending</MenuItem>
-          </Select>
-        </FormControl>
+      <TableContainer component={Paper} sx={{ marginTop: 4 }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Date</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {processedJournal.length > 0 ? (
+              processedJournal.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell>{row.date}</TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => handleView(row)}>
+                      <VisibilityIcon />
+                    </IconButton>
+                    <IconButton onClick={() => handleEdit(index)}>
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton onClick={() => handleDelete(index)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={2} align="center">
+                  No journal entries found.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
-        {/* Filter by Date */}
-        <TextField
-          label="Filter by Date"
-          type="date"
-          size="small"
-          InputLabelProps={{ shrink: true }}
-          value={filterDate}
-          onChange={(e) => setFilterDate(e.target.value)}
-        />
-
-        {/* Reset Filter Button */}
-        <Button
-          variant="text"
-          onClick={() => {
-            setFilterDate("");
-            setSortOrder("asc");
-          }}
-        >
-          Reset Filter
-        </Button>
-      </div>
-
-      {/* Modal for Adding/Editing Journal Entries */}
+      {/* Add/Edit Modal */}
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
-          <Typography variant="h6" gutterBottom>
-            {editIndex !== null ? "Edit Journal Entry" : "Add New Journal Entry"}
-          </Typography>
-          {/* Journal Form Fields */}
+          <Typography variant="h6">{editIndex !== null ? "Edit Journal Entry" : "Add New Journal Entry"}</Typography>
           <TextField
             fullWidth
             margin="normal"
@@ -315,62 +271,31 @@ const JournalEntries: React.FC = () => {
             rows={4}
             required
           />
-
-          {/* Save Button */}
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSave}
-            style={{ marginTop: "10px" }}
-          >
+          <Button variant="contained" color="primary" onClick={handleSave} style={{ marginTop: "10px" }}>
             Save
           </Button>
         </Box>
       </Modal>
 
-      {/* Journal Entries Table */}
-      <TableContainer component={Paper} sx={{ marginTop: 4 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell>Journal Body</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {processedJournal.length > 0 ? (
-              processedJournal.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell>{row.date}</TableCell>
-                  <TableCell>{row.body}</TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleEdit(index)}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton onClick={() => handleDelete(index)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={3} align="center">
-                  No journal entries found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      {/* Display Tracking Period */}
-      <Box sx={{ marginTop: 4 }}>
-        <Typography variant="h6">Tracking Period</Typography>
-        <Typography variant="body1">Start Date: {getStartDate()}</Typography>
-        <Typography variant="body1">Latest Date: {getLatestDate()}</Typography>
-      </Box>
+      {/* Full-Page View Modal */}
+      <Modal open={viewOpen} onClose={handleViewClose}>
+        <Box sx={fullPageStyle}>
+          {selectedEntry && (
+            <>
+              <Typography variant="h4" gutterBottom>
+                Journal Entry
+              </Typography>
+              <Typography variant="h6">Date: {selectedEntry.date}</Typography>
+              <Typography variant="body1" style={{ marginTop: "20px", whiteSpace: "pre-line" }}>
+                {selectedEntry.body}
+              </Typography>
+              <Button variant="outlined" color="primary" onClick={handleViewClose} style={{ marginTop: "20px" }}>
+                Close
+              </Button>
+            </>
+          )}
+        </Box>
+      </Modal>
     </div>
   );
 };

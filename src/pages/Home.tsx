@@ -17,11 +17,14 @@ import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import SportsMmaIcon from '@mui/icons-material/SportsMma'; // Proxy icon for prayer
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const Home: React.FC = () => {
   interface Activity {
     name: string;
     currentStreak: number;
+    history: boolean[]; // Last 5 days history (true for yes, false for no)
   }
 
   interface TrackerData {
@@ -36,12 +39,12 @@ const Home: React.FC = () => {
   }
 
   const trackerData: TrackerData = {
-    prayMorning: { name: 'Morning Prayer', currentStreak: 5 },
-    prayNight: { name: 'Night Prayer', currentStreak: 5 },
-    workout: { name: 'Workout', currentStreak: 5 },
-    jelqs: { name: 'Jelqs', currentStreak: 5 },
-    sunTime: { name: 'Sun Time', currentStreak: 5 },
-    coding: { name: 'Coding', currentStreak: 5 },
+    prayMorning: { name: 'Morning Prayer', currentStreak: 5, history: [true, true, true, false, true] },
+    prayNight: { name: 'Night Prayer', currentStreak: 5, history: [true, false, true, true, true] },
+    workout: { name: 'Workout', currentStreak: 5, history: [false, true, true, true, false] },
+    jelqs: { name: 'Jelqs', currentStreak: 5, history: [true, true, false, true, true] },
+    sunTime: { name: 'Sun Time', currentStreak: 5, history: [false, false, true, true, true] },
+    coding: { name: 'Coding', currentStreak: 5, history: [true, true, true, true, true] },
     waterIntake: 3.5,
     steps: 22000,
   };
@@ -121,15 +124,22 @@ const Home: React.FC = () => {
       <Grid container spacing={3}>
         {trackers.map((tracker, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card sx={{ display: 'flex', alignItems: 'center', p: 2 }}>
-              <Box sx={{ mr: 2 }}>{tracker.icon}</Box>
-              <CardContent>
-                <Typography variant="h6">{tracker.activity.name}</Typography>
-                <Typography color="text.secondary">
-                  Current Streak: {tracker.activity.currentStreak} day
-                  {tracker.activity.currentStreak > 1 ? 's' : ''}
-                </Typography>
-              </CardContent>
+            <Card sx={{ display: 'flex', flexDirection: 'column', p: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Box sx={{ mr: 2 }}>{tracker.icon}</Box>
+                <CardContent>
+                  <Typography variant="h6">{tracker.activity.name}</Typography>
+                  <Typography color="text.secondary">
+                    Current Streak: {tracker.activity.currentStreak} day
+                    {tracker.activity.currentStreak > 1 ? 's' : ''}
+                  </Typography>
+                </CardContent>
+              </Box>
+              <Typography variant="body2" color="text.secondary">
+                Last 5 Days: {tracker.activity.history.map((status, idx) => (
+                  status ? <CheckCircleIcon key={idx} color="success" /> : <CancelIcon key={idx} color="error" />
+                ))}
+              </Typography>
             </Card>
           </Grid>
         ))}
