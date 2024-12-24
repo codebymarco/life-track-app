@@ -7,6 +7,9 @@ import {
   Typography,
   Box,
   IconButton,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -114,6 +117,20 @@ const Home: React.FC = () => {
 
   const stats = calculateTotals();
 
+  const todos = [
+    { task: 'Complete project report', dueToday: true },
+    { task: 'Buy groceries', dueToday: true },
+    { task: 'Schedule doctor appointment', dueToday: false },
+    { task: 'Call parents', dueToday: false },
+  ];
+
+  const toBuys = [
+    { item: 'Milk', dueToday: true },
+    { item: 'Eggs', dueToday: false },
+    { item: 'Bread', dueToday: true },
+    { item: 'Vegetables', dueToday: false },
+  ];
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Typography variant="h4" gutterBottom>
@@ -197,6 +214,56 @@ const Home: React.FC = () => {
               <Typography>Avg Kegels: {stats.avgKegels}</Typography>
             </Grid>
           </Grid>
+        </Card>
+      </Box>
+
+      {/* To-Do Section */}
+      <Box sx={{ mt: 6 }}>
+        <Typography variant="h5" gutterBottom>
+          To-Dos
+        </Typography>
+        <Card sx={{ p: 3 }}>
+          <Typography variant="h6">Outstanding To-Dos</Typography>
+          <List>
+            {todos.filter((todo) => !todo.dueToday).map((todo, idx) => (
+              <ListItem key={idx}>
+                <ListItemText primary={todo.task} />
+              </ListItem>
+            ))}
+          </List>
+          <Typography variant="h6">Today's To-Dos</Typography>
+          <List>
+            {todos.filter((todo) => todo.dueToday).map((todo, idx) => (
+              <ListItem key={idx}>
+                <ListItemText primary={todo.task} />
+              </ListItem>
+            ))}
+          </List>
+        </Card>
+      </Box>
+
+      {/* To-Buy Section */}
+      <Box sx={{ mt: 6 }}>
+        <Typography variant="h5" gutterBottom>
+          To-Buys
+        </Typography>
+        <Card sx={{ p: 3 }}>
+          <Typography variant="h6">Outstanding To-Buys</Typography>
+          <List>
+            {toBuys.filter((item) => !item.dueToday).map((item, idx) => (
+              <ListItem key={idx}>
+                <ListItemText primary={item.item} />
+              </ListItem>
+            ))}
+          </List>
+          <Typography variant="h6">Today's To-Buys</Typography>
+          <List>
+            {toBuys.filter((item) => item.dueToday).map((item, idx) => (
+              <ListItem key={idx}>
+                <ListItemText primary={item.item} />
+              </ListItem>
+            ))}
+          </List>
         </Card>
       </Box>
     </Container>
