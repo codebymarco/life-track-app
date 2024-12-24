@@ -30,6 +30,7 @@ type EntryData = {
   mast: boolean;
   pn: boolean;
   steps: number;
+  WorkoutTime: number;
   suntime: number;
   jelqs: number;
   stretch: boolean;
@@ -41,19 +42,20 @@ type EntryData = {
 // Type Guard for EntryData
 const isValidEntry = (entry: any): entry is EntryData => {
   return (
-    typeof entry.date === 'string' &&
-    typeof entry.prayMorning === 'boolean' &&
-    typeof entry.prayEvening === 'boolean' &&
-    typeof entry.workout === 'boolean' &&
+    typeof entry.date === "string" &&
+    typeof entry.prayMorning === "boolean" &&
+    typeof entry.prayEvening === "boolean" &&
+    typeof entry.workout === "boolean" &&
     Array.isArray(entry.workoutDetails) &&
-    typeof entry.mast === 'boolean' &&
-    typeof entry.pn === 'boolean' &&
-    typeof entry.steps === 'number' &&
-    typeof entry.suntime === 'number' &&
-    typeof entry.jelqs === 'number' &&
-    typeof entry.stretch === 'boolean' &&
-    typeof entry.pe === 'boolean' &&
-    typeof entry.kegels === 'boolean'
+    typeof entry.mast === "boolean" &&
+    typeof entry.pn === "boolean" &&
+    typeof entry.steps === "number" &&
+    typeof entry.workoutTime === "number" &&
+    typeof entry.suntime === "number" &&
+    typeof entry.jelqs === "number" &&
+    typeof entry.stretch === "boolean" &&
+    typeof entry.pe === "boolean" &&
+    typeof entry.kegels === "boolean"
     // Add other field validations if necessary
   );
 };
@@ -88,17 +90,20 @@ const StatusPage: React.FC = () => {
   const [totalSuntime, setTotalSuntime] = useState<number>(0);
   const [averageSuntime, setAverageSuntime] = useState<number>(0);
 
+    // Suntime Metrics
+    const [totalWorkouttime, setTotalWorkouttime] = useState<number>(0);
+    const [averageWorkouttime, setAverageWorkouttime] = useState<number>(0);
+
   // Load data from localStorage on mount
   useEffect(() => {
     try {
-      const storedEntries = JSON.parse(
-        localStorage.getItem("entries") || "[]"
-      );
+      const storedEntries = JSON.parse(localStorage.getItem("entries") || "[]");
 
       const parsedEntries: EntryData[] = storedEntries
         .map((entry: any) => ({
           ...entry,
           steps: Number(entry.steps) || 0,
+          workoutTime: Number(entry.workoutTime) || 0,
           jelqs: Number(entry.jelqs) || 0,
           suntime: Number(entry.suntime) || 0,
           coding: entry.coding !== undefined ? Number(entry.coding) : 0,
@@ -133,15 +138,31 @@ const StatusPage: React.FC = () => {
       setAverageJelqs(0);
       setTotalSuntime(0);
       setAverageSuntime(0);
+      setTotalWorkouttime(0);
+      setAverageWorkouttime(0);
       return;
     }
 
     // Steps Statistics
-    const stepsArray = entries.map((entry) => entry.steps).filter(step => !isNaN(step));
+    const stepsArray = entries
+      .map((entry) => entry.steps)
+      .filter((step) => !isNaN(step));
     const total = stepsArray.reduce((acc, curr) => acc + curr, 0);
     const average = stepsArray.length > 0 ? total / stepsArray.length : 0;
     setTotalSteps(total);
     setAverageSteps(average);
+
+
+        // Steps Statistics
+        const workoutsArray = entries
+        .map((entry) => entry.WorkoutTime)
+        .filter((step) => !isNaN(step));
+      const total2 = workoutsArray.reduce((acc, curr) => acc + curr, 0);
+      const average2 = workoutsArray.length > 0 ? total / workoutsArray.length : 0;
+      setTotalWorkouttime(total2);
+      setAverageWorkouttime(average2);
+  
+
 
     // Boolean Metrics Counts
     setPrayMorningCount(entries.filter((entry) => entry.prayMorning).length);
@@ -154,23 +175,32 @@ const StatusPage: React.FC = () => {
     setKegelsCount(entries.filter((entry) => entry.kegels).length);
 
     // Coding Metrics
-    const codingArray = entries.map((entry) => entry.coding || 0).filter(c => !isNaN(c));
+    const codingArray = entries
+      .map((entry) => entry.coding || 0)
+      .filter((c) => !isNaN(c));
     const totalCoding = codingArray.reduce((acc, curr) => acc + curr, 0);
-    const averageCoding = codingArray.length > 0 ? totalCoding / codingArray.length : 0;
+    const averageCoding =
+      codingArray.length > 0 ? totalCoding / codingArray.length : 0;
     setTotalCodingMinutes(totalCoding);
     setAverageCodingMinutes(averageCoding);
 
     // Jelqs Metrics
-    const jelqsArray = entries.map((entry) => entry.jelqs).filter(j => !isNaN(j));
+    const jelqsArray = entries
+      .map((entry) => entry.jelqs)
+      .filter((j) => !isNaN(j));
     const totalJelqs = jelqsArray.reduce((acc, curr) => acc + curr, 0);
-    const averageJelqs = jelqsArray.length > 0 ? totalJelqs / jelqsArray.length : 0;
+    const averageJelqs =
+      jelqsArray.length > 0 ? totalJelqs / jelqsArray.length : 0;
     setTotalJelqs(totalJelqs);
     setAverageJelqs(averageJelqs);
 
     // Suntime Metrics
-    const suntimeArray = entries.map((entry) => entry.suntime).filter(s => !isNaN(s));
+    const suntimeArray = entries
+      .map((entry) => entry.suntime)
+      .filter((s) => !isNaN(s));
     const totalSuntime = suntimeArray.reduce((acc, curr) => acc + curr, 0);
-    const averageSuntime = suntimeArray.length > 0 ? totalSuntime / suntimeArray.length : 0;
+    const averageSuntime =
+      suntimeArray.length > 0 ? totalSuntime / suntimeArray.length : 0;
     setTotalSuntime(totalSuntime);
     setAverageSuntime(averageSuntime);
 
@@ -341,6 +371,33 @@ const StatusPage: React.FC = () => {
           </Card>
         </Grid>
 
+        {/* Suntime Statistics */}
+        <Grid item xs={12} sm={6}>
+          <Card sx={{ minWidth: 275 }}>
+            <CardContent>
+              <Typography variant="h6" component="div" gutterBottom>
+                workout time (minutes)
+              </Typography>
+              <Typography variant="h4" color="text.secondary">
+                {totalWorkouttime}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <Card sx={{ minWidth: 275 }}>
+            <CardContent>
+              <Typography variant="h6" component="div" gutterBottom>
+                Average workout per Day (minutes)
+              </Typography>
+              <Typography variant="h4" color="text.secondary">
+                {averageWorkouttime.toFixed(2)}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
         {/* Boolean Metrics */}
         {[
           { label: "Pray Morning", count: prayMorningCount },
@@ -379,12 +436,16 @@ const StatusPage: React.FC = () => {
             <XAxis dataKey="date" />
             <YAxis
               yAxisId="left"
-              label={{ value: "Steps", angle: -90, position: 'insideLeft' }}
+              label={{ value: "Steps", angle: -90, position: "insideLeft" }}
             />
             <YAxis
               yAxisId="right"
               orientation="right"
-              label={{ value: "Jelqs & Suntime", angle: 90, position: 'insideRight' }}
+              label={{
+                value: "Jelqs & Suntime",
+                angle: 90,
+                position: "insideRight",
+              }}
             />
             <Tooltip />
             <Legend />
@@ -395,8 +456,18 @@ const StatusPage: React.FC = () => {
               stroke="#8884d8"
               activeDot={{ r: 8 }}
             />
-            <Line yAxisId="right" type="monotone" dataKey="jelqs" stroke="#82ca9d" />
-            <Line yAxisId="right" type="monotone" dataKey="suntime" stroke="#ffc658" />
+            <Line
+              yAxisId="right"
+              type="monotone"
+              dataKey="jelqs"
+              stroke="#82ca9d"
+            />
+            <Line
+              yAxisId="right"
+              type="monotone"
+              dataKey="suntime"
+              stroke="#ffc658"
+            />
           </LineChart>
         </ResponsiveContainer>
       </Box>
