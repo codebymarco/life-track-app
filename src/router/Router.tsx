@@ -14,6 +14,11 @@ import VisionBoard from "../pages/VisionBoard";
 import Tobuy from "../pages/ToBuy";
 import NotesPage from "../pages/NotesPage";
 import Cooking from "../pages/Cooking";
+import Jokes from "../pages/Jokes";
+import Workout from "../pages/Workout";
+import BucketList from "../pages/BucketList";
+import Finances from "../pages/Finance";
+import Memories from "../pages/Memeries";
 
 const routes: RouteObject[] = [
   {
@@ -101,6 +106,46 @@ const routes: RouteObject[] = [
     element: (
       <MainLayout>
         <Route index element={<Cooking />} />
+      </MainLayout>
+    ),
+  },
+  {
+    path: "/jokes",
+    element: (
+      <MainLayout>
+        <Route index element={<Jokes />} />
+      </MainLayout>
+    ),
+  },
+  {
+    path: "/workout",
+    element: (
+      <MainLayout>
+        <Route index element={<Workout />} />
+      </MainLayout>
+    ),
+  },
+  {
+    path: "/finance",
+    element: (
+      <MainLayout>
+        <Route index element={<Finances />} />
+      </MainLayout>
+    ),
+  },
+  {
+    path: "/memories",
+    element: (
+      <MainLayout>
+        <Route index element={<Memories />} />
+      </MainLayout>
+    ),
+  },
+  {
+    path: "/bucket-list",
+    element: (
+      <MainLayout>
+        <Route index element={<BucketList />} />
       </MainLayout>
     ),
   },

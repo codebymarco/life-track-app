@@ -23,11 +23,11 @@ const MainNavbar: React.FC = () => {
     { title: "Vision", path: "/vision" },
     { title: "Notes", path: "/notes" },
     { title: "Cooking", path: "/cooking" },
-    { title: "Bucket list", path: "/notes" },
-    { title: "jokes", path: "/notes" },
-    { title: "workout", path: "/notes" },
-    { title: "finance", path: "/notes" },
-    { title: "memories", path: "/notes" },
+    { title: "Bucket list", path: "/bucket-list" },
+    { title: "jokes", path: "/jokes" },
+    { title: "finance", path: "/finance" },
+    { title: "memories", path: "/memories" },
+    { title: "workout", path: "/workout" },
   ];
 
   return (

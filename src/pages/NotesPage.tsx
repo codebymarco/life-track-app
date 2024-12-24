@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { v4 as uuidv4 } from "uuid";
 
 // Define the NotesData type with a unique identifier
@@ -60,6 +61,7 @@ function NotesPage() {
   const [open, setOpen] = useState<boolean>(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [filterCategory, setFilterCategory] = useState<string>("");
+  const [viewNote, setViewNote] = useState<NotesData | null>(null);
 
   // Load data from localStorage on component mount
   useEffect(() => {
@@ -86,6 +88,8 @@ function NotesPage() {
     });
     setEditId(null);
   };
+
+  const handleViewClose = () => setViewNote(null);
 
   // Handle Form Changes
   const handleChange = (
@@ -244,6 +248,31 @@ function NotesPage() {
         </Box>
       </Modal>
 
+      {/* Modal for Viewing Note */}
+      <Modal open={!!viewNote} onClose={handleViewClose}>
+        <Box sx={style}>
+          <Typography variant="h6" gutterBottom>
+            Note Details
+          </Typography>
+          {viewNote && (
+            <>
+              <Typography variant="subtitle1"><strong>Name:</strong> {viewNote.name}</Typography>
+              <Typography variant="subtitle1"><strong>Body:</strong> {viewNote.body}</Typography>
+              <Typography variant="subtitle1"><strong>Category:</strong> {viewNote.category}</Typography>
+              <Typography variant="subtitle1"><strong>Date Created:</strong> {new Date(viewNote.dateCreated).toLocaleString()}</Typography>
+            </>
+          )}
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleViewClose}
+            style={{ marginTop: "10px" }}
+          >
+            Close
+          </Button>
+        </Box>
+      </Modal>
+
       {/* Table */}
       <TableContainer component={Paper} sx={{ marginTop: 4 }}>
         <Table>
@@ -265,6 +294,9 @@ function NotesPage() {
                   <TableCell>{row.category}</TableCell>
                   <TableCell>{new Date(row.dateCreated).toLocaleString()}</TableCell>
                   <TableCell>
+                    <IconButton onClick={() => setViewNote(row)}>
+                      <VisibilityIcon />
+                    </IconButton>
                     <IconButton onClick={() => handleEdit(row.id)}>
                       <EditIcon />
                     </IconButton>
