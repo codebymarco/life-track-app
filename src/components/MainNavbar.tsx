@@ -1,6 +1,6 @@
-import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import React from "react";
+import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
 
 const MainNavbar: React.FC = () => {
   const navigate = useNavigate();
@@ -10,18 +10,24 @@ const MainNavbar: React.FC = () => {
   };
 
   const navLinks = [
-    { title: 'General', path: '/entries' },
-    { title: 'Diet', path: '/diet' },
-    { title: 'Journal', path: '/journal' },
-    { title: 'Status', path: '/status' },
-    { title: 'Places', path: '/places' },
-    { title: 'Skills', path: '/skills' },
-    { title: 'Passwords', path: '/passwords' },
-    { title: 'ToDo', path: '/todo' },
-    { title: 'ToBuy', path: '/tobuy' },
-    { title: 'Links', path: '/links' },
-    { title: 'Vision', path: '/vision' },
-    { title: 'Notes', path: '/notes' },
+    { title: "General", path: "/entries" },
+    { title: "Diet", path: "/diet" },
+    { title: "Journal", path: "/journal" },
+    { title: "Status", path: "/status" },
+    { title: "Places", path: "/places" },
+    { title: "Skills", path: "/skills" },
+    { title: "Passwords", path: "/passwords" },
+    { title: "ToDo", path: "/todo" },
+    { title: "ToBuy", path: "/tobuy" },
+    { title: "Links", path: "/links" },
+    { title: "Vision", path: "/vision" },
+    { title: "Notes", path: "/notes" },
+    { title: "Cooking", path: "/cooking" },
+    { title: "Bucket list", path: "/notes" },
+    { title: "jokes", path: "/notes" },
+    { title: "workout", path: "/notes" },
+    { title: "finance", path: "/notes" },
+    { title: "memories", path: "/notes" },
   ];
 
   return (
@@ -31,8 +37,8 @@ const MainNavbar: React.FC = () => {
         <Typography
           variant="h6"
           component="div"
-          sx={{ flexGrow: 1, cursor: 'pointer' }}
-          onClick={() => handleRoute('/')}
+          sx={{ flexGrow: 1, cursor: "pointer" }}
+          onClick={() => handleRoute("/")}
         >
           Marco
         </Typography>

@@ -13,6 +13,7 @@ import Links from "../pages/Links";
 import VisionBoard from "../pages/VisionBoard";
 import Tobuy from "../pages/ToBuy";
 import NotesPage from "../pages/NotesPage";
+import Cooking from "../pages/Cooking";
 
 const routes: RouteObject[] = [
   {
@@ -92,6 +93,14 @@ const routes: RouteObject[] = [
     element: (
       <MainLayout>
         <Route index element={<Todo />} />
+      </MainLayout>
+    ),
+  },
+  {
+    path: "/cooking",
+    element: (
+      <MainLayout>
+        <Route index element={<Cooking />} />
       </MainLayout>
     ),
   },
