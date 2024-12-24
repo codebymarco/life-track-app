@@ -23,13 +23,22 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import AddIcon from "@mui/icons-material/Add";
 import { v4 as uuidv4 } from 'uuid';
 
-// Define the SkillsData type with a unique identifier
+// Define the SkillsData type with a unique identifier, status checks, and a note
+type StatusCheck = {
+  status: string;
+  timestamp: string;
+};
+
 type SkillsData = {
   id: string; // Unique identifier
   skill: string;
   learned: boolean;
+  statusChecks: StatusCheck[];
+  note: string; // Note attribute
 };
 
 // Modal styling
@@ -47,14 +56,32 @@ const style = {
   p: 4,
 };
 
+const viewStyle = {
+  position: "absolute" as const,
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 800,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+  maxHeight: "90vh",
+  overflowY: "auto",
+};
+
 function SkillsPage() {
   const [skillsData, setSkillsData] = useState<SkillsData[]>([]);
   const [skillsForm, setSkillsForm] = useState<SkillsData>({
     id: "",
     skill: "",
     learned: false,
+    statusChecks: [],
+    note: "",
   });
   const [open, setOpen] = useState<boolean>(false);
+  const [viewOpen, setViewOpen] = useState<boolean>(false);
+  const [viewData, setViewData] = useState<SkillsData | null>(null);
   const [editId, setEditId] = useState<string | null>(null);
 
   // Load data from localStorage on component mount
@@ -69,6 +96,8 @@ function SkillsPage() {
         id: entry.id || uuidv4(),
         skill: entry.skill || "",
         learned: entry.learned || false,
+        statusChecks: entry.statusChecks || [],
+        note: entry.note || "",
       }));
       setSkillsData(initializedSkills);
       localStorage.setItem("skillsEntries", JSON.stringify(initializedSkills));
@@ -77,7 +106,7 @@ function SkillsPage() {
     }
   }, []);
 
-  // Open and Close Modal
+  // Open and Close Modals
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
@@ -85,8 +114,20 @@ function SkillsPage() {
       id: "",
       skill: "",
       learned: false,
+      statusChecks: [],
+      note: "",
     });
     setEditId(null);
+  };
+
+  const handleViewOpen = (data: SkillsData) => {
+    setViewData(data);
+    setViewOpen(true);
+  };
+
+  const handleViewClose = () => {
+    setViewOpen(false);
+    setViewData(null);
   };
 
   // Handle Form Changes
@@ -145,6 +186,25 @@ function SkillsPage() {
       const filteredSkills = skillsData.filter(skill => skill.id !== id);
       setSkillsData(filteredSkills);
       localStorage.setItem("skillsEntries", JSON.stringify(filteredSkills));
+    }
+  };
+
+  // Handle Add Status Check
+  const handleAddStatus = (id: string) => {
+    const statusText = prompt("Enter the status update:");
+    if (statusText) {
+      const timestamp = new Date().toISOString();
+      const updatedSkills = skillsData.map(skill => {
+        if (skill.id === id) {
+          return {
+            ...skill,
+            statusChecks: [...skill.statusChecks, { status: statusText, timestamp }],
+          };
+        }
+        return skill;
+      });
+      setSkillsData(updatedSkills);
+      localStorage.setItem("skillsEntries", JSON.stringify(updatedSkills));
     }
   };
 
@@ -281,6 +341,16 @@ function SkillsPage() {
             }
             label="Learned"
           />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Note"
+            name="note"
+            value={skillsForm.note}
+            onChange={handleChange}
+            multiline
+            rows={3}
+          />
           <Button
             variant="contained"
             color="primary"
@@ -292,6 +362,37 @@ function SkillsPage() {
         </Box>
       </Modal>
 
+      {/* Modal for Viewing Details */}
+      <Modal open={viewOpen} onClose={handleViewClose}>
+        <Box sx={viewStyle}>
+          {viewData && (
+            <>
+              <Typography variant="h5" gutterBottom>
+                {viewData.skill}
+              </Typography>
+              <Typography variant="subtitle1" gutterBottom>
+                Note:
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                {viewData.note || "No notes available."}
+              </Typography>
+              <Typography variant="subtitle1" gutterBottom>
+                Status Timeline:
+              </Typography>
+              <ul>
+                {viewData.statusChecks.map((check, index) => (
+                  <li key={index}>
+                    <Typography variant="body2">
+                      {check.status} ({new Date(check.timestamp).toLocaleString()})
+                    </Typography>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </Box>
+      </Modal>
+
       {/* Table */}
       <TableContainer component={Paper} sx={{ marginTop: 4 }}>
         <Table>
@@ -299,6 +400,8 @@ function SkillsPage() {
             <TableRow>
               <TableCell>Skill</TableCell>
               <TableCell>Learned</TableCell>
+              <TableCell>Note</TableCell>
+              <TableCell>Status Checks</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -308,6 +411,23 @@ function SkillsPage() {
                 <TableRow key={row.id}>
                   <TableCell>{row.skill}</TableCell>
                   <TableCell>{row.learned ? "Yes" : "No"}</TableCell>
+                  <TableCell>{row.note}</TableCell>
+                  <TableCell>
+                    {row.statusChecks.map((check, i) => (
+                      <div key={i} style={{ marginBottom: "5px" }}>
+                        <Typography variant="body2">
+                          {check.status} ({new Date(check.timestamp).toLocaleString()})
+                        </Typography>
+                      </div>
+                    ))}
+                    <Button
+                      size="small"
+                      startIcon={<AddIcon />}
+                      onClick={() => handleAddStatus(row.id)}
+                    >
+                      Add Status
+                    </Button>
+                  </TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleEdit(row.id)}>
                       <EditIcon />
@@ -315,12 +435,15 @@ function SkillsPage() {
                     <IconButton onClick={() => handleDelete(row.id)}>
                       <DeleteIcon />
                     </IconButton>
+                    <IconButton onClick={() => handleViewOpen(row)}>
+                      <VisibilityIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={3} align="center">
+                <TableCell colSpan={5} align="center">
                   No skills to learn found.
                 </TableCell>
               </TableRow>
