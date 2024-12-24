@@ -20,9 +20,6 @@ import {
   InputLabel,
   FormControl,
   Typography,
-  Card,
-  CardContent,
-  Grid,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -33,6 +30,7 @@ type PlacesData = {
   id: string; // Unique identifier
   place: string;
   visited: boolean;
+  note: string; // Additional notes for the place
 };
 
 // Modal styling
@@ -56,6 +54,7 @@ function PlacesPage() {
     id: "",
     place: "",
     visited: false,
+    note: "",
   });
   const [open, setOpen] = useState<boolean>(false);
   const [editId, setEditId] = useState<string | null>(null);
@@ -72,6 +71,7 @@ function PlacesPage() {
         id: entry.id || uuidv4(),
         place: entry.place || "",
         visited: entry.visited || false,
+        note: entry.note || "",
       }));
       setPlacesData(initializedPlaces);
       localStorage.setItem("placesEntries", JSON.stringify(initializedPlaces));
@@ -88,6 +88,7 @@ function PlacesPage() {
       id: "",
       place: "",
       visited: false,
+      note: "",
     });
     setEditId(null);
   };
@@ -151,28 +152,6 @@ function PlacesPage() {
     }
   };
 
-  // Sorting and Filtering
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [filterVisited, setFilterVisited] = useState<boolean | "">("");
-
-  // Function to sort data
-  const sortData = (data: PlacesData[], order: "asc" | "desc"): PlacesData[] => {
-    return [...data].sort((a, b) => {
-      if (a.place.toLowerCase() < b.place.toLowerCase()) return order === "asc" ? -1 : 1;
-      if (a.place.toLowerCase() > b.place.toLowerCase()) return order === "asc" ? 1 : -1;
-      return 0;
-    });
-  };
-
-  // Function to filter data
-  const filterData = (data: PlacesData[], visitedFilter: boolean | ""): PlacesData[] => {
-    if (visitedFilter === "") return data;
-    return data.filter(place => place.visited === visitedFilter);
-  };
-
-  // Processed Data for Rendering
-  const processedPlaces = sortData(filterData(placesData, filterVisited), sortOrder);
-
   return (
     <div style={{ padding: "20px" }}>
       <Typography variant="h4" gutterBottom>
@@ -206,59 +185,6 @@ function PlacesPage() {
         </Button>
       </div>
 
-      {/* Sorting and Filtering Controls */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          marginBottom: "20px",
-          flexWrap: "wrap",
-          gap: "20px",
-        }}
-      >
-        {/* Sorting */}
-        <FormControl variant="outlined" size="small">
-          <InputLabel>Sort by Place</InputLabel>
-          <Select
-            label="Sort by Place"
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
-            style={{ minWidth: 150 }}
-          >
-            <MenuItem value="asc">Ascending</MenuItem>
-            <MenuItem value="desc">Descending</MenuItem>
-          </Select>
-        </FormControl>
-
-        {/* Filtering */}
-        <FormControl variant="outlined" size="small">
-          <InputLabel>Filter by Visited</InputLabel>
-          <Select
-            label="Filter by Visited"
-            value={filterVisited}
-            onChange={(e) =>
-              setFilterVisited(e.target.value as boolean | "")
-            }
-            style={{ minWidth: 150 }}
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value={true}>Visited</MenuItem>
-            <MenuItem value={false}>Not Visited</MenuItem>
-          </Select>
-        </FormControl>
-
-        {/* Reset Filter Button */}
-        <Button
-          variant="text"
-          onClick={() => {
-            setSortOrder("asc");
-            setFilterVisited("");
-          }}
-        >
-          Reset Filter
-        </Button>
-      </div>
-
       {/* Modal for Adding/Editing */}
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
@@ -273,6 +199,16 @@ function PlacesPage() {
             value={placesForm.place}
             onChange={handleChange}
             required
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Notes"
+            name="note"
+            value={placesForm.note}
+            onChange={handleChange}
+            multiline
+            rows={3}
           />
           <FormControlLabel
             control={
@@ -302,15 +238,17 @@ function PlacesPage() {
             <TableRow>
               <TableCell>Place</TableCell>
               <TableCell>Visited</TableCell>
+              <TableCell>Notes</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {processedPlaces.length > 0 ? (
-              processedPlaces.map((row) => (
+            {placesData.length > 0 ? (
+              placesData.map((row) => (
                 <TableRow key={row.id}>
                   <TableCell>{row.place}</TableCell>
                   <TableCell>{row.visited ? "Yes" : "No"}</TableCell>
+                  <TableCell>{row.note}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleEdit(row.id)}>
                       <EditIcon />
@@ -323,7 +261,7 @@ function PlacesPage() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={3} align="center">
+                <TableCell colSpan={4} align="center">
                   No places to visit found.
                 </TableCell>
               </TableRow>
