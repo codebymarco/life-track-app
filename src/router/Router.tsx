@@ -12,6 +12,7 @@ import Todo from "../pages/Todo";
 import Links from "../pages/Links";
 import VisionBoard from "../pages/VisionBoard";
 import Tobuy from "../pages/ToBuy";
+import NotesPage from "../pages/NotesPage";
 
 const routes: RouteObject[] = [
   {
@@ -74,7 +75,7 @@ const routes: RouteObject[] = [
     path: "/notes",
     element: (
       <MainLayout>
-        <Route index element={<SkillsPage />} />
+        <Route index element={<NotesPage />} />
       </MainLayout>
     ),
   },
