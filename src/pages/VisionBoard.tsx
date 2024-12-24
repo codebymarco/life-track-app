@@ -24,13 +24,21 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
 import { Link as RouterLink } from "react-router-dom";
 
 // Vision Board data type
+type StatusCheck = {
+  status: string;
+  timestamp: string;
+};
+
 type VisionData = {
   goal: string;
   currentStatus: string;
   goalStatus: string;
+  startDate: string;
+  statusChecks: StatusCheck[];
 };
 
 // Modal styling
@@ -55,6 +63,8 @@ function VisionBoard() {
     goal: "",
     currentStatus: "",
     goalStatus: "",
+    startDate: new Date().toISOString(),
+    statusChecks: [],
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
@@ -72,6 +82,8 @@ function VisionBoard() {
           goal: entry.goal || "",
           currentStatus: entry.currentStatus || "",
           goalStatus: entry.goalStatus || "",
+          startDate: entry.startDate || new Date().toISOString(),
+          statusChecks: entry.statusChecks || [],
         }))
       );
     } catch {
@@ -83,7 +95,13 @@ function VisionBoard() {
   const handleClose = () => {
     setOpen(false);
     // Reset the form
-    setVisionForm({ goal: "", currentStatus: "", goalStatus: "" });
+    setVisionForm({
+      goal: "",
+      currentStatus: "",
+      goalStatus: "",
+      startDate: new Date().toISOString(),
+      statusChecks: [],
+    });
     setEditIndex(null);
   };
 
@@ -129,6 +147,17 @@ function VisionBoard() {
     setVisionForm(visionData[index]);
     setEditIndex(index);
     handleOpen();
+  };
+
+  const handleAddStatus = (index: number) => {
+    const statusText = prompt("Enter the status update:");
+    if (statusText) {
+      const timestamp = new Date().toISOString();
+      const updatedVision = [...visionData];
+      updatedVision[index].statusChecks.push({ status: statusText, timestamp });
+      setVisionData(updatedVision);
+      localStorage.setItem("visionEntries", JSON.stringify(updatedVision));
+    }
   };
 
   const handleDownload = () => {
@@ -286,6 +315,14 @@ function VisionBoard() {
             multiline
             rows={3}
           />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Start Date"
+            name="startDate"
+            value={visionForm.startDate}
+            disabled
+          />
           <Button
             variant="contained"
             color="primary"
@@ -305,6 +342,8 @@ function VisionBoard() {
               <TableCell>Goal</TableCell>
               <TableCell>Current Status</TableCell>
               <TableCell>Goal Status</TableCell>
+              <TableCell>Start Date</TableCell>
+              <TableCell>Status Checks</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -315,6 +354,23 @@ function VisionBoard() {
                   <TableCell>{row.goal}</TableCell>
                   <TableCell>{row.currentStatus}</TableCell>
                   <TableCell>{row.goalStatus}</TableCell>
+                  <TableCell>{new Date(row.startDate).toLocaleString()}</TableCell>
+                  <TableCell>
+                    {row.statusChecks.map((check, i) => (
+                      <div key={i} style={{ marginBottom: "5px" }}>
+                        <Typography variant="body2">
+                          {check.status} ({new Date(check.timestamp).toLocaleString()})
+                        </Typography>
+                      </div>
+                    ))}
+                    <Button
+                      size="small"
+                      startIcon={<AddIcon />}
+                      onClick={() => handleAddStatus(index)}
+                    >
+                      Add Status
+                    </Button>
+                  </TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleEdit(index)}>
                       <EditIcon />
@@ -327,7 +383,7 @@ function VisionBoard() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={4} align="center">
+                <TableCell colSpan={6} align="center">
                   No vision board goals found.
                 </TableCell>
               </TableRow>
