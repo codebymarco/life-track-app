@@ -21,6 +21,7 @@ const MainNavbar: React.FC = () => {
     { title: 'ToBuy', path: '/tobuy' },
     { title: 'Links', path: '/links' },
     { title: 'Vision', path: '/vision' },
+    { title: 'Notes', path: '/notes' },
   ];
 
   return (

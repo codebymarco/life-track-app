@@ -71,6 +71,14 @@ const routes: RouteObject[] = [
     ),
   },
   {
+    path: "/notes",
+    element: (
+      <MainLayout>
+        <Route index element={<SkillsPage />} />
+      </MainLayout>
+    ),
+  },
+  {
     path: "/passwords",
     element: (
       <MainLayout>
