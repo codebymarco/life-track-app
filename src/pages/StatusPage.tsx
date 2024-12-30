@@ -30,13 +30,17 @@ type EntryData = {
   mast: boolean;
   pn: boolean;
   steps: number;
-  WorkoutTime: number;
+  workoutTime: number;
   suntime: number;
   jelqs: number;
   stretch: boolean;
   pe: boolean;
   kegels: boolean;
   coding?: number;
+};
+
+type EntryData2 = {
+  water: number;
 };
 
 // Type Guard for EntryData
@@ -63,10 +67,14 @@ const isValidEntry = (entry: any): entry is EntryData => {
 const StatusPage: React.FC = () => {
   // State to hold entries
   const [entries, setEntries] = useState<EntryData[]>([]);
+  const [dietEntries, setDietEntries] = useState<EntryData2[]>([]);
 
   // Statistics
   const [totalSteps, setTotalSteps] = useState<number>(0);
   const [averageSteps, setAverageSteps] = useState<number>(0);
+
+  const [totalWater, setTotalWater] = useState<number>(0);
+  const [averageWater, setAverageWater] = useState<number>(0);
 
   // Boolean Metrics Counts
   const [prayMorningCount, setPrayMorningCount] = useState<number>(0);
@@ -90,9 +98,9 @@ const StatusPage: React.FC = () => {
   const [totalSuntime, setTotalSuntime] = useState<number>(0);
   const [averageSuntime, setAverageSuntime] = useState<number>(0);
 
-    // Suntime Metrics
-    const [totalWorkouttime, setTotalWorkouttime] = useState<number>(0);
-    const [averageWorkouttime, setAverageWorkouttime] = useState<number>(0);
+  // Suntime Metrics
+  const [totalWorkouttime, setTotalWorkouttime] = useState<number>(0);
+  const [averageWorkouttime, setAverageWorkouttime] = useState<number>(0);
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -117,6 +125,25 @@ const StatusPage: React.FC = () => {
       setEntries([]);
     }
   }, []);
+
+  useEffect(() => {
+    try {
+      const storedEntries2 = JSON.parse(
+        localStorage.getItem("dietEntries") || "[]"
+      );
+  
+      const parsedEntries: EntryData2[] = storedEntries2.map((entry: any) => ({
+        water: parseFloat(entry.water) || 0, // Convert water to a float
+      }));
+  
+      setDietEntries(parsedEntries);
+      console.log("Loaded Diet Entries:", parsedEntries);
+    } catch (error) {
+      console.error("Failed to parse dietEntries from localStorage:", error);
+      setDietEntries([]);
+    }
+  }, []);
+  
 
   // Compute statistics whenever entries change
   useEffect(() => {
@@ -152,17 +179,14 @@ const StatusPage: React.FC = () => {
     setTotalSteps(total);
     setAverageSteps(average);
 
-
-        // Steps Statistics
-        const workoutsArray = entries
-        .map((entry) => entry.WorkoutTime)
-        .filter((step) => !isNaN(step));
-      const total2 = workoutsArray.reduce((acc, curr) => acc + curr, 0);
-      const average2 = workoutsArray.length > 0 ? total / workoutsArray.length : 0;
-      setTotalWorkouttime(total2);
-      setAverageWorkouttime(average2);
-  
-
+    const workoutsArray = entries
+    .map((entry) => entry.workoutTime)
+    .filter((workoutTime) => !isNaN(workoutTime));
+  const total2 = workoutsArray.reduce((acc, curr) => acc + curr, 0);
+  const average2 =
+    workoutsArray.length > 0 ? total2 / workoutsArray.length : 0; // Use total2
+  setTotalWorkouttime(total2);
+  setAverageWorkouttime(average2);
 
     // Boolean Metrics Counts
     setPrayMorningCount(entries.filter((entry) => entry.prayMorning).length);
@@ -212,6 +236,25 @@ const StatusPage: React.FC = () => {
     console.log("Total Suntime:", totalSuntime);
     console.log("Average Suntime:", averageSuntime);
   }, [entries]);
+
+  // Compute statistics whenever entries change
+  useEffect(() => {
+    if (dietEntries.length === 0) {
+      // Reset all statistics if there are no entries
+      setTotalWater(0);
+      setAverageWater(0);
+      return;
+    }
+
+    // Steps Statistics
+    const stepsArray = dietEntries
+      .map((entry) => entry.water)
+      .filter((step) => !isNaN(step));
+    const total = stepsArray.reduce((acc, curr) => acc + curr, 0);
+    const average = stepsArray.length > 0 ? total / stepsArray.length : 0;
+    setTotalWater(total);
+    setAverageWater(average);
+  }, [dietEntries]);
 
   // Handle Download Statistics as JSON
   const handleDownload = () => {
@@ -285,6 +328,32 @@ const StatusPage: React.FC = () => {
               </Typography>
               <Typography variant="h4" color="text.secondary">
                 {averageSteps.toFixed(0)}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <Card sx={{ minWidth: 275 }}>
+            <CardContent>
+              <Typography variant="h6" component="div" gutterBottom>
+                Total Water
+              </Typography>
+              <Typography variant="h4" color="text.secondary">
+                {totalWater}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <Card sx={{ minWidth: 275 }}>
+            <CardContent>
+              <Typography variant="h6" component="div" gutterBottom>
+                Average Water
+              </Typography>
+              <Typography variant="h4" color="text.secondary">
+                {averageWater.toFixed(0)}
               </Typography>
             </CardContent>
           </Card>
