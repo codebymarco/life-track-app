@@ -35,6 +35,7 @@ type FormData = {
   workout: boolean;
   workoutDetails: string[];
   workoutTime: number; // New Field
+  firstMeal: string; // New Field
   sleepTime: number; // New Field
   poop: number; // New Field
   numberOfShowers: number; // New Field
@@ -97,7 +98,8 @@ const useStyles = makeStyles({
     boxShadow: 24,
     padding: "8px", // Further reduced padding
   },
-  viewModalBox: { // Styles for the View Modal
+  viewModalBox: {
+    // Styles for the View Modal
     position: "absolute" as const,
     top: "50%",
     left: "50%",
@@ -160,6 +162,7 @@ const Entries: React.FC = () => {
     pe: false,
     kegels: false,
     coding: "",
+    firstMeal: "",
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
@@ -243,11 +246,7 @@ const Entries: React.FC = () => {
     setFormData((prev) => ({
       ...prev,
       [name!]:
-        type === "checkbox"
-          ? checked
-          : name === "coding"
-          ? value
-          : value,
+        type === "checkbox" ? checked : name === "coding" ? value : value,
     }));
   };
 
@@ -435,7 +434,7 @@ const Entries: React.FC = () => {
           size="small"
           className={classes.formControl}
         >
-          <InputLabel style={{ fontSize: '0.65rem' }}>Sort</InputLabel>
+          <InputLabel style={{ fontSize: "0.65rem" }}>Sort</InputLabel>
           <Select
             label="Sort"
             value={sortOrder}
@@ -509,7 +508,11 @@ const Entries: React.FC = () => {
                 size="small"
               />
             }
-            label={<Typography className={classes.checkboxLabel}>Pray Morning</Typography>}
+            label={
+              <Typography className={classes.checkboxLabel}>
+                Pray Morning
+              </Typography>
+            }
           />
           <FormControlLabel
             control={
@@ -520,7 +523,9 @@ const Entries: React.FC = () => {
                 size="small"
               />
             }
-            label={<Typography className={classes.checkboxLabel}>Workout</Typography>}
+            label={
+              <Typography className={classes.checkboxLabel}>Workout</Typography>
+            }
           />
           {formData.workout && (
             <>
@@ -558,7 +563,11 @@ const Entries: React.FC = () => {
                 size="small"
               />
             }
-            label={<Typography className={classes.checkboxLabel}>Pray Evening</Typography>}
+            label={
+              <Typography className={classes.checkboxLabel}>
+                Pray Evening
+              </Typography>
+            }
           />
           <FormControlLabel
             control={
@@ -569,7 +578,9 @@ const Entries: React.FC = () => {
                 size="small"
               />
             }
-            label={<Typography className={classes.checkboxLabel}>Mast</Typography>}
+            label={
+              <Typography className={classes.checkboxLabel}>Mast</Typography>
+            }
           />
           <FormControlLabel
             control={
@@ -580,7 +591,9 @@ const Entries: React.FC = () => {
                 size="small"
               />
             }
-            label={<Typography className={classes.checkboxLabel}>PN</Typography>}
+            label={
+              <Typography className={classes.checkboxLabel}>PN</Typography>
+            }
           />
           <TextField
             fullWidth
@@ -675,7 +688,9 @@ const Entries: React.FC = () => {
                 size="small"
               />
             }
-            label={<Typography className={classes.checkboxLabel}>Stretch</Typography>}
+            label={
+              <Typography className={classes.checkboxLabel}>Stretch</Typography>
+            }
           />
           <FormControlLabel
             control={
@@ -686,7 +701,9 @@ const Entries: React.FC = () => {
                 size="small"
               />
             }
-            label={<Typography className={classes.checkboxLabel}>PE</Typography>}
+            label={
+              <Typography className={classes.checkboxLabel}>PE</Typography>
+            }
           />
           <FormControlLabel
             control={
@@ -697,7 +714,9 @@ const Entries: React.FC = () => {
                 size="small"
               />
             }
-            label={<Typography className={classes.checkboxLabel}>Kegels</Typography>}
+            label={
+              <Typography className={classes.checkboxLabel}>Kegels</Typography>
+            }
           />
           {/* Coding Field */}
           <TextField
@@ -719,7 +738,11 @@ const Entries: React.FC = () => {
             color="primary"
             onClick={handleSave}
             size="small"
-            style={{ marginTop: "6px", padding: "4px 8px", fontSize: "0.65rem" }}
+            style={{
+              marginTop: "6px",
+              padding: "4px 8px",
+              fontSize: "0.65rem",
+            }}
           >
             Save
           </Button>
@@ -729,7 +752,10 @@ const Entries: React.FC = () => {
       {/* Modal for Viewing Entry Details */}
       <Modal open={viewOpen} onClose={handleViewClose}>
         <Box className={classes.viewModalBox}>
-          <Typography gutterBottom style={{ fontSize: "1rem", fontWeight: "bold" }}>
+          <Typography
+            gutterBottom
+            style={{ fontSize: "1rem", fontWeight: "bold" }}
+          >
             Entry Details
           </Typography>
           {viewEntry && (
@@ -738,10 +764,12 @@ const Entries: React.FC = () => {
                 <strong>Date:</strong> {viewEntry.date}
               </Typography>
               <Typography style={{ fontSize: "0.85rem" }}>
-                <strong>Pray Morning:</strong> {viewEntry.prayMorning ? "Yes" : "No"}
+                <strong>Pray Morning:</strong>{" "}
+                {viewEntry.prayMorning ? "Yes" : "No"}
               </Typography>
               <Typography style={{ fontSize: "0.85rem" }}>
-                <strong>Pray Evening:</strong> {viewEntry.prayEvening ? "Yes" : "No"}
+                <strong>Pray Evening:</strong>{" "}
+                {viewEntry.prayEvening ? "Yes" : "No"}
               </Typography>
               <Typography style={{ fontSize: "0.85rem" }}>
                 <strong>Mast:</strong> {viewEntry.mast ? "Yes" : "No"}
@@ -758,10 +786,12 @@ const Entries: React.FC = () => {
               {viewEntry.workout && (
                 <>
                   <Typography style={{ fontSize: "0.85rem" }}>
-                    <strong>Workout Details:</strong> {viewEntry.workoutDetails.join(", ")}
+                    <strong>Workout Details:</strong>{" "}
+                    {viewEntry.workoutDetails.join(", ")}
                   </Typography>
                   <Typography style={{ fontSize: "0.85rem" }}>
-                    <strong>Workout Time:</strong> {viewEntry.workoutTime} minutes
+                    <strong>Workout Time:</strong> {viewEntry.workoutTime}{" "}
+                    minutes
                   </Typography>
                 </>
               )}
@@ -793,14 +823,21 @@ const Entries: React.FC = () => {
                 <strong>Kegels Done:</strong> {viewEntry.kegels ? "Yes" : "No"}
               </Typography>
               <Typography style={{ fontSize: "0.85rem" }}>
-                <strong>Coding:</strong> {viewEntry.coding !== undefined ? `${viewEntry.coding} minutes` : "-"}
+                <strong>Coding:</strong>{" "}
+                {viewEntry.coding !== undefined
+                  ? `${viewEntry.coding} minutes`
+                  : "-"}
               </Typography>
               <Button
                 variant="contained"
                 color="primary"
                 onClick={handleViewClose}
                 size="small"
-                style={{ marginTop: "12px", padding: "6px 12px", fontSize: "0.75rem" }}
+                style={{
+                  marginTop: "12px",
+                  padding: "6px 12px",
+                  fontSize: "0.75rem",
+                }}
               >
                 Close
               </Button>
@@ -822,16 +859,24 @@ const Entries: React.FC = () => {
               <TableCell className={classes.tableHeader}>Steps</TableCell>
               <TableCell className={classes.tableHeader}>Workout</TableCell>
               {/* Removed Workout Details Column */}
-              <TableCell className={classes.tableHeader}>Workout Time</TableCell>
+              <TableCell className={classes.tableHeader}>
+                Workout Time
+              </TableCell>
               <TableCell className={classes.tableHeader}>Sleep</TableCell>
               <TableCell className={classes.tableHeader}>Poop</TableCell>
               <TableCell className={classes.tableHeader}>Showers</TableCell>
-              <TableCell className={classes.tableHeader}>Kegels Count</TableCell> {/* Renamed */}
+              <TableCell className={classes.tableHeader}>
+                Kegels Count
+              </TableCell>{" "}
+              {/* Renamed */}
               <TableCell className={classes.tableHeader}>Suntime</TableCell>
               <TableCell className={classes.tableHeader}>Jelqs</TableCell>
               <TableCell className={classes.tableHeader}>Stretch</TableCell>
               <TableCell className={classes.tableHeader}>PE</TableCell>
-              <TableCell className={classes.tableHeader}>Kegels Done</TableCell> {/* Renamed */}
+              <TableCell className={classes.tableHeader}>
+                Kegels Done
+              </TableCell>{" "}
+              {/* Renamed */}
               <TableCell className={classes.tableHeader}>Coding</TableCell>
               <TableCell className={classes.tableHeader}>Actions</TableCell>
             </TableRow>
@@ -840,7 +885,9 @@ const Entries: React.FC = () => {
             {processedEntries.length > 0 ? (
               processedEntries.map(({ entry, originalIndex }) => (
                 <TableRow key={originalIndex}>
-                  <TableCell className={classes.tableCell}>{entry.date}</TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.date}
+                  </TableCell>
                   <TableCell className={classes.tableCell}>
                     {entry.prayMorning ? "Yes" : "No"}
                   </TableCell>
@@ -853,20 +900,34 @@ const Entries: React.FC = () => {
                   <TableCell className={classes.tableCell}>
                     {entry.pn ? "Yes" : "No"}
                   </TableCell>
-                  <TableCell className={classes.tableCell}>{entry.steps}</TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.steps}
+                  </TableCell>
                   <TableCell className={classes.tableCell}>
                     {entry.workout ? "Yes" : "No"}
                   </TableCell>
                   {/* Removed Workout Details Cell */}
-                  <TableCell className={classes.tableCell}>{entry.workoutTime}</TableCell>
-                  <TableCell className={classes.tableCell}>{entry.sleepTime}</TableCell>
-                  <TableCell className={classes.tableCell}>{entry.poop}</TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.workoutTime}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.sleepTime}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.poop}
+                  </TableCell>
                   <TableCell className={classes.tableCell}>
                     {entry.numberOfShowers}
                   </TableCell>
-                  <TableCell className={classes.tableCell}>{entry.no_of_kegels}</TableCell>
-                  <TableCell className={classes.tableCell}>{entry.suntime}</TableCell>
-                  <TableCell className={classes.tableCell}>{entry.jelqs}</TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.no_of_kegels}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.suntime}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.jelqs}
+                  </TableCell>
                   <TableCell className={classes.tableCell}>
                     {entry.stretch ? "Yes" : "No"}
                   </TableCell>
@@ -880,14 +941,23 @@ const Entries: React.FC = () => {
                     {entry.coding !== undefined ? entry.coding : "-"}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    <IconButton onClick={() => handleEdit(originalIndex)} size="small">
+                    <IconButton
+                      onClick={() => handleEdit(originalIndex)}
+                      size="small"
+                    >
                       <EditIcon fontSize="small" />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(originalIndex)} size="small">
+                    <IconButton
+                      onClick={() => handleDelete(originalIndex)}
+                      size="small"
+                    >
                       <DeleteIcon fontSize="small" />
                     </IconButton>
                     {/* Added View Button */}
-                    <IconButton onClick={() => handleViewOpen(entry)} size="small">
+                    <IconButton
+                      onClick={() => handleViewOpen(entry)}
+                      size="small"
+                    >
                       <VisibilityIcon fontSize="small" />
                     </IconButton>
                   </TableCell>
