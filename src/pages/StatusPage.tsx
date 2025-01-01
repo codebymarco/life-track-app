@@ -413,6 +413,67 @@ const StatusPage: React.FC = () => {
           </Card>
         </Grid>
 
+
+
+
+
+
+
+
+
+        {/* Kegels Statistics */}
+        <Grid item xs={12} sm={6}>
+          <Card sx={{ minWidth: 275 }}>
+            <CardContent>
+              <Typography variant="h6" component="div" gutterBottom>
+                Total Kegels
+              </Typography>
+              <Typography variant="h4" color="text.secondary">
+                {totalJelqs}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <Card sx={{ minWidth: 275 }}>
+            <CardContent>
+              <Typography variant="h6" component="div" gutterBottom>
+                Average Kegels per Day
+              </Typography>
+              <Typography variant="h4" color="text.secondary">
+                {averageJelqs.toFixed(2)}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         {/* Suntime Statistics */}
         <Grid item xs={12} sm={6}>
           <Card sx={{ minWidth: 275 }}>
@@ -472,11 +533,9 @@ const StatusPage: React.FC = () => {
           { label: "Pray Morning", count: prayMorningCount },
           { label: "Pray Evening", count: prayEveningCount },
           { label: "Workout", count: workoutCount },
-          { label: "Mast", count: mastCount },
-          { label: "PN", count: pnCount },
-          { label: "Stretch", count: stretchCount },
-          { label: "PE", count: peCount },
-          { label: "Kegels", count: kegelsCount },
+          { label: "Masturbate", count: mastCount },
+          { label: "Wacthed Porn", count: pnCount },
+          { label: "Stretch", count: stretchCount }
         ].map((metric, index) => (
           <Grid item xs={12} sm={6} key={index}>
             <Card sx={{ minWidth: 275 }}>
