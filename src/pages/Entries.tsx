@@ -872,10 +872,6 @@ const Entries: React.FC = () => {
               <TableCell className={classes.tableHeader}>Suntime</TableCell>
               <TableCell className={classes.tableHeader}>Jelqs</TableCell>
               <TableCell className={classes.tableHeader}>Stretch</TableCell>
-              <TableCell className={classes.tableHeader}>PE</TableCell>
-              <TableCell className={classes.tableHeader}>
-                Kegels Done
-              </TableCell>{" "}
               {/* Renamed */}
               <TableCell className={classes.tableHeader}>Coding</TableCell>
               <TableCell className={classes.tableHeader}>Actions</TableCell>
@@ -930,12 +926,6 @@ const Entries: React.FC = () => {
                   </TableCell>
                   <TableCell className={classes.tableCell}>
                     {entry.stretch ? "Yes" : "No"}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.pe ? "Yes" : "No"}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.kegels ? "Yes" : "No"}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
                     {entry.coding !== undefined ? entry.coding : "-"}
