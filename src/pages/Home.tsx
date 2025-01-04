@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Container,
   Grid,
@@ -10,18 +10,18 @@ import {
   List,
   ListItem,
   ListItemText,
-} from '@mui/material';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import LocalDrinkIcon from '@mui/icons-material/LocalDrink';
-import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
-import CodeIcon from '@mui/icons-material/Code';
-import WbSunnyIcon from '@mui/icons-material/WbSunny';
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
-import SportsMmaIcon from '@mui/icons-material/SportsMma'; // Proxy icon for prayer
-import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
+} from "@mui/material";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import LocalDrinkIcon from "@mui/icons-material/LocalDrink";
+import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
+import CodeIcon from "@mui/icons-material/Code";
+import WbSunnyIcon from "@mui/icons-material/WbSunny";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import SportsMmaIcon from "@mui/icons-material/SportsMma"; // Proxy icon for prayer
+import DirectionsWalkIcon from "@mui/icons-material/DirectionsWalk";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 const Home: React.FC = () => {
   interface Activity {
@@ -42,20 +42,53 @@ const Home: React.FC = () => {
   }
 
   const trackerData: TrackerData = {
-    prayMorning: { name: 'Morning Prayer', currentStreak: 5, history: [true, true, true, false, true] },
-    prayNight: { name: 'Night Prayer', currentStreak: 5, history: [true, false, true, true, true] },
-    workout: { name: 'Workout', currentStreak: 5, history: [false, true, true, true, false] },
-    jelqs: { name: 'Jelqs', currentStreak: 5, history: [true, true, false, true, true] },
-    sunTime: { name: 'Sun Time', currentStreak: 5, history: [false, false, true, true, true] },
-    coding: { name: 'Coding', currentStreak: 5, history: [true, true, true, true, true] },
+    prayMorning: {
+      name: "Morning Prayer",
+      currentStreak: 5,
+      history: [true, true, true, false, true],
+    },
+    prayNight: {
+      name: "Night Prayer",
+      currentStreak: 5,
+      history: [true, false, true, true, true],
+    },
+    workout: {
+      name: "Workout",
+      currentStreak: 5,
+      history: [false, true, true, true, false],
+    },
+    jelqs: {
+      name: "Jelqs",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+    },
+    sunTime: {
+      name: "Sun Time",
+      currentStreak: 5,
+      history: [false, false, true, true, true],
+    },
+    coding: {
+      name: "Coding",
+      currentStreak: 5,
+      history: [true, true, true, true, true],
+    },
     waterIntake: 3.5,
     steps: 22000,
   };
 
   const trackers = [
-    { activity: trackerData.prayMorning, icon: <SportsMmaIcon fontSize="large" /> },
-    { activity: trackerData.prayNight, icon: <SportsMmaIcon fontSize="large" /> },
-    { activity: trackerData.workout, icon: <FitnessCenterIcon fontSize="large" /> },
+    {
+      activity: trackerData.prayMorning,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.prayNight,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.workout,
+      icon: <FitnessCenterIcon fontSize="large" />,
+    },
     { activity: trackerData.jelqs, icon: <EmojiPeopleIcon fontSize="large" /> },
     { activity: trackerData.sunTime, icon: <WbSunnyIcon fontSize="large" /> },
     { activity: trackerData.coding, icon: <CodeIcon fontSize="large" /> },
@@ -98,7 +131,10 @@ const Home: React.FC = () => {
   const calculateTotals = () => {
     const totalSteps = carouselData.reduce((acc, day) => acc + day.steps, 0);
     const totalJelqs = carouselData.reduce((acc, day) => acc + day.jelqs, 0);
-    const totalSunTime = carouselData.reduce((acc, day) => acc + day.sunTime, 0);
+    const totalSunTime = carouselData.reduce(
+      (acc, day) => acc + day.sunTime,
+      0
+    );
     const totalKegels = carouselData.reduce((acc, day) => acc + day.kegels, 0);
     const numDays = carouselData.length;
 
@@ -118,17 +154,17 @@ const Home: React.FC = () => {
   const stats = calculateTotals();
 
   const todos = [
-    { task: 'Complete project report', dueToday: true },
-    { task: 'Buy groceries', dueToday: true },
-    { task: 'Schedule doctor appointment', dueToday: false },
-    { task: 'Call parents', dueToday: false },
+    { task: "Complete project report", dueToday: true },
+    { task: "Buy groceries", dueToday: true },
+    { task: "Schedule doctor appointment", dueToday: false },
+    { task: "Call parents", dueToday: false },
   ];
 
   const toBuys = [
-    { item: 'Milk', dueToday: true },
-    { item: 'Eggs', dueToday: false },
-    { item: 'Bread', dueToday: true },
-    { item: 'Vegetables', dueToday: false },
+    { item: "Milk", dueToday: true },
+    { item: "Eggs", dueToday: false },
+    { item: "Bread", dueToday: true },
+    { item: "Vegetables", dueToday: false },
   ];
 
   return (
@@ -141,21 +177,26 @@ const Home: React.FC = () => {
       <Grid container spacing={3}>
         {trackers.map((tracker, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card sx={{ display: 'flex', flexDirection: 'column', p: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Card sx={{ display: "flex", flexDirection: "column", p: 2 }}>
+              <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                 <Box sx={{ mr: 2 }}>{tracker.icon}</Box>
                 <CardContent>
                   <Typography variant="h6">{tracker.activity.name}</Typography>
                   <Typography color="text.secondary">
                     Current Streak: {tracker.activity.currentStreak} day
-                    {tracker.activity.currentStreak > 1 ? 's' : ''}
+                    {tracker.activity.currentStreak > 1 ? "s" : ""}
                   </Typography>
                 </CardContent>
               </Box>
               <Typography variant="body2" color="text.secondary">
-                Last 5 Days: {tracker.activity.history.map((status, idx) => (
-                  status ? <CheckCircleIcon key={idx} color="success" /> : <CancelIcon key={idx} color="error" />
-                ))}
+                Last 5 Days:{" "}
+                {tracker.activity.history.map((status, idx) =>
+                  status ? (
+                    <CheckCircleIcon key={idx} color="success" />
+                  ) : (
+                    <CancelIcon key={idx} color="error" />
+                  )
+                )}
               </Typography>
             </Card>
           </Grid>
@@ -170,9 +211,9 @@ const Home: React.FC = () => {
         <Card sx={{ p: 3 }}>
           <Box
             sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
             <IconButton onClick={handlePrev}>
@@ -187,83 +228,6 @@ const Home: React.FC = () => {
           <Typography>Jelqs: {currentDayData.jelqs}</Typography>
           <Typography>Sun Time: {currentDayData.sunTime} hours</Typography>
           <Typography>Kegels: {currentDayData.kegels}</Typography>
-        </Card>
-      </Box>
-
-      {/* Statistics Section */}
-      <Box sx={{ mt: 6 }}>
-        <Typography variant="h5" gutterBottom>
-          Statistics
-        </Typography>
-        <Card sx={{ p: 3 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6} md={3}>
-              <Typography>Total Steps: {stats.totalSteps}</Typography>
-              <Typography>Avg Steps: {stats.avgSteps}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Typography>Total Jelqs: {stats.totalJelqs}</Typography>
-              <Typography>Avg Jelqs: {stats.avgJelqs}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Typography>Total Sun Time: {stats.totalSunTime}</Typography>
-              <Typography>Avg Sun Time: {stats.avgSunTime}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Typography>Total Kegels: {stats.totalKegels}</Typography>
-              <Typography>Avg Kegels: {stats.avgKegels}</Typography>
-            </Grid>
-          </Grid>
-        </Card>
-      </Box>
-
-      {/* To-Do Section */}
-      <Box sx={{ mt: 6 }}>
-        <Typography variant="h5" gutterBottom>
-          To-Dos
-        </Typography>
-        <Card sx={{ p: 3 }}>
-          <Typography variant="h6">Outstanding To-Dos</Typography>
-          <List>
-            {todos.filter((todo) => !todo.dueToday).map((todo, idx) => (
-              <ListItem key={idx}>
-                <ListItemText primary={todo.task} />
-              </ListItem>
-            ))}
-          </List>
-          <Typography variant="h6">Today's To-Dos</Typography>
-          <List>
-            {todos.filter((todo) => todo.dueToday).map((todo, idx) => (
-              <ListItem key={idx}>
-                <ListItemText primary={todo.task} />
-              </ListItem>
-            ))}
-          </List>
-        </Card>
-      </Box>
-
-      {/* To-Buy Section */}
-      <Box sx={{ mt: 6 }}>
-        <Typography variant="h5" gutterBottom>
-          To-Buys
-        </Typography>
-        <Card sx={{ p: 3 }}>
-          <Typography variant="h6">Outstanding To-Buys</Typography>
-          <List>
-            {toBuys.filter((item) => !item.dueToday).map((item, idx) => (
-              <ListItem key={idx}>
-                <ListItemText primary={item.item} />
-              </ListItem>
-            ))}
-          </List>
-          <Typography variant="h6">Today's To-Buys</Typography>
-          <List>
-            {toBuys.filter((item) => item.dueToday).map((item, idx) => (
-              <ListItem key={idx}>
-                <ListItemText primary={item.item} />
-              </ListItem>
-            ))}
-          </List>
         </Card>
       </Box>
     </Container>
