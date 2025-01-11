@@ -929,6 +929,7 @@ const Workout: React.FC = () => {
               <TableCell className={classes.tableHeader}>squats</TableCell>
               <TableCell className={classes.tableHeader}>sitDown</TableCell>
               <TableCell className={classes.tableHeader}>lunges</TableCell>
+              <TableCell className={classes.tableHeader}>actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -961,19 +962,64 @@ const Workout: React.FC = () => {
     lunges: 0, */}
 
                   <TableCell className={classes.tableCell}>
-                    {entry.deltRaiseFoward ? "Yes" : "No"}
+                    {entry.deltRaiseFoward || 0}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    {entry.deltRaiseSide ? "Yes" : "No"}
+                    {entry.deltRaiseSide || 0}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    {entry.bicepCurls ? "Yes" : "No"}
+                    {entry.bicepCurls || 0}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    {entry.workout ? "Yes" : "No"}
+                    {entry.workout ? "yes" : "no"}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    {entry.workoutTime}
+                    {entry.workoutTime || 0}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.calfRaise || 0}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.pushUps || 0}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.legRaise || 0}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.crunches || 0}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.kickOuts || 0}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.crunchesReverse || 0}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.bikeDistance || 0}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.bikeTime || 0}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.wristGrips || 0}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.footballkeepUps || 0}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.footballAtw || 0}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.stretch ? "yes" : "no"}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.squats || 0}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.sitDown || 0}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.lunges || 0}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
                     <IconButton
