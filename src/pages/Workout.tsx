@@ -367,7 +367,7 @@ const Workout: React.FC = () => {
   return (
     <div className={classes.container}>
       <Typography className={classes.title} gutterBottom>
-        General
+        Workout
       </Typography>
 
       {/* Add and Download Buttons */}

@@ -66,6 +66,17 @@ const useStyles = makeStyles({
   container: {
     padding: "8px",
   },
+  tableCell: {
+    padding: "16px",
+  },
+  weekend: {
+    backgroundColor: "dodgerblue",
+    color: "white",
+  },
+  weekday: {
+    backgroundColor: "aquamarine",
+    color: "white",
+  },
   title: {
     fontSize: "1.25rem", // Reduced from h5
     marginBottom: "8px",
@@ -952,96 +963,110 @@ const Entries: React.FC = () => {
           </TableHead>
           <TableBody>
             {processedEntries.length > 0 ? (
-              processedEntries.map(({ entry, originalIndex }) => (
-                <TableRow key={originalIndex}>
-                  <TableCell className={classes.tableCell}>
-                    {entry.date}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.prayMorning ? "Yes" : "No"}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.prayEvening ? "Yes" : "No"}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.mast ? "Yes" : "No"}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.pn ? "Yes" : "No"}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.steps}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.workout ? "Yes" : "No"}
-                  </TableCell>
-                  {/* Removed Workout Details Cell */}
-                  <TableCell className={classes.tableCell}>
-                    {entry.workoutTime}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.sleepTime}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.poop}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.numberOfShowers}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.no_of_kegels}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.suntime}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.jelqs}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.stretch ? "Yes" : "No"}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.coding !== undefined ? entry.coding : "-"}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.keep_ups !== undefined ? entry.keep_ups : "-"}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.bike_time !== undefined ? entry.bike_time : "-"}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.bike_km !== undefined ? entry.bike_km : "-"}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.wrist_grips !== undefined ? entry.wrist_grips : "-"}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    <IconButton
-                      onClick={() => handleEdit(originalIndex)}
-                      size="small"
+              processedEntries.map(({ entry, originalIndex }) => {
+                // JavaScript logic must be inside curly braces in the map callback
+                const dateObject = new Date(entry.date);
+                const dayOfWeek = dateObject.getDay();
+                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                const dayName = dateObject.toLocaleDateString("en-US", {
+                  weekday: "long",
+                });
+
+                return (
+                  <TableRow key={originalIndex}>
+                    <TableCell
+                      className={`${classes.tableCell} ${
+                        isWeekend ? classes.weekend : classes.weekday
+                      }`}
                     >
-                      <EditIcon fontSize="small" />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => handleDelete(originalIndex)}
-                      size="small"
-                    >
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                    {/* Added View Button */}
-                    <IconButton
-                      onClick={() => handleViewOpen(entry)}
-                      size="small"
-                    >
-                      <VisibilityIcon fontSize="small" />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))
+                      {entry.date} - {dayName}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.prayMorning ? "Yes" : "No"}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.prayEvening ? "Yes" : "No"}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.mast ? "Yes" : "No"}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.pn ? "Yes" : "No"}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.steps}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.workout ? "Yes" : "No"}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.workoutTime}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.sleepTime}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.poop}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.numberOfShowers}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.no_of_kegels}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.suntime}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.jelqs}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.stretch ? "Yes" : "No"}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.coding !== undefined ? entry.coding : "-"}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.keep_ups !== undefined ? entry.keep_ups : "-"}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.bike_time !== undefined ? entry.bike_time : "-"}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.bike_km !== undefined ? entry.bike_km : "-"}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.wrist_grips !== undefined
+                        ? entry.wrist_grips
+                        : "-"}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      <IconButton
+                        onClick={() => handleEdit(originalIndex)}
+                        size="small"
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleDelete(originalIndex)}
+                        size="small"
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleViewOpen(entry)}
+                        size="small"
+                      >
+                        <VisibilityIcon fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={18} // Updated colSpan after removing one column
+                  colSpan={18}
                   align="center"
                   className={classes.tableCell}
                 >
