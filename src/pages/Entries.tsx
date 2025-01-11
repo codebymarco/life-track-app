@@ -49,6 +49,10 @@ type FormData = {
   pe: boolean;
   kegels: boolean;
   coding?: number;
+  bike_time?: number;
+  bike_km?: number;
+  keep_ups?: number;
+  wrist_grips?: number;
 };
 
 // New Type for Processed Entries
@@ -162,6 +166,10 @@ const Entries: React.FC = () => {
     pe: false,
     kegels: false,
     coding: "",
+    bike_time: 0,
+    bike_km: 0,
+    keep_ups: 0,
+    wrist_grips: 0,
     firstMeal: "",
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
@@ -231,6 +239,11 @@ const Entries: React.FC = () => {
       pe: false,
       kegels: false,
       coding: "",
+      bike_time: 0,
+      bike_km: 0,
+      keep_ups: 0,
+      wrist_grips: 0,
+      firstMeal: "",
     });
     setEditIndex(null);
   };
@@ -732,6 +745,62 @@ const Entries: React.FC = () => {
             inputProps={{ min: 0 }}
           />
 
+          {/* bike km Field */}
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="Bike km"
+            type="number"
+            name="bike_km"
+            value={formData.bike_km}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+
+          {/* bike time Field */}
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="Bike Time"
+            type="number"
+            name="bike_time"
+            value={formData.bike_time}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+
+          {/* wrist grips Field */}
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="Wrist Grips"
+            type="number"
+            name="wrist_grips"
+            value={formData.wrist_grips}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+
+          {/* keepups Field */}
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="Keepups"
+            type="number"
+            name="keep_ups"
+            value={formData.keep_ups}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+
           {/* Save Button */}
           <Button
             variant="contained"
@@ -874,6 +943,10 @@ const Entries: React.FC = () => {
               <TableCell className={classes.tableHeader}>Stretch</TableCell>
               {/* Renamed */}
               <TableCell className={classes.tableHeader}>Coding</TableCell>
+              <TableCell className={classes.tableHeader}>keepsups</TableCell>
+              <TableCell className={classes.tableHeader}>bike_time</TableCell>
+              <TableCell className={classes.tableHeader}>bike_km</TableCell>
+              <TableCell className={classes.tableHeader}>wrist_grip</TableCell>
               <TableCell className={classes.tableHeader}>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -929,6 +1002,18 @@ const Entries: React.FC = () => {
                   </TableCell>
                   <TableCell className={classes.tableCell}>
                     {entry.coding !== undefined ? entry.coding : "-"}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.keep_ups !== undefined ? entry.keep_ups : "-"}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.bike_time !== undefined ? entry.bike_time : "-"}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.bike_km !== undefined ? entry.bike_km : "-"}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.wrist_grips !== undefined ? entry.wrist_grips : "-"}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
                     <IconButton

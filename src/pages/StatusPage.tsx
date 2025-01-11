@@ -131,11 +131,11 @@ const StatusPage: React.FC = () => {
       const storedEntries2 = JSON.parse(
         localStorage.getItem("dietEntries") || "[]"
       );
-  
+
       const parsedEntries: EntryData2[] = storedEntries2.map((entry: any) => ({
         water: parseFloat(entry.water) || 0, // Convert water to a float
       }));
-  
+
       setDietEntries(parsedEntries);
       console.log("Loaded Diet Entries:", parsedEntries);
     } catch (error) {
@@ -143,7 +143,6 @@ const StatusPage: React.FC = () => {
       setDietEntries([]);
     }
   }, []);
-  
 
   // Compute statistics whenever entries change
   useEffect(() => {
@@ -180,13 +179,13 @@ const StatusPage: React.FC = () => {
     setAverageSteps(average);
 
     const workoutsArray = entries
-    .map((entry) => entry.workoutTime)
-    .filter((workoutTime) => !isNaN(workoutTime));
-  const total2 = workoutsArray.reduce((acc, curr) => acc + curr, 0);
-  const average2 =
-    workoutsArray.length > 0 ? total2 / workoutsArray.length : 0; // Use total2
-  setTotalWorkouttime(total2);
-  setAverageWorkouttime(average2);
+      .map((entry) => entry.workoutTime)
+      .filter((workoutTime) => !isNaN(workoutTime));
+    const total2 = workoutsArray.reduce((acc, curr) => acc + curr, 0);
+    const average2 =
+      workoutsArray.length > 0 ? total2 / workoutsArray.length : 0; // Use total2
+    setTotalWorkouttime(total2);
+    setAverageWorkouttime(average2);
 
     // Boolean Metrics Counts
     setPrayMorningCount(entries.filter((entry) => entry.prayMorning).length);
@@ -246,14 +245,16 @@ const StatusPage: React.FC = () => {
       return;
     }
 
-    // Steps Statistics
-    const stepsArray = dietEntries
+    // Water Statistics
+    const waterArray = dietEntries
       .map((entry) => entry.water)
-      .filter((step) => !isNaN(step));
-    const total = stepsArray.reduce((acc, curr) => acc + curr, 0);
-    const average = stepsArray.length > 0 ? total / stepsArray.length : 0;
-    setTotalWater(total);
-    setAverageWater(average);
+      .filter((water) => !isNaN(water));
+    const totalWaterConsumed = waterArray.reduce((acc, curr) => acc + curr, 0);
+    const averageWaterConsumed =
+      waterArray.length > 0 ? totalWaterConsumed / waterArray.length : 0;
+
+    setTotalWater(totalWaterConsumed);
+    setAverageWater(averageWaterConsumed);
   }, [dietEntries]);
 
   // Handle Download Statistics as JSON
@@ -413,14 +414,6 @@ const StatusPage: React.FC = () => {
           </Card>
         </Grid>
 
-
-
-
-
-
-
-
-
         {/* Kegels Statistics */}
         <Grid item xs={12} sm={6}>
           <Card sx={{ minWidth: 275 }}>
@@ -447,32 +440,6 @@ const StatusPage: React.FC = () => {
             </CardContent>
           </Card>
         </Grid>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         {/* Suntime Statistics */}
         <Grid item xs={12} sm={6}>
@@ -535,7 +502,7 @@ const StatusPage: React.FC = () => {
           { label: "Workout", count: workoutCount },
           { label: "Masturbate", count: mastCount },
           { label: "Wacthed Porn", count: pnCount },
-          { label: "Stretch", count: stretchCount }
+          { label: "Stretch", count: stretchCount },
         ].map((metric, index) => (
           <Grid item xs={12} sm={6} key={index}>
             <Card sx={{ minWidth: 275 }}>
