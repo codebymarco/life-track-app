@@ -14,10 +14,6 @@ const MainNavbar: React.FC = () => {
     { title: "Diet", path: "/diet" },
     { title: "Journal", path: "/journal" },
     { title: "Status", path: "/status" },
-    { title: "Passwords", path: "/passwords" },
-    { title: "Links", path: "/links" },
-    { title: "Notes", path: "/notes" },
-    { title: "jokes", path: "/jokes" },
     { title: "workout", path: "/workout" },
   ];
 
