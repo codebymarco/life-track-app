@@ -26,6 +26,11 @@ const Home: React.FC = () => {
   const [jelqsTotal, setJelqsTotal] = useState<number>(0);
   const [jelqsAverage, setJelqsAverage] = useState<number>(0);
 
+  const [sunTotal, setSunTotal] = useState<number>(0);
+  const [sunAverage, setSunAverage] = useState<number>(0);
+
+
+
   useEffect(() => {
     try {
       const storedEntries = JSON.parse(
@@ -51,9 +56,17 @@ const Home: React.FC = () => {
       ).length;
       const average = totalJelqs / storedEntries.length;
 
+      const totalSun = storedEntries.reduce((sum: number, entry: any) => {
+        const jelqsValue = parseInt(entry.suntime, 10);
+        return sum + (isNaN(jelqsValue) ? 0 : jelqsValue);
+      }, 0);
+      const averageSun = totalSun / storedEntries.length;
+
       setPmTotal(totalPmTrue);
       setPnTotal(totalPnTrue);
       setJelqsTotal(totalJelqs);
+      setSunTotal(totalSun);
+      setSunAverage(averageSun);
       setWorkoutTotal(totalWorkoutTrue);
       setJelqsAverage(average)
     } catch {
@@ -113,6 +126,8 @@ const Home: React.FC = () => {
       name: "Sun Time",
       currentStreak: 5,
       history: [false, false, true, true, true],
+      total:sunTotal,
+      average:sunAverage
     },
     coding: {
       name: "Coding",
