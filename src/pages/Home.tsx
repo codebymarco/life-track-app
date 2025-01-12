@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Grid,
@@ -19,9 +19,56 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 
 const Home: React.FC = () => {
+  const [data, setData] = useState<FormData[]>([]);
+  const [pmTotal, setPmTotal] = useState<number>(0);
+  const [pnTotal, setPnTotal] = useState<number>(0);
+  const [workoutTotal, setWorkoutTotal] = useState<number>(0);
+  const [jelqsTotal, setJelqsTotal] = useState<number>(0);
+  const [jelqsAverage, setJelqsAverage] = useState<number>(0);
+
+  useEffect(() => {
+    try {
+      const storedEntries = JSON.parse(
+        localStorage.getItem("entries") || "[]"
+      ) as FormData[];
+      setData(
+        storedEntries.map((entry) => ({
+          ...entry,
+        }))
+      );
+      const totalPmTrue = storedEntries.filter(
+        (entry: any) => entry.prayMorning
+      ).length;
+      const totalPnTrue = storedEntries.filter(
+        (entry: any) => entry.prayEvening
+      ).length;
+      const totalJelqs = storedEntries.reduce((sum: number, entry: any) => {
+        const jelqsValue = parseInt(entry.jelqs, 10); // Convert string to integer
+        return sum + (isNaN(jelqsValue) ? 0 : jelqsValue); // Add value if it's a valid number
+      }, 0);
+      const totalWorkoutTrue = storedEntries.filter(
+        (entry: any) => entry.workout
+      ).length;
+      const average = totalJelqs / storedEntries.length;
+
+      setPmTotal(totalPmTrue);
+      setPnTotal(totalPnTrue);
+      setJelqsTotal(totalJelqs);
+      setWorkoutTotal(totalWorkoutTrue);
+      setJelqsAverage(average)
+    } catch {
+      setData([]);
+    }
+  }, []);
+
+  console.log("data", data);
+  console.log("pm tootal", pmTotal);
+
   interface Activity {
     name: string;
     currentStreak: number;
+    average?: number;
+    total?: number;
     history: boolean[]; // Last 5 days history (true for yes, false for no)
   }
 
@@ -41,21 +88,26 @@ const Home: React.FC = () => {
       name: "Morning Prayer",
       currentStreak: 5,
       history: [true, true, true, false, true],
+      total: pmTotal,
     },
     prayNight: {
       name: "Night Prayer",
       currentStreak: 5,
       history: [true, false, true, true, true],
+      total: pnTotal,
     },
     workout: {
       name: "Workout",
       currentStreak: 5,
       history: [false, true, true, true, false],
+      total: workoutTotal
     },
     jelqs: {
       name: "Jelqs",
       currentStreak: 5,
       history: [true, true, false, true, true],
+      total: jelqsTotal,
+      average: jelqsAverage
     },
     sunTime: {
       name: "Sun Time",
@@ -183,6 +235,14 @@ const Home: React.FC = () => {
                     Current Streak: {tracker.activity.currentStreak} day
                     {tracker.activity.currentStreak > 1 ? "s" : ""}
                   </Typography>
+                  <Typography color="text.secondary">
+                    total: {tracker.activity.total}/ {data.length}
+                  </Typography>
+                  {
+                    tracker.activity.average ?                   <Typography color="text.secondary">
+                    {tracker.activity.average} per day
+                  </Typography> : null
+                  }
                 </CardContent>
               </Box>
               <Typography variant="body2" color="text.secondary">
