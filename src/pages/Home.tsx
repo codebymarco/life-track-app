@@ -7,19 +7,14 @@ import {
   Typography,
   Box,
   IconButton,
-  List,
-  ListItem,
-  ListItemText,
 } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import LocalDrinkIcon from "@mui/icons-material/LocalDrink";
 import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
 import CodeIcon from "@mui/icons-material/Code";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import SportsMmaIcon from "@mui/icons-material/SportsMma"; // Proxy icon for prayer
-import DirectionsWalkIcon from "@mui/icons-material/DirectionsWalk";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 
@@ -166,6 +161,8 @@ const Home: React.FC = () => {
     { item: "Bread", dueToday: true },
     { item: "Vegetables", dueToday: false },
   ];
+
+  console.log(stats, todos, toBuys);
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
