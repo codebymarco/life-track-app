@@ -43,6 +43,7 @@ type FormData = {
   mast: boolean;
   pn: boolean;
   steps: string;
+  dayType?: string;
   suntime: number;
   jelqs: number;
   pe: boolean;
@@ -245,6 +246,7 @@ const Entries: React.FC = () => {
       kegels: false,
       coding: "",
       firstMeal: "",
+      dayType: "",
     });
     setEditIndex(null);
   };
@@ -614,6 +616,18 @@ const Entries: React.FC = () => {
             variant="outlined"
             size="small"
             className={classes.textField}
+            label="day type"
+            type="text"
+            name="dayType"
+            value={formData.dayType}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            className={classes.textField}
             label="Steps"
             type="number"
             name="steps"
@@ -733,7 +747,6 @@ const Entries: React.FC = () => {
             inputProps={{ min: 0 }}
           />
 
-
           {/* Save Button */}
           <Button
             variant="contained"
@@ -822,6 +835,9 @@ const Entries: React.FC = () => {
                 <strong>Kegels Done:</strong> {viewEntry.kegels ? "Yes" : "No"}
               </Typography>
               <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>day type:</strong> {viewEntry?.kegels!}
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
                 <strong>Coding:</strong>{" "}
                 {viewEntry.coding !== undefined
                   ? `${viewEntry.coding} minutes`
@@ -867,6 +883,7 @@ const Entries: React.FC = () => {
               <TableCell className={classes.tableHeader}>
                 Kegels Count
               </TableCell>{" "}
+              <TableCell className={classes.tableHeader}>day type</TableCell>{" "}
               {/* Renamed */}
               <TableCell className={classes.tableHeader}>Suntime</TableCell>
               <TableCell className={classes.tableHeader}>Jelqs</TableCell>
@@ -927,6 +944,9 @@ const Entries: React.FC = () => {
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.no_of_kegels}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.dayType}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.suntime}
