@@ -26,6 +26,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 type JournalData = {
   date: string;
   body: string;
+  travelTime?: number;
 };
 
 // Modal Styling
@@ -62,7 +63,11 @@ const JournalEntries: React.FC = () => {
   // State Management
   const [journalData, setJournalData] = useState<JournalData[]>([]);
   const [open, setOpen] = useState<boolean>(false);
-  const [journalForm, setJournalForm] = useState<JournalData>({ date: "", body: "" });
+  const [journalForm, setJournalForm] = useState<JournalData>({
+    date: "",
+    body: "",
+    travelTime: 0,
+  });
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [viewOpen, setViewOpen] = useState<boolean>(false);
   const [selectedEntry, setSelectedEntry] = useState<JournalData | null>(null);
@@ -74,7 +79,9 @@ const JournalEntries: React.FC = () => {
   // Load Data from localStorage on Mount
   useEffect(() => {
     try {
-      const storedJournal = JSON.parse(localStorage.getItem("journalEntries") || "[]") as JournalData[];
+      const storedJournal = JSON.parse(
+        localStorage.getItem("journalEntries") || "[]"
+      ) as JournalData[];
       setJournalData(storedJournal);
     } catch {
       setJournalData([]);
@@ -92,12 +99,14 @@ const JournalEntries: React.FC = () => {
 
   // Reset Form Data
   const resetForm = () => {
-    setJournalForm({ date: "", body: "" });
+    setJournalForm({ date: "", body: "", travelTime: 0 });
     setEditIndex(null);
   };
 
   // Handle Form Changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
 
     setJournalForm((prev) => ({
@@ -134,7 +143,9 @@ const JournalEntries: React.FC = () => {
 
   // Handle Delete
   const handleDelete = (index: number) => {
-    const confirm = window.confirm("Are you sure you want to delete this journal entry?");
+    const confirm = window.confirm(
+      "Are you sure you want to delete this journal entry?"
+    );
     if (!confirm) return;
 
     const filteredJournal = journalData.filter((_, i) => i !== index);
@@ -166,7 +177,11 @@ const JournalEntries: React.FC = () => {
   };
 
   // Sorting Function
-  const sortData = <T extends { [key: string]: any }>(data: T[], key: keyof T, order: "asc" | "desc"): T[] => {
+  const sortData = <T extends { [key: string]: any }>(
+    data: T[],
+    key: keyof T,
+    order: "asc" | "desc"
+  ): T[] => {
     return [...data].sort((a, b) => {
       if (a[key] < b[key]) return order === "asc" ? -1 : 1;
       if (a[key] > b[key]) return order === "asc" ? 1 : -1;
@@ -175,18 +190,29 @@ const JournalEntries: React.FC = () => {
   };
 
   // Filtering Function
-  const filterData = <T extends { [key: string]: any }>(data: T[], key: keyof T, filterValue: any): T[] => {
+  const filterData = <T extends { [key: string]: any }>(
+    data: T[],
+    key: keyof T,
+    filterValue: any
+  ): T[] => {
     if (filterValue === "" || filterValue === null) return data;
     return data.filter((item) => {
       if (typeof filterValue === "string") {
-        return item[key].toString().toLowerCase().includes(filterValue.toLowerCase());
+        return item[key]
+          .toString()
+          .toLowerCase()
+          .includes(filterValue.toLowerCase());
       }
       return item[key] === filterValue;
     });
   };
 
   // Processed Data for Rendering
-  const processedJournal = sortData(filterData(journalData, "date", filterDate), "date", sortOrder);
+  const processedJournal = sortData(
+    filterData(journalData, "date", filterDate),
+    "date",
+    sortOrder
+  );
 
   return (
     <div style={{ padding: "20px" }}>
@@ -213,6 +239,7 @@ const JournalEntries: React.FC = () => {
           <TableHead>
             <TableRow>
               <TableCell>Date</TableCell>
+              <TableCell>TravelTime</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -221,6 +248,7 @@ const JournalEntries: React.FC = () => {
               processedJournal.map((row, index) => (
                 <TableRow key={index}>
                   <TableCell>{row.date}</TableCell>
+                  <TableCell>{row.travelTime}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleView(row)}>
                       <VisibilityIcon />
@@ -248,7 +276,11 @@ const JournalEntries: React.FC = () => {
       {/* Add/Edit Modal */}
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
-          <Typography variant="h6">{editIndex !== null ? "Edit Journal Entry" : "Add New Journal Entry"}</Typography>
+          <Typography variant="h6">
+            {editIndex !== null
+              ? "Edit Journal Entry"
+              : "Add New Journal Entry"}
+          </Typography>
           <TextField
             fullWidth
             margin="normal"
@@ -271,7 +303,22 @@ const JournalEntries: React.FC = () => {
             rows={4}
             required
           />
-          <Button variant="contained" color="primary" onClick={handleSave} style={{ marginTop: "10px" }}>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="travel time"
+            name="travelTime"
+            value={journalForm.travelTime}
+            onChange={handleChange}
+            type="number"
+            required
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSave}
+            style={{ marginTop: "10px" }}
+          >
             Save
           </Button>
         </Box>
@@ -286,10 +333,18 @@ const JournalEntries: React.FC = () => {
                 Journal Entry
               </Typography>
               <Typography variant="h6">Date: {selectedEntry.date}</Typography>
-              <Typography variant="body1" style={{ marginTop: "20px", whiteSpace: "pre-line" }}>
+              <Typography
+                variant="body1"
+                style={{ marginTop: "20px", whiteSpace: "pre-line" }}
+              >
                 {selectedEntry.body}
               </Typography>
-              <Button variant="outlined" color="primary" onClick={handleViewClose} style={{ marginTop: "20px" }}>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleViewClose}
+                style={{ marginTop: "20px" }}
+              >
                 Close
               </Button>
             </>

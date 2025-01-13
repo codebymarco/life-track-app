@@ -49,6 +49,9 @@ type FormData = {
   pe: boolean;
   kegels: boolean;
   coding?: number;
+  scm?: boolean;
+  scn?: boolean;
+  travelTime?: number;
 };
 
 // New Type for Processed Entries
@@ -889,6 +892,9 @@ const Entries: React.FC = () => {
               <TableCell className={classes.tableHeader}>Jelqs</TableCell>
               {/* Renamed */}
               <TableCell className={classes.tableHeader}>Coding</TableCell>
+              <TableCell className={classes.tableHeader}>smc</TableCell>
+              <TableCell className={classes.tableHeader}>snc</TableCell>
+              <TableCell className={classes.tableHeader}>traveltime</TableCell>
               <TableCell className={classes.tableHeader}>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -957,6 +963,17 @@ const Entries: React.FC = () => {
                     <TableCell className={classes.tableCell}>
                       {entry.coding !== undefined ? entry.coding : "-"}
                     </TableCell>
+
+                    <TableCell className={classes.tableCell}>
+                      {entry.scm ? "yes" : "no"}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.scn ? "yes" : "no"}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.travelTime}
+                    </TableCell>
+
                     <TableCell className={classes.tableCell}>
                       <IconButton
                         onClick={() => handleEdit(originalIndex)}
