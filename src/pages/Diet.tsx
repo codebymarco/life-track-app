@@ -19,6 +19,8 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -29,12 +31,14 @@ type FoodEntry = {
   calorie: number;
   quantity: number;
   grams?: number;
+  takeout?: boolean;
 };
 
 type DietData = {
   date: string;
   foods: FoodEntry[];
   water: string;
+  takeout?: boolean;
 };
 
 // Modal Styling
@@ -66,6 +70,7 @@ const Diet: React.FC = () => {
         grams: undefined,
       },
     ],
+    takeout: false,
     water: "",
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
@@ -77,7 +82,9 @@ const Diet: React.FC = () => {
   // Load Data from localStorage on Mount
   useEffect(() => {
     try {
-      const storedDiet = JSON.parse(localStorage.getItem("dietEntries") || "[]") as DietData[];
+      const storedDiet = JSON.parse(
+        localStorage.getItem("dietEntries") || "[]"
+      ) as DietData[];
       setDietData(
         storedDiet.map((entry) => ({
           ...entry,
@@ -116,20 +123,17 @@ const Diet: React.FC = () => {
     setEditIndex(null);
   };
 
-  // Handle Form Changes
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | { name?: string; value: unknown }
     >
   ) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;
-
-    if (name === "date" || name === "water") {
-      setDietForm((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+  
+    setDietForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   // Handle Changes in Food Entries
@@ -198,7 +202,9 @@ const Diet: React.FC = () => {
 
   // Handle Delete
   const handleDelete = (index: number) => {
-    const confirm = window.confirm("Are you sure you want to delete this diet entry?");
+    const confirm = window.confirm(
+      "Are you sure you want to delete this diet entry?"
+    );
     if (!confirm) return;
 
     const filteredDiet = dietData.filter((_, i) => i !== index);
@@ -440,6 +446,18 @@ const Diet: React.FC = () => {
             inputProps={{ min: 0, step: "0.1" }}
           />
 
+<FormControlLabel
+  control={
+    <Checkbox
+      checked={dietForm.takeout}
+      name="takeout"
+      onChange={handleChange}
+      size="small"
+    />
+  }
+  label={<Typography>Takeout</Typography>}
+/>
+
           {/* Save Button */}
           <Button
             variant="contained"
@@ -462,6 +480,7 @@ const Diet: React.FC = () => {
               <TableCell>Calorie</TableCell>
               <TableCell>Quantity</TableCell>
               <TableCell>Grams</TableCell>
+              <TableCell>Takeout</TableCell>
               <TableCell>Water (Liters)</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -472,13 +491,24 @@ const Diet: React.FC = () => {
                 entry.foods.map((food, i) => (
                   <TableRow key={`${index}-${i}`}>
                     {i === 0 && (
-                      <TableCell rowSpan={entry.foods.length}>{entry.date}</TableCell>
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.date}
+                      </TableCell>
                     )}
                     <TableCell>{food.food}</TableCell>
                     <TableCell>{food.calorie}</TableCell>
                     <TableCell>{food.quantity}</TableCell>
                     <TableCell>{food.grams || "-"}</TableCell>
-                    {i === 0 && <TableCell rowSpan={entry.foods.length}>{entry.water}</TableCell>}
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.takeout ? "yes" : "no"}
+                      </TableCell>
+                    )}
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.water}
+                      </TableCell>
+                    )}
                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
                         <IconButton onClick={() => handleEdit(index)}>
