@@ -26,6 +26,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility"; // Import Visibility Icon
 import { makeStyles } from "@mui/styles";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 // Type Definitions
 type FormData = {
@@ -51,7 +53,6 @@ type FormData = {
   coding?: number;
   scm?: boolean;
   scn?: boolean;
-  travelTime?: number;
 };
 
 // New Type for Processed Entries
@@ -783,7 +784,7 @@ const Entries: React.FC = () => {
               </Typography>
               <Typography style={{ fontSize: "0.85rem" }}>
                 <strong>Pray Morning:</strong>{" "}
-                {viewEntry.prayMorning ? "Yes" : "No"}
+                {viewEntry.prayMorning ? <CheckCircleIcon /> : <CancelIcon />}
               </Typography>
               <Typography style={{ fontSize: "0.85rem" }}>
                 <strong>Pray Evening:</strong>{" "}
@@ -894,7 +895,6 @@ const Entries: React.FC = () => {
               <TableCell className={classes.tableHeader}>Coding</TableCell>
               <TableCell className={classes.tableHeader}>smc</TableCell>
               <TableCell className={classes.tableHeader}>snc</TableCell>
-              <TableCell className={classes.tableHeader}>traveltime</TableCell>
               <TableCell className={classes.tableHeader}>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -919,59 +919,60 @@ const Entries: React.FC = () => {
                       {entry.date} - {dayName}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {entry.prayMorning ? "Yes" : "No"}
+                      {entry.prayMorning ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {entry.prayEvening ? "Yes" : "No"}
+                      {entry.prayEvening ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {entry.mast ? "Yes" : "No"}
+                      {entry.mast ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {entry.pn ? "Yes" : "No"}
+                      {entry.pn ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {entry.steps}
+                      {entry.steps || 0}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {entry.workout ? "Yes" : "No"}
+                      {entry.workout ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {entry.workoutTime}
+                      {entry.workoutTime || 0}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {entry.sleepTime}
+                      {entry.sleepTime || 0}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {entry.poop}
+                      {entry.poop || 0}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {entry.numberOfShowers}
+                      {entry.numberOfShowers || 0}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {entry.no_of_kegels}
+                      {entry.no_of_kegels || 0}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {entry.dayType}
+                      {entry.dayType
+                        ? entry.dayType
+                        : isWeekend
+                        ? "weekend"
+                        : "work"}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {entry.suntime}
+                      {entry.suntime || 0}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {entry.jelqs}
+                      {entry.jelqs || 0}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.coding !== undefined ? entry.coding : "-"}
                     </TableCell>
 
                     <TableCell className={classes.tableCell}>
-                      {entry.scm ? "yes" : "no"}
+                      {entry.scm ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {entry.scn ? "yes" : "no"}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.travelTime}
+                      {entry.scn ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
 
                     <TableCell className={classes.tableCell}>
