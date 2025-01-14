@@ -24,6 +24,8 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 // Type Definitions
 type FoodEntry = {
@@ -32,6 +34,9 @@ type FoodEntry = {
   quantity: number;
   grams?: number;
   takeout?: boolean;
+  soda?: boolean;
+  coffee?: number;
+  sugar?: number;
 };
 
 type DietData = {
@@ -39,6 +44,9 @@ type DietData = {
   foods: FoodEntry[];
   water: string;
   takeout?: boolean;
+  soda?: boolean;
+  coffee?: number;
+  sugar?: number;
 };
 
 // Modal Styling
@@ -71,6 +79,9 @@ const Diet: React.FC = () => {
       },
     ],
     takeout: false,
+    coffee: 0,
+    soda: false,
+    sugar: 0,
     water: "",
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
@@ -129,7 +140,7 @@ const Diet: React.FC = () => {
     >
   ) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;
-  
+
     setDietForm((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
@@ -446,17 +457,51 @@ const Diet: React.FC = () => {
             inputProps={{ min: 0, step: "0.1" }}
           />
 
-<FormControlLabel
-  control={
-    <Checkbox
-      checked={dietForm.takeout}
-      name="takeout"
-      onChange={handleChange}
-      size="small"
-    />
-  }
-  label={<Typography>Takeout</Typography>}
-/>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.takeout}
+                name="takeout"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>Takeout</Typography>}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="sugar"
+            type="number"
+            name="sugar"
+            value={dietForm.sugar}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="coffee"
+            type="number"
+            name="coffee"
+            value={dietForm.coffee}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.soda}
+                name="soda"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>soda</Typography>}
+          />
 
           {/* Save Button */}
           <Button
@@ -481,6 +526,10 @@ const Diet: React.FC = () => {
               <TableCell>Quantity</TableCell>
               <TableCell>Grams</TableCell>
               <TableCell>Takeout</TableCell>
+              <TableCell>soda</TableCell>
+              <TableCell>coffee</TableCell>
+              <TableCell>sugar</TableCell>
+
               <TableCell>Water (Liters)</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -501,9 +550,27 @@ const Diet: React.FC = () => {
                     <TableCell>{food.grams || "-"}</TableCell>
                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
-                        {entry.takeout ? "yes" : "no"}
+                        {entry.takeout ? <CheckCircleIcon /> : <CancelIcon />}
                       </TableCell>
                     )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.soda ? <CheckCircleIcon /> : <CancelIcon />}
+                      </TableCell>
+                    )}
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.coffee || 0}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.sugar || 0}
+                      </TableCell>
+                    )}
+
                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
                         {entry.water}

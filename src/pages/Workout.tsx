@@ -26,6 +26,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility"; // Import Visibility Icon
 import { makeStyles } from "@mui/styles";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 // Type Definitions
 type FormData = {
@@ -802,7 +804,8 @@ const Workout: React.FC = () => {
               </Typography>
 
               <Typography style={{ fontSize: "0.85rem" }}>
-                <strong>workout:</strong> {viewEntry.workout ? "Yes" : "No"}
+                <strong>workout:</strong>{" "}
+                {viewEntry.workout ? <CheckCircleIcon /> : <CancelIcon />}
               </Typography>
 
               <Typography style={{ fontSize: "0.85rem" }}>
@@ -860,7 +863,8 @@ const Workout: React.FC = () => {
               </Typography>
 
               <Typography style={{ fontSize: "0.85rem" }}>
-                <strong>stretch:</strong> {viewEntry.stretch ? "Yes" : "No"}
+                <strong>stretch:</strong>{" "}
+                {viewEntry.stretch ? <CheckCircleIcon /> : <CancelIcon />}
               </Typography>
 
               <Typography style={{ fontSize: "0.85rem" }}>
@@ -971,7 +975,7 @@ const Workout: React.FC = () => {
                     {entry.bicepCurls || 0}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    {entry.workout ? "yes" : "no"}
+                    {entry.workout ? <CheckCircleIcon /> : <CancelIcon />}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
                     {entry.workoutTime || 0}
@@ -1010,7 +1014,7 @@ const Workout: React.FC = () => {
                     {entry.footballAtw || 0}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    {entry.stretch ? "yes" : "no"}
+                    {entry.stretch ? <CheckCircleIcon /> : <CancelIcon />}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
                     {entry.squats || 0}
