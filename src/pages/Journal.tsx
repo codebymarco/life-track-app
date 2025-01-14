@@ -159,13 +159,19 @@ const JournalEntries: React.FC = () => {
     setViewOpen(true);
   };
 
-  // Handle Edit
   const handleEdit = (index: number) => {
-    setJournalForm(journalData[index]);
-    setEditIndex(index);
-    handleOpen();
+    const entry = processedJournal[index];
+    const originalIndex = journalData.findIndex(
+      (item) => item.date === entry.date && item.body === entry.body
+    );
+    if (originalIndex !== -1) {
+      setJournalForm(journalData[originalIndex]);
+      setEditIndex(originalIndex);
+      handleOpen();
+    } else {
+      alert("Unable to find the selected entry.");
+    }
   };
-
   // Handle Download as JSON
   const handleDownload = () => {
     const jsonData = JSON.stringify(journalData, null, 2);
