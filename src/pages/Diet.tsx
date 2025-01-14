@@ -26,6 +26,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
+import VisibilityIcon from "@mui/icons-material/Visibility"; // Import Visibility Icon
 
 // Type Definitions
 type FoodEntry = {
@@ -297,6 +298,19 @@ const Diet: React.FC = () => {
     return sorted[0].date;
   };
 
+  // State for View Modal
+  const [viewOpen, setViewOpen] = useState<boolean>(false);
+  const [viewEntry, setViewEntry] = useState<DietData | null>(null);
+  // Handle View Modal Open/Close
+  const handleViewOpen = (entry: DietData) => {
+    setViewEntry(entry);
+    setViewOpen(true);
+  };
+  const handleViewClose = () => {
+    setViewOpen(false);
+    setViewEntry(null);
+  };
+
   return (
     <div style={{ padding: "20px" }}>
       <Typography variant="h4" gutterBottom>
@@ -364,6 +378,18 @@ const Diet: React.FC = () => {
           Reset Filter
         </Button>
       </div>
+
+      {/* Modal for Viewing Entry Details */}
+      <Modal open={viewOpen} onClose={handleViewClose}>
+        <Box>
+          <Typography
+            gutterBottom
+            style={{ fontSize: "1rem", fontWeight: "bold" }}
+          >
+            diet Details
+          </Typography>
+        </Box>
+      </Modal>
 
       {/* Modal for Adding/Editing Diet Entries */}
       <Modal open={open} onClose={handleClose}>
@@ -583,6 +609,9 @@ const Diet: React.FC = () => {
                         </IconButton>
                         <IconButton onClick={() => handleDelete(index)}>
                           <DeleteIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleViewOpen(entry)}>
+                          <VisibilityIcon fontSize="small" />
                         </IconButton>
                       </TableCell>
                     )}
