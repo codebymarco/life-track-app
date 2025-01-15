@@ -42,6 +42,7 @@ type FormData = {
   legRaise: number; // New Field
   kickOuts: number; // New Field
   crunches: number;
+  obliques: number;
   crunchesReverse: number;
   bikeDistance: number;
   bikeTime: number;
@@ -52,6 +53,7 @@ type FormData = {
   squats: number;
   sitDown: number;
   lunges: number;
+  footballkneeUps: number;
 };
 
 // New Type for Processed Entries
@@ -152,12 +154,14 @@ const Workout: React.FC = () => {
     pushUps: 0, // New Field
     legRaise: 0, // New Field
     crunches: 0, // New Field
+    obliques: 0, // New Field
     kickOuts: 0, // New Field
     crunchesReverse: 0,
     bikeDistance: 0,
     bikeTime: 0,
     wristGrips: 0,
     footballkeepUps: 0,
+    footballkneeUps: 0,
     footballAtw: 0,
     stretch: false,
     squats: 0,
@@ -220,12 +224,14 @@ const Workout: React.FC = () => {
       pushUps: 0, // New Field
       legRaise: 0, // New Field
       crunches: 0, // New Field
+      obliques: 0, // New Field
       kickOuts: 0, // New Field
       crunchesReverse: 0,
       bikeDistance: 0,
       bikeTime: 0,
       wristGrips: 0,
       footballkeepUps: 0,
+      footballkneeUps: 0,
       footballAtw: 0,
       stretch: false,
       squats: 0,
@@ -593,6 +599,19 @@ const Workout: React.FC = () => {
             inputProps={{ min: 0 }}
           />
 
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="obliques"
+            type="number"
+            name="obliques"
+            value={formData.obliques}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+
           <FormControlLabel
             control={
               <Checkbox
@@ -687,6 +706,19 @@ const Workout: React.FC = () => {
             type="number"
             name="footballkeepUps"
             value={formData.footballkeepUps}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="footballkneeUps"
+            type="number"
+            name="footballkneeUps"
+            value={formData.footballkneeUps}
             onChange={handleChange}
             inputProps={{ min: 0 }}
           />
@@ -830,6 +862,10 @@ const Workout: React.FC = () => {
               </Typography>
 
               <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>obliques:</strong> {viewEntry.obliques ? "Yes" : "No"}
+              </Typography>
+
+              <Typography style={{ fontSize: "0.85rem" }}>
                 <strong>kickOuts:</strong> {viewEntry.kickOuts ? "Yes" : "No"}
               </Typography>
 
@@ -855,6 +891,11 @@ const Workout: React.FC = () => {
               <Typography style={{ fontSize: "0.85rem" }}>
                 <strong>footballkeepUps:</strong>{" "}
                 {viewEntry.footballkeepUps ? "Yes" : "No"}
+              </Typography>
+
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>footballkneeUps:</strong>{" "}
+                {viewEntry.footballkneeUps ? "Yes" : "No"}
               </Typography>
 
               <Typography style={{ fontSize: "0.85rem" }}>
@@ -916,6 +957,7 @@ const Workout: React.FC = () => {
               <TableCell className={classes.tableHeader}>pushUps</TableCell>
               <TableCell className={classes.tableHeader}>legRaise</TableCell>
               <TableCell className={classes.tableHeader}>crunches</TableCell>
+              <TableCell className={classes.tableHeader}>obliques</TableCell>
               <TableCell className={classes.tableHeader}>kickOuts</TableCell>
               <TableCell className={classes.tableHeader}>
                 crunchesReverse
@@ -927,6 +969,9 @@ const Workout: React.FC = () => {
               <TableCell className={classes.tableHeader}>wristGrips</TableCell>
               <TableCell className={classes.tableHeader}>
                 footballkeepUps
+              </TableCell>
+              <TableCell className={classes.tableHeader}>
+                footballkneeUps
               </TableCell>
               <TableCell className={classes.tableHeader}>footballAtw</TableCell>
               <TableCell className={classes.tableHeader}>stretch</TableCell>
@@ -993,6 +1038,9 @@ const Workout: React.FC = () => {
                     {entry.crunches || 0}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
+                    {entry.obliques || 0}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
                     {entry.kickOuts || 0}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
@@ -1009,6 +1057,9 @@ const Workout: React.FC = () => {
                   </TableCell>
                   <TableCell className={classes.tableCell}>
                     {entry.footballkeepUps || 0}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {entry.footballkneeUps || 0}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
                     {entry.footballAtw || 0}

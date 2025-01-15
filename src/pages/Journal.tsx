@@ -5,10 +5,6 @@ import {
   Box,
   TextField,
   IconButton,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
   Typography,
   Table,
   TableBody,
@@ -27,6 +23,9 @@ type JournalData = {
   date: string;
   body: string;
   travelTime?: number;
+  mood?: string;
+  wore?: string;
+  better?: string;
 };
 
 // Modal Styling
@@ -66,6 +65,9 @@ const JournalEntries: React.FC = () => {
   const [journalForm, setJournalForm] = useState<JournalData>({
     date: "",
     body: "",
+    mood: "",
+    wore: "",
+    better: "",
     travelTime: 0,
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
@@ -99,7 +101,7 @@ const JournalEntries: React.FC = () => {
 
   // Reset Form Data
   const resetForm = () => {
-    setJournalForm({ date: "", body: "", travelTime: 0 });
+    setJournalForm({ date: "", body: "", mood: "", wore: "", better:"", travelTime: 0 });
     setEditIndex(null);
   };
 
@@ -124,6 +126,21 @@ const JournalEntries: React.FC = () => {
 
     if (!journalForm.body.trim()) {
       alert("Journal body cannot be empty.");
+      return;
+    }
+
+    if (!journalForm.mood?.trim()) {
+      alert("Journal mood cannot be empty.");
+      return;
+    }
+
+    if (!journalForm.wore?.trim()) {
+      alert("Journal wore cannot be empty.");
+      return;
+    }
+
+    if (!journalForm.better?.trim()) {
+      alert("Journal wore cannot be empty.");
       return;
     }
 
@@ -246,6 +263,9 @@ const JournalEntries: React.FC = () => {
             <TableRow>
               <TableCell>Date</TableCell>
               <TableCell>TravelTime</TableCell>
+              <TableCell>mood</TableCell>
+              <TableCell>wore</TableCell>
+              <TableCell>better</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -255,6 +275,9 @@ const JournalEntries: React.FC = () => {
                 <TableRow key={index}>
                   <TableCell>{row.date}</TableCell>
                   <TableCell>{row.travelTime}</TableCell>
+                  <TableCell>{row.mood}</TableCell>
+                  <TableCell>{row.wore}</TableCell>
+                  <TableCell>{row.better}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleView(row)}>
                       <VisibilityIcon />
@@ -304,6 +327,39 @@ const JournalEntries: React.FC = () => {
             label="Journal Body"
             name="body"
             value={journalForm.body}
+            onChange={handleChange}
+            multiline
+            rows={4}
+            required
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Mood"
+            name="mood"
+            value={journalForm.mood}
+            onChange={handleChange}
+            multiline
+            rows={4}
+            required
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Wore"
+            name="wore"
+            value={journalForm.wore}
+            onChange={handleChange}
+            multiline
+            rows={4}
+            required
+          />
+                    <TextField
+            fullWidth
+            margin="normal"
+            label="Better"
+            name="better"
+            value={journalForm.better}
             onChange={handleChange}
             multiline
             rows={4}

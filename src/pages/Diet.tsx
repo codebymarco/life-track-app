@@ -35,6 +35,7 @@ type FoodEntry = {
   quantity: number;
   grams?: number;
   takeout?: boolean;
+  edibles?: number;
   soda?: boolean;
   coffee?: number;
   sugar?: number;
@@ -48,6 +49,7 @@ type DietData = {
   soda?: boolean;
   coffee?: number;
   sugar?: number;
+  edibles?: number;
 };
 
 // Modal Styling
@@ -84,6 +86,7 @@ const Diet: React.FC = () => {
     soda: false,
     sugar: 0,
     water: "",
+    edibles: 0,
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
@@ -517,6 +520,17 @@ const Diet: React.FC = () => {
             inputProps={{ min: 0, step: "0.1" }}
           />
 
+          <TextField
+            fullWidth
+            margin="normal"
+            label="edibles"
+            type="number"
+            name="edibles"
+            value={dietForm.edibles}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
           <FormControlLabel
             control={
               <Checkbox
@@ -555,7 +569,7 @@ const Diet: React.FC = () => {
               <TableCell>soda</TableCell>
               <TableCell>coffee</TableCell>
               <TableCell>sugar</TableCell>
-
+              <TableCell>edibles</TableCell>
               <TableCell>Water (Liters)</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -594,6 +608,12 @@ const Diet: React.FC = () => {
                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
                         {entry.sugar || 0}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.edibles || 0}
                       </TableCell>
                     )}
 
