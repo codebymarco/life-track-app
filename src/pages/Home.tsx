@@ -26,10 +26,20 @@ const Home: React.FC = () => {
   const [jelqsTotal, setJelqsTotal] = useState<number>(0);
   const [jelqsAverage, setJelqsAverage] = useState<number>(0);
 
+  const [pornTotal, setPornTotal] = useState<number>(0);
+  const [masturbateTotal, setMasturbateTotal] = useState<number>(0);
+
   const [sunTotal, setSunTotal] = useState<number>(0);
   const [sunAverage, setSunAverage] = useState<number>(0);
 
+  const [workoutTimeTotal, setWorkoutTimeTotal] = useState<number>(0);
+  const [workoutTimeAverage, setWorkoutTimeAverage] = useState<number>(0);
 
+  const [sleepTotal, setSleepTotal] = useState<number>(0);
+  const [sleepAverage, setSleepAverage] = useState<number>(0);
+
+  const [poopTotal, setPoopTotal] = useState<number>(0);
+  const [poopAverage, setPoopAverage] = useState<number>(0);
 
   useEffect(() => {
     try {
@@ -54,6 +64,17 @@ const Home: React.FC = () => {
       const totalWorkoutTrue = storedEntries.filter(
         (entry: any) => entry.workout
       ).length;
+
+      const totalWorkoutTime = storedEntries.reduce(
+        (sum: number, entry: any) => {
+          const jelqsValue = parseInt(entry.workoutTime, 10); // Convert string to integer
+          return sum + (isNaN(jelqsValue) ? 0 : jelqsValue); // Add value if it's a valid number
+        },
+        0
+      );
+
+      const averageWT = totalWorkoutTime / storedEntries.length;
+
       const average = totalJelqs / storedEntries.length;
 
       const totalSun = storedEntries.reduce((sum: number, entry: any) => {
@@ -62,13 +83,50 @@ const Home: React.FC = () => {
       }, 0);
       const averageSun = totalSun / storedEntries.length;
 
+      const totalPornTrue = storedEntries.filter(
+        (entry: any) => entry.pn
+      ).length;
+
+      const totalMasTrue = storedEntries.filter(
+        (entry: any) => entry.mast
+      ).length;
+
+
+      // SLEEP
+      const totalSleep = storedEntries.reduce(
+        (sum: number, entry: any) => {
+          const jelqsValue = parseInt(entry.sleepTime, 10); 
+          return sum + (isNaN(jelqsValue) ? 0 : jelqsValue); 
+        },
+        0
+      );
+      const averageSleep = totalSleep / storedEntries.length;
+
+      // POOP
+      const totalPoop = storedEntries.reduce(
+        (sum: number, entry: any) => {
+          const jelqsValue = parseInt(entry.poop, 10); // Convert string to integer
+          return sum + (isNaN(jelqsValue) ? 0 : jelqsValue); // Add value if it's a valid number
+        },
+        0
+      );
+      const averagePoop = totalPoop / storedEntries.length;
+
+      setPoopTotal(totalPoop)
+      setPoopAverage(averagePoop)
+      setSleepTotal(totalSleep)
+      setSleepAverage(averageSleep)
+      setWorkoutTimeTotal(totalWorkoutTime);
+      setWorkoutTimeAverage(averageWT);
+      setMasturbateTotal(totalMasTrue);
+      setPornTotal(totalPornTrue);
       setPmTotal(totalPmTrue);
       setPnTotal(totalPnTrue);
       setJelqsTotal(totalJelqs);
       setSunTotal(totalSun);
       setSunAverage(averageSun);
       setWorkoutTotal(totalWorkoutTrue);
-      setJelqsAverage(average)
+      setJelqsAverage(average);
     } catch {
       setData([]);
     }
@@ -87,10 +145,15 @@ const Home: React.FC = () => {
 
   interface TrackerData {
     prayMorning: Activity;
+    porn: Activity;
+    workoutTime: Activity;
+    masturbate: Activity;
     prayNight: Activity;
     workout: Activity;
     jelqs: Activity;
     sunTime: Activity;
+    sleep: Activity;
+    poop: Activity;
     coding: Activity;
     waterIntake: number;
     steps: number;
@@ -103,6 +166,18 @@ const Home: React.FC = () => {
       history: [true, true, true, false, true],
       total: pmTotal,
     },
+    masturbate: {
+      name: "mastrubate",
+      currentStreak: 5,
+      history: [true, false, true, true, true],
+      total: masturbateTotal,
+    },
+    porn: {
+      name: "Porn",
+      currentStreak: 5,
+      history: [true, false, true, true, true],
+      total: pornTotal,
+    },
     prayNight: {
       name: "Night Prayer",
       currentStreak: 5,
@@ -113,21 +188,42 @@ const Home: React.FC = () => {
       name: "Workout",
       currentStreak: 5,
       history: [false, true, true, true, false],
-      total: workoutTotal
+      total: workoutTotal,
     },
     jelqs: {
       name: "Jelqs",
       currentStreak: 5,
       history: [true, true, false, true, true],
       total: jelqsTotal,
-      average: jelqsAverage
+      average: jelqsAverage,
+    },
+    sleep: {
+      name: "Sleep",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+      total: sleepTotal,
+      average: sleepAverage,
+    },
+    poop: {
+      name: "Poop",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+      total: poopTotal,
+      average: poopAverage,
+    },
+    workoutTime: {
+      name: "Workout Time",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+      total: workoutTimeTotal,
+      average: workoutTimeAverage,
     },
     sunTime: {
       name: "Sun Time",
       currentStreak: 5,
       history: [false, false, true, true, true],
-      total:sunTotal,
-      average:sunAverage
+      total: sunTotal,
+      average: sunAverage,
     },
     coding: {
       name: "Coding",
@@ -148,10 +244,30 @@ const Home: React.FC = () => {
       icon: <SportsMmaIcon fontSize="large" />,
     },
     {
+      activity: trackerData.porn,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.sleep,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.poop,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.masturbate,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
       activity: trackerData.workout,
       icon: <FitnessCenterIcon fontSize="large" />,
     },
     { activity: trackerData.jelqs, icon: <EmojiPeopleIcon fontSize="large" /> },
+    {
+      activity: trackerData.workoutTime,
+      icon: <EmojiPeopleIcon fontSize="large" />,
+    },
     { activity: trackerData.sunTime, icon: <WbSunnyIcon fontSize="large" /> },
     { activity: trackerData.coding, icon: <CodeIcon fontSize="large" /> },
   ];
@@ -253,11 +369,11 @@ const Home: React.FC = () => {
                   <Typography color="text.secondary">
                     total: {tracker.activity.total}/ {data.length}
                   </Typography>
-                  {
-                    tracker.activity.average ?                   <Typography color="text.secondary">
-                    {tracker.activity.average} per day
-                  </Typography> : null
-                  }
+                  {tracker.activity.average ? (
+                    <Typography color="text.secondary">
+                      {tracker.activity.average} per day
+                    </Typography>
+                  ) : null}
                 </CardContent>
               </Box>
               <Typography variant="body2" color="text.secondary">

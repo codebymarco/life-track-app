@@ -33,6 +33,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 type FormData = {
   date: string;
   prayMorning: boolean;
+  bookSummary: boolean;
   prayEvening: boolean;
   workout: boolean;
   workoutDetails: string[];
@@ -160,6 +161,7 @@ const Entries: React.FC = () => {
   >({
     date: "",
     prayMorning: false,
+    bookSummary: false,
     prayEvening: false,
     mast: false,
     pn: false,
@@ -233,6 +235,7 @@ const Entries: React.FC = () => {
     setFormData({
       date: "",
       prayMorning: false,
+      bookSummary: false,
       prayEvening: false,
       mast: false,
       pn: false,
@@ -537,6 +540,21 @@ const Entries: React.FC = () => {
           <FormControlLabel
             control={
               <Checkbox
+                checked={formData.bookSummary}
+                name="bookSummary"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.checkboxLabel}>
+                bookSummary
+              </Typography>
+            }
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
                 checked={formData.workout}
                 name="workout"
                 onChange={handleChange}
@@ -797,6 +815,10 @@ const Entries: React.FC = () => {
                 <strong>PN:</strong> {viewEntry.pn ? "Yes" : "No"}
               </Typography>
               <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>bookSummary:</strong>{" "}
+                {viewEntry.bookSummary ? <CheckCircleIcon /> : <CancelIcon />}
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
                 <strong>Steps:</strong> {viewEntry.steps}
               </Typography>
               <Typography style={{ fontSize: "0.85rem" }}>
@@ -875,6 +897,7 @@ const Entries: React.FC = () => {
               <TableCell className={classes.tableHeader}>Pray E</TableCell>
               <TableCell className={classes.tableHeader}>Mast</TableCell>
               <TableCell className={classes.tableHeader}>PN</TableCell>
+              <TableCell className={classes.tableHeader}>booksum</TableCell>
               <TableCell className={classes.tableHeader}>Steps</TableCell>
               <TableCell className={classes.tableHeader}>Workout</TableCell>
               {/* Removed Workout Details Column */}
@@ -930,6 +953,11 @@ const Entries: React.FC = () => {
                     <TableCell className={classes.tableCell}>
                       {entry.pn ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
+
+                    <TableCell className={classes.tableCell}>
+                      {entry.bookSummary ? <CheckCircleIcon /> : <CancelIcon />}
+                    </TableCell>
+
                     <TableCell className={classes.tableCell}>
                       {entry.steps || 0}
                     </TableCell>
