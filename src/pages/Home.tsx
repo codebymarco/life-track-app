@@ -20,6 +20,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 
 const Home: React.FC = () => {
   const [data, setData] = useState<FormData[]>([]);
+  const [data2, setData2] = useState<FormData[]>([]);
   const [pmTotal, setPmTotal] = useState<number>(0);
   const [pnTotal, setPnTotal] = useState<number>(0);
   const [workoutTotal, setWorkoutTotal] = useState<number>(0);
@@ -41,8 +42,20 @@ const Home: React.FC = () => {
   const [poopTotal, setPoopTotal] = useState<number>(0);
   const [poopAverage, setPoopAverage] = useState<number>(0);
 
+  const [waterTotal, setWaterTotal] = useState<number>(0);
+  const [waterAverage, setWaterAverage] = useState<number>(0);
+
   useEffect(() => {
     try {
+      const storedEntries2 = JSON.parse(
+        localStorage.getItem("dietEntries") || "[]"
+      ) as FormData[];
+      setData2(
+        storedEntries2.map((entry) => ({
+          ...entry,
+        }))
+      );
+
       const storedEntries = JSON.parse(
         localStorage.getItem("entries") || "[]"
       ) as FormData[];
@@ -91,31 +104,31 @@ const Home: React.FC = () => {
         (entry: any) => entry.mast
       ).length;
 
-
       // SLEEP
-      const totalSleep = storedEntries.reduce(
-        (sum: number, entry: any) => {
-          const jelqsValue = parseInt(entry.sleepTime, 10); 
-          return sum + (isNaN(jelqsValue) ? 0 : jelqsValue); 
-        },
-        0
-      );
+      const totalSleep = storedEntries.reduce((sum: number, entry: any) => {
+        const jelqsValue = parseInt(entry.sleepTime, 10);
+        return sum + (isNaN(jelqsValue) ? 0 : jelqsValue);
+      }, 0);
       const averageSleep = totalSleep / storedEntries.length;
 
       // POOP
-      const totalPoop = storedEntries.reduce(
-        (sum: number, entry: any) => {
-          const jelqsValue = parseInt(entry.poop, 10); // Convert string to integer
-          return sum + (isNaN(jelqsValue) ? 0 : jelqsValue); // Add value if it's a valid number
-        },
-        0
-      );
+      const totalPoop = storedEntries.reduce((sum: number, entry: any) => {
+        const jelqsValue = parseInt(entry.poop, 10); // Convert string to integer
+        return sum + (isNaN(jelqsValue) ? 0 : jelqsValue); // Add value if it's a valid number
+      }, 0);
       const averagePoop = totalPoop / storedEntries.length;
 
-      setPoopTotal(totalPoop)
-      setPoopAverage(averagePoop)
-      setSleepTotal(totalSleep)
-      setSleepAverage(averageSleep)
+      const totalWater = storedEntries2.reduce((sum: number, entry: any) => {
+        const jelqsValue = parseInt(entry.water, 10); // Convert string to integer
+        return sum + (isNaN(jelqsValue) ? 0 : jelqsValue); // Add value if it's a valid number
+      }, 0);
+      const averageWater = totalWater / storedEntries.length;
+      setWaterTotal(totalWater);
+      setWaterAverage(averageWater);
+      setPoopTotal(totalPoop);
+      setPoopAverage(averagePoop);
+      setSleepTotal(totalSleep);
+      setSleepAverage(averageSleep);
       setWorkoutTimeTotal(totalWorkoutTime);
       setWorkoutTimeAverage(averageWT);
       setMasturbateTotal(totalMasTrue);
@@ -153,6 +166,7 @@ const Home: React.FC = () => {
     jelqs: Activity;
     sunTime: Activity;
     sleep: Activity;
+    water: Activity;
     poop: Activity;
     coding: Activity;
     waterIntake: number;
@@ -189,6 +203,13 @@ const Home: React.FC = () => {
       currentStreak: 5,
       history: [false, true, true, true, false],
       total: workoutTotal,
+    },
+    water: {
+      name: "Water",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+      total: waterTotal,
+      average: waterAverage,
     },
     jelqs: {
       name: "Jelqs",
@@ -257,6 +278,10 @@ const Home: React.FC = () => {
     },
     {
       activity: trackerData.masturbate,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.water,
       icon: <SportsMmaIcon fontSize="large" />,
     },
     {
