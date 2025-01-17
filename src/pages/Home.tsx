@@ -186,6 +186,7 @@ const Home: React.FC = () => {
 
   interface TrackerData {
     prayMorning: Activity;
+    stretch: Activity;
     porn: Activity;
     workoutTime: Activity;
     bikeTime: Activity;
@@ -194,11 +195,15 @@ const Home: React.FC = () => {
     prayNight: Activity;
     workout: Activity;
     jelqs: Activity;
+    wrist_grips: Activity;
     sunTime: Activity;
     sleep: Activity;
     water: Activity;
     poop: Activity;
     kegels: Activity;
+    coffee: Activity;
+    soda: Activity;
+    takeout: Activity;
     showers: Activity;
     books_summary: Activity;
     csm: Activity;
@@ -210,6 +215,18 @@ const Home: React.FC = () => {
   }
 
   const trackerData: TrackerData = {
+    stretch: {
+      name: "Stretch",
+      currentStreak: 5,
+      history: [true, true, true, false, true],
+      total: pmTotal,
+    },
+    takeout: {
+      name: "Takeout",
+      currentStreak: 5,
+      history: [true, true, true, false, true],
+      total: pmTotal,
+    },
     prayMorning: {
       name: "Morning Prayer",
       currentStreak: 5,
@@ -266,6 +283,13 @@ const Home: React.FC = () => {
       total: jelqsTotal,
       average: jelqsAverage,
     },
+    wrist_grips: {
+      name: "Wrist Grips",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+      total: jelqsTotal,
+      average: jelqsAverage,
+    },
     jelqs: {
       name: "Jelqs",
       currentStreak: 5,
@@ -297,6 +321,22 @@ const Home: React.FC = () => {
 
     books_summary: {
       name: "Books Summary",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+      total: kegelsTotal,
+      average: kegelsAverage,
+    },
+
+    coffee: {
+      name: "Coffe",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+      total: kegelsTotal,
+      average: kegelsAverage,
+    },
+
+    soda: {
+      name: "Soda",
       currentStreak: 5,
       history: [true, true, false, true, true],
       total: kegelsTotal,
@@ -355,6 +395,26 @@ const Home: React.FC = () => {
   };
 
   const trackers = [
+    {
+      activity: trackerData.stretch,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.wrist_grips,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.coffee,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.takeout,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.soda,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
     {
       activity: trackerData.prayMorning,
       icon: <SportsMmaIcon fontSize="large" />,
