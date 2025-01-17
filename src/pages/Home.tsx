@@ -42,6 +42,9 @@ const Home: React.FC = () => {
   const [poopTotal, setPoopTotal] = useState<number>(0);
   const [poopAverage, setPoopAverage] = useState<number>(0);
 
+  const [stepsTotal, setStepsTotal] = useState<number>(0);
+  const [stepsAverage, setStepsAverage] = useState<number>(0);
+
   const [waterTotal, setWaterTotal] = useState<number>(0);
   const [waterAverage, setWaterAverage] = useState<number>(0);
 
@@ -118,11 +121,23 @@ const Home: React.FC = () => {
       }, 0);
       const averagePoop = totalPoop / storedEntries.length;
 
+      // STEPS
+      const totalSteps = storedEntries.reduce((sum: number, entry: any) => {
+        const jelqsValue = parseInt(entry.steps, 10); // Convert string to integer
+        return sum + (isNaN(jelqsValue) ? 0 : jelqsValue); // Add value if it's a valid number
+      }, 0);
+      const averageSteps = totalSteps / storedEntries.length;
+
       const totalWater = storedEntries2.reduce((sum: number, entry: any) => {
         const jelqsValue = parseInt(entry.water, 10); // Convert string to integer
         return sum + (isNaN(jelqsValue) ? 0 : jelqsValue); // Add value if it's a valid number
       }, 0);
+
+
       const averageWater = totalWater / storedEntries.length;
+
+      setStepsTotal(totalSteps);
+      setStepsAverage(averageSteps);
       setWaterTotal(totalWater);
       setWaterAverage(averageWater);
       setPoopTotal(totalPoop);
@@ -140,6 +155,7 @@ const Home: React.FC = () => {
       setSunAverage(averageSun);
       setWorkoutTotal(totalWorkoutTrue);
       setJelqsAverage(average);
+
     } catch {
       setData([]);
     }
@@ -170,7 +186,7 @@ const Home: React.FC = () => {
     poop: Activity;
     coding: Activity;
     waterIntake: number;
-    steps: number;
+    steps: Activity;
   }
 
   const trackerData: TrackerData = {
@@ -232,6 +248,15 @@ const Home: React.FC = () => {
       total: poopTotal,
       average: poopAverage,
     },
+
+    steps: {
+      name: "Steps",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+      total: stepsTotal,
+      average: stepsAverage,
+    },
+
     workoutTime: {
       name: "Workout Time",
       currentStreak: 5,
@@ -252,7 +277,6 @@ const Home: React.FC = () => {
       history: [true, true, true, true, true],
     },
     waterIntake: 3.5,
-    steps: 22000,
   };
 
   const trackers = [
@@ -274,6 +298,10 @@ const Home: React.FC = () => {
     },
     {
       activity: trackerData.poop,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.steps,
       icon: <SportsMmaIcon fontSize="large" />,
     },
     {
