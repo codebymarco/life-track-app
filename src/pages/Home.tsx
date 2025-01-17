@@ -180,6 +180,8 @@ const Home: React.FC = () => {
     name: string;
     currentStreak: number;
     average?: number;
+    highest?: number;
+    lowest?: number;
     total?: number;
     history: boolean[]; // Last 5 days history (true for yes, false for no)
   }
@@ -275,6 +277,8 @@ const Home: React.FC = () => {
       history: [true, true, false, true, true],
       total: waterTotal,
       average: waterAverage,
+      highest: 39000,
+      lowest: 39,
     },
     showers: {
       name: "Showers",
@@ -593,6 +597,20 @@ const Home: React.FC = () => {
                   {tracker.activity.average ? (
                     <Typography color="text.secondary">
                       {tracker.activity.average} per day
+                    </Typography>
+                  ) : null}
+
+                  {tracker.activity.highest ? (
+                    <Typography color="text.secondary">
+                      highest:
+                      {tracker.activity.highest}
+                    </Typography>
+                  ) : null}
+
+                  {tracker.activity.lowest ? (
+                    <Typography color="text.secondary">
+                      lowest:
+                      {tracker.activity.lowest}
                     </Typography>
                   ) : null}
                 </CardContent>
