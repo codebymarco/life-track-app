@@ -19,6 +19,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import PedalBikeIcon from "@mui/icons-material/PedalBike";
 import StraightenIcon from "@mui/icons-material/Straighten";
+import HandsIcon from "@mui/icons-material/PanTool";
 
 import PrayIcon from "@mui/icons-material/EmojiPeople";
 import BibleIcon from "@mui/icons-material/MenuBook";
@@ -29,6 +30,19 @@ import HeightIcon from "@mui/icons-material/Height";
 import SleepIcon from "@mui/icons-material/Hotel";
 import PoopIcon from "@mui/icons-material/EmojiNature";
 import TravelTimeIcon from "@mui/icons-material/Flight";
+
+import PurchasesIcon from "@mui/icons-material/ShoppingCart";
+import WristGripsIcon from "@mui/icons-material/PanTool";
+import TakeoutFoodIcon from "@mui/icons-material/Fastfood";
+import SodaIcon from "@mui/icons-material/LocalDrink";
+import ShowersIcon from "@mui/icons-material/Shower";
+import ColdShowerIcon from "@mui/icons-material/AcUnit";
+import PornIcon from "@mui/icons-material/HideSource";
+import KegelsIcon from "@mui/icons-material/SelfImprovement";
+import TedTalkIcon from "@mui/icons-material/Mic";
+import BooksSummaryIcon from "@mui/icons-material/MenuBook";
+import StepsIcon from "@mui/icons-material/DirectionsWalk";
+import WaterBottleIcon from "@mui/icons-material/WaterDrop";
 
 const Home: React.FC = () => {
   const [data, setData] = useState<FormData[]>([]);
@@ -465,7 +479,7 @@ const Home: React.FC = () => {
   const trackers = [
     {
       activity: trackerData.purchases,
-      icon: <SportsMmaIcon fontSize="large" />,
+      icon: <PurchasesIcon fontSize="large" />,
     },
     {
       activity: trackerData.stretch,
@@ -477,7 +491,7 @@ const Home: React.FC = () => {
     },
     {
       activity: trackerData.wrist_grips,
-      icon: <SportsMmaIcon fontSize="large" />,
+      icon: <WristGripsIcon fontSize="large" />,
     },
     {
       activity: trackerData.coffee,
@@ -485,11 +499,11 @@ const Home: React.FC = () => {
     },
     {
       activity: trackerData.takeout,
-      icon: <SportsMmaIcon fontSize="large" />,
+      icon: <TakeoutFoodIcon fontSize="large" />,
     },
     {
       activity: trackerData.soda,
-      icon: <SportsMmaIcon fontSize="large" />,
+      icon: <SodaIcon fontSize="large" />,
     },
     {
       activity: trackerData.weight,
@@ -501,31 +515,31 @@ const Home: React.FC = () => {
     },
     {
       activity: trackerData.prayMorning,
-      icon: <PrayIcon fontSize="large" />,
+      icon: <HandsIcon fontSize="large" />,
     },
     {
       activity: trackerData.prayNight,
-      icon: <PrayIcon fontSize="large" />,
+      icon: <HandsIcon fontSize="large" />,
     },
     {
       activity: trackerData.prayDay,
-      icon: <PrayIcon fontSize="large" />,
+      icon: <HandsIcon fontSize="large" />,
     },
     {
       activity: trackerData.showers,
-      icon: <SportsMmaIcon fontSize="large" />,
+      icon: <ShowersIcon fontSize="large" />,
     },
     {
       activity: trackerData.csm,
-      icon: <SportsMmaIcon fontSize="large" />,
+      icon: <ColdShowerIcon fontSize="large" />,
     },
     {
       activity: trackerData.csn,
-      icon: <SportsMmaIcon fontSize="large" />,
+      icon: <ColdShowerIcon fontSize="large" />,
     },
     {
       activity: trackerData.porn,
-      icon: <SportsMmaIcon fontSize="large" />,
+      icon: <PornIcon fontSize="large" />,
     },
     {
       activity: trackerData.sleep,
@@ -537,19 +551,19 @@ const Home: React.FC = () => {
     },
     {
       activity: trackerData.kegels,
-      icon: <SportsMmaIcon fontSize="large" />,
+      icon: <KegelsIcon fontSize="large" />,
     },
     {
       activity: trackerData.ted_talk,
-      icon: <SportsMmaIcon fontSize="large" />,
+      icon: <TedTalkIcon fontSize="large" />,
     },
     {
       activity: trackerData.books_summary,
-      icon: <SportsMmaIcon fontSize="large" />,
+      icon: <BooksSummaryIcon fontSize="large" />,
     },
     {
       activity: trackerData.steps,
-      icon: <SportsMmaIcon fontSize="large" />,
+      icon: <StepsIcon fontSize="large" />,
     },
     {
       activity: trackerData.masturbate,
@@ -557,7 +571,7 @@ const Home: React.FC = () => {
     },
     {
       activity: trackerData.water,
-      icon: <SportsMmaIcon fontSize="large" />,
+      icon: <WaterBottleIcon fontSize="large" />,
     },
     {
       activity: trackerData.workout,
