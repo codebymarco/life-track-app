@@ -20,6 +20,16 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import PedalBikeIcon from "@mui/icons-material/PedalBike";
 import StraightenIcon from "@mui/icons-material/Straighten";
 
+import PrayIcon from "@mui/icons-material/EmojiPeople";
+import BibleIcon from "@mui/icons-material/MenuBook";
+import StretchIcon from "@mui/icons-material/SelfImprovement";
+import CoffeeIcon from "@mui/icons-material/LocalCafe";
+import WeightIcon from "@mui/icons-material/FitnessCenter";
+import HeightIcon from "@mui/icons-material/Height";
+import SleepIcon from "@mui/icons-material/Hotel";
+import PoopIcon from "@mui/icons-material/EmojiNature";
+import TravelTimeIcon from "@mui/icons-material/Flight";
+
 const Home: React.FC = () => {
   const [data, setData] = useState<FormData[]>([]);
   const [data2, setData2] = useState<FormData[]>([]);
@@ -181,6 +191,8 @@ const Home: React.FC = () => {
     currentStreak: number;
     average?: number;
     highest?: number;
+    highestDate?: string;
+    lowestDate?: string;
     lowest?: number;
     total?: number;
     history: boolean[]; // Last 5 days history (true for yes, false for no)
@@ -188,15 +200,20 @@ const Home: React.FC = () => {
 
   interface TrackerData {
     prayMorning: Activity;
+    prayDay: Activity;
     stretch: Activity;
+    bible: Activity;
     porn: Activity;
     workoutTime: Activity;
+    travelTime: Activity;
     bikeTime: Activity;
     bikeDistance: Activity;
     masturbate: Activity;
     prayNight: Activity;
     workout: Activity;
     jelqs: Activity;
+    weight: Activity;
+    height: Activity;
     wrist_grips: Activity;
     sunTime: Activity;
     sleep: Activity;
@@ -214,11 +231,18 @@ const Home: React.FC = () => {
     coding: Activity;
     waterIntake: number;
     steps: Activity;
+    purchases: Activity;
   }
 
   const trackerData: TrackerData = {
     stretch: {
       name: "Stretch",
+      currentStreak: 5,
+      history: [true, true, true, false, true],
+      total: pmTotal,
+    },
+    bible: {
+      name: "Bible",
       currentStreak: 5,
       history: [true, true, true, false, true],
       total: pmTotal,
@@ -265,12 +289,36 @@ const Home: React.FC = () => {
       history: [true, false, true, true, true],
       total: pnTotal,
     },
+    prayDay: {
+      name: "Day Prayer",
+      currentStreak: 5,
+      history: [true, false, true, true, true],
+      total: pnTotal,
+    },
     workout: {
       name: "Workout",
       currentStreak: 5,
       history: [false, true, true, true, false],
       total: workoutTotal,
     },
+
+    height: {
+      name: "Height",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+      average: 187,
+      highest: 190,
+      lowest: 181,
+    },
+    weight: {
+      name: "Weight",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+      average: 65,
+      highest: 67,
+      lowest: 60,
+    },
+
     water: {
       name: "Water",
       currentStreak: 5,
@@ -279,6 +327,8 @@ const Home: React.FC = () => {
       average: waterAverage,
       highest: 39000,
       lowest: 39,
+      highestDate: new Date().toISOString(), // Sets the current date and time in ISO 8601 format,
+      lowestDate: new Date().toISOString(), // Sets the current date and time in ISO 8601 format,
     },
     showers: {
       name: "Showers",
@@ -289,6 +339,13 @@ const Home: React.FC = () => {
     },
     wrist_grips: {
       name: "Wrist Grips",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+      total: jelqsTotal,
+      average: jelqsAverage,
+    },
+    purchases: {
+      name: "Purcahses",
       currentStreak: 5,
       history: [true, true, false, true, true],
       total: jelqsTotal,
@@ -388,6 +445,13 @@ const Home: React.FC = () => {
       total: workoutTimeTotal,
       average: workoutTimeAverage,
     },
+    travelTime: {
+      name: "Travel Time",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+      total: workoutTimeTotal,
+      average: workoutTimeAverage,
+    },
     bikeDistance: {
       name: "Bike Distance",
       currentStreak: 5,
@@ -400,8 +464,16 @@ const Home: React.FC = () => {
 
   const trackers = [
     {
-      activity: trackerData.stretch,
+      activity: trackerData.purchases,
       icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.stretch,
+      icon: <StretchIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.bible,
+      icon: <BibleIcon fontSize="large" />,
     },
     {
       activity: trackerData.wrist_grips,
@@ -409,7 +481,7 @@ const Home: React.FC = () => {
     },
     {
       activity: trackerData.coffee,
-      icon: <SportsMmaIcon fontSize="large" />,
+      icon: <CoffeeIcon fontSize="large" />,
     },
     {
       activity: trackerData.takeout,
@@ -420,12 +492,24 @@ const Home: React.FC = () => {
       icon: <SportsMmaIcon fontSize="large" />,
     },
     {
+      activity: trackerData.weight,
+      icon: <WeightIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.height,
+      icon: <HeightIcon fontSize="large" />,
+    },
+    {
       activity: trackerData.prayMorning,
-      icon: <SportsMmaIcon fontSize="large" />,
+      icon: <PrayIcon fontSize="large" />,
     },
     {
       activity: trackerData.prayNight,
-      icon: <SportsMmaIcon fontSize="large" />,
+      icon: <PrayIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.prayDay,
+      icon: <PrayIcon fontSize="large" />,
     },
     {
       activity: trackerData.showers,
@@ -439,18 +523,17 @@ const Home: React.FC = () => {
       activity: trackerData.csn,
       icon: <SportsMmaIcon fontSize="large" />,
     },
-
     {
       activity: trackerData.porn,
       icon: <SportsMmaIcon fontSize="large" />,
     },
     {
       activity: trackerData.sleep,
-      icon: <SportsMmaIcon fontSize="large" />,
+      icon: <SleepIcon fontSize="large" />,
     },
     {
       activity: trackerData.poop,
-      icon: <SportsMmaIcon fontSize="large" />,
+      icon: <PoopIcon fontSize="large" />,
     },
     {
       activity: trackerData.kegels,
@@ -489,6 +572,10 @@ const Home: React.FC = () => {
       icon: <PedalBikeIcon fontSize="large" />,
     },
     { activity: trackerData.jelqs, icon: <EmojiPeopleIcon fontSize="large" /> },
+    {
+      activity: trackerData.travelTime,
+      icon: <TravelTimeIcon fontSize="large" />,
+    },
     {
       activity: trackerData.workoutTime,
       icon: <EmojiPeopleIcon fontSize="large" />,
@@ -575,7 +662,26 @@ const Home: React.FC = () => {
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Life Trackers Dashboard
+        Morning Marco.
+      </Typography>
+      <Typography variant="h4" gutterBottom>
+        Last time I checked, you are tall, handsome and funny and you have six
+        pack, wide delts, sexy calfs
+      </Typography>
+      <Typography variant="h4" gutterBottom>
+        You are funny and handosme enough to steal somesone GF
+      </Typography>
+      <Typography variant="h4" gutterBottom>
+        Please work on your speech and eye contact.
+      </Typography>
+      <Typography variant="h4" gutterBottom>
+        on the 5th Feb have a haircut and trim body hair.
+      </Typography>
+      <Typography variant="h4" gutterBottom>
+        remember happiness comes from within
+      </Typography>
+      <Typography variant="h4" gutterBottom>
+        tomkorow is saturday, wash car, dont spend the whole day in bed
       </Typography>
 
       {/* Activity Streaks */}
@@ -604,6 +710,20 @@ const Home: React.FC = () => {
                     <Typography color="text.secondary">
                       highest:
                       {tracker.activity.highest}
+                    </Typography>
+                  ) : null}
+
+                  {tracker.activity.highestDate ? (
+                    <Typography color="text.secondary">
+                      highestDate:
+                      {tracker.activity.highestDate}
+                    </Typography>
+                  ) : null}
+
+                  {tracker.activity.lowestDate ? (
+                    <Typography color="text.secondary">
+                      highestDate:
+                      {tracker.activity.lowestDate}
                     </Typography>
                   ) : null}
 
