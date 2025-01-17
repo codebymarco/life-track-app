@@ -17,6 +17,8 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import SportsMmaIcon from "@mui/icons-material/SportsMma"; // Proxy icon for prayer
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
+import PedalBikeIcon from "@mui/icons-material/PedalBike";
+import StraightenIcon from "@mui/icons-material/Straighten";
 
 const Home: React.FC = () => {
   const [data, setData] = useState<FormData[]>([]);
@@ -133,7 +135,6 @@ const Home: React.FC = () => {
         return sum + (isNaN(jelqsValue) ? 0 : jelqsValue); // Add value if it's a valid number
       }, 0);
 
-
       const averageWater = totalWater / storedEntries.length;
 
       setStepsTotal(totalSteps);
@@ -155,7 +156,6 @@ const Home: React.FC = () => {
       setSunAverage(averageSun);
       setWorkoutTotal(totalWorkoutTrue);
       setJelqsAverage(average);
-
     } catch {
       setData([]);
     }
@@ -176,6 +176,8 @@ const Home: React.FC = () => {
     prayMorning: Activity;
     porn: Activity;
     workoutTime: Activity;
+    bikeTime: Activity;
+    bikeDistance: Activity;
     masturbate: Activity;
     prayNight: Activity;
     workout: Activity;
@@ -256,7 +258,6 @@ const Home: React.FC = () => {
       total: stepsTotal,
       average: stepsAverage,
     },
-
     workoutTime: {
       name: "Workout Time",
       currentStreak: 5,
@@ -275,6 +276,20 @@ const Home: React.FC = () => {
       name: "Coding",
       currentStreak: 5,
       history: [true, true, true, true, true],
+    },
+    bikeTime: {
+      name: "Bike Time",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+      total: workoutTimeTotal,
+      average: workoutTimeAverage,
+    },
+    bikeDistance: {
+      name: "Bike Distance",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+      total: workoutTimeTotal,
+      average: workoutTimeAverage,
     },
     waterIntake: 3.5,
   };
@@ -315,6 +330,14 @@ const Home: React.FC = () => {
     {
       activity: trackerData.workout,
       icon: <FitnessCenterIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.bikeDistance,
+      icon: <StraightenIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.bikeTime,
+      icon: <PedalBikeIcon fontSize="large" />,
     },
     { activity: trackerData.jelqs, icon: <EmojiPeopleIcon fontSize="large" /> },
     {
