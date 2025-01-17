@@ -50,6 +50,9 @@ const Home: React.FC = () => {
   const [waterTotal, setWaterTotal] = useState<number>(0);
   const [waterAverage, setWaterAverage] = useState<number>(0);
 
+  const [kegelsTotal, setKegelsTotal] = useState<number>(0);
+  const [kegelsAverage, setKegelsAverage] = useState<number>(0);
+
   useEffect(() => {
     try {
       const storedEntries2 = JSON.parse(
@@ -137,6 +140,15 @@ const Home: React.FC = () => {
 
       const averageWater = totalWater / storedEntries.length;
 
+      // STEPS
+      const totalKegels = storedEntries.reduce((sum: number, entry: any) => {
+        const jelqsValue = parseInt(entry.no_of_kegels, 10); // Convert string to integer
+        return sum + (isNaN(jelqsValue) ? 0 : jelqsValue); // Add value if it's a valid number
+      }, 0);
+      const averageKegels = totalKegels / storedEntries.length;
+
+      setKegelsTotal(totalKegels);
+      setKegelsAverage(averageKegels);
       setStepsTotal(totalSteps);
       setStepsAverage(averageSteps);
       setWaterTotal(totalWater);
@@ -186,6 +198,12 @@ const Home: React.FC = () => {
     sleep: Activity;
     water: Activity;
     poop: Activity;
+    kegels: Activity;
+    showers: Activity;
+    books_summary: Activity;
+    csm: Activity;
+    csn: Activity;
+    ted_talk: Activity;
     coding: Activity;
     waterIntake: number;
     steps: Activity;
@@ -203,6 +221,18 @@ const Home: React.FC = () => {
       currentStreak: 5,
       history: [true, false, true, true, true],
       total: masturbateTotal,
+    },
+    csm: {
+      name: "Cold Shower Morning",
+      currentStreak: 5,
+      history: [true, false, true, true, true],
+      total: pornTotal,
+    },
+    csn: {
+      name: "Cold Shower Night",
+      currentStreak: 5,
+      history: [true, false, true, true, true],
+      total: pornTotal,
     },
     porn: {
       name: "Porn",
@@ -229,6 +259,13 @@ const Home: React.FC = () => {
       total: waterTotal,
       average: waterAverage,
     },
+    showers: {
+      name: "Showers",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+      total: jelqsTotal,
+      average: jelqsAverage,
+    },
     jelqs: {
       name: "Jelqs",
       currentStreak: 5,
@@ -249,6 +286,29 @@ const Home: React.FC = () => {
       history: [true, true, false, true, true],
       total: poopTotal,
       average: poopAverage,
+    },
+    kegels: {
+      name: "Kegels",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+      total: kegelsTotal,
+      average: kegelsAverage,
+    },
+
+    books_summary: {
+      name: "Books Summary",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+      total: kegelsTotal,
+      average: kegelsAverage,
+    },
+
+    ted_talk: {
+      name: "Ted Talk",
+      currentStreak: 5,
+      history: [true, true, false, true, true],
+      total: kegelsTotal,
+      average: kegelsAverage,
     },
 
     steps: {
@@ -304,6 +364,19 @@ const Home: React.FC = () => {
       icon: <SportsMmaIcon fontSize="large" />,
     },
     {
+      activity: trackerData.showers,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.csm,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.csn,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+
+    {
       activity: trackerData.porn,
       icon: <SportsMmaIcon fontSize="large" />,
     },
@@ -313,6 +386,18 @@ const Home: React.FC = () => {
     },
     {
       activity: trackerData.poop,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.kegels,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.ted_talk,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
+      activity: trackerData.books_summary,
       icon: <SportsMmaIcon fontSize="large" />,
     },
     {
