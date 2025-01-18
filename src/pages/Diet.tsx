@@ -1,6 +1,7 @@
 // src/DietEntries.tsx
 
 import React, { useState, useEffect } from "react";
+import { makeStyles } from "@mui/styles";
 import {
   Button,
   Modal,
@@ -67,7 +68,67 @@ const style = {
   p: 4,
 };
 
+// Styles using makeStyles
+const useStyles = makeStyles({
+  container: {
+    padding: "8px",
+  },
+  weekend: {
+    backgroundColor: "dodgerblue",
+    color: "white",
+  },
+  weekday: {
+    backgroundColor: "aquamarine",
+    color: "white",
+  },
+  title: {
+    fontSize: "1.25rem", // Reduced from h5
+    marginBottom: "8px",
+  },
+  button: {
+    marginRight: "6px",
+    padding: "4px 8px",
+    minWidth: "80px",
+    fontSize: "0.75rem",
+  },
+  formControl: {
+    minWidth: 100,
+  },
+  selectInput: {
+    fontSize: "0.75rem",
+  },
+  textField: {
+    marginTop: "4px",
+    marginBottom: "4px",
+  },
+  checkboxLabel: {
+    fontSize: "0.75rem",
+  },
+  tableContainer: {
+    marginTop: "16px",
+    overflowX: "auto",
+  },
+  table: {
+    minWidth: 800,
+    fontSize: "0.65rem",
+  },
+  tableCell: {
+    padding: "4px 8px",
+    fontSize: "0.65rem",
+  },
+  tableHeader: {
+    fontSize: "0.7rem",
+    padding: "4px 8px",
+  },
+  trackingBox: {
+    marginTop: "16px",
+    fontSize: "0.7rem",
+  },
+});
+
 const Diet: React.FC = () => {
+  const classes = useStyles();
+
   // State Management
   const [dietData, setDietData] = useState<DietData[]>([]);
   const [open, setOpen] = useState<boolean>(false);
@@ -576,12 +637,25 @@ const Diet: React.FC = () => {
           </TableHead>
           <TableBody>
             {processedDiet.length > 0 ? (
-              processedDiet.map((entry, index) =>
-                entry.foods.map((food, i) => (
+              processedDiet.map((entry, index) => {
+
+                const dateObject = new Date(entry.date);
+                const dayOfWeek = dateObject.getDay();
+                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                const dayName = dateObject.toLocaleDateString("en-US", {
+                  weekday: "long",
+                });
+
+                return entry.foods.map((food, i) => (
                   <TableRow key={`${index}-${i}`}>
                     {i === 0 && (
-                      <TableCell rowSpan={entry.foods.length}>
-                        {entry.date}
+                      <TableCell
+                        className={`${classes.tableCell} ${
+                          isWeekend ? classes.weekend : classes.weekday
+                        }`}
+                        rowSpan={entry.foods.length}
+                      >
+                        {entry.date} - {dayName}
                       </TableCell>
                     )}
                     <TableCell>{food.food}</TableCell>
@@ -636,8 +710,8 @@ const Diet: React.FC = () => {
                       </TableCell>
                     )}
                   </TableRow>
-                ))
-              )
+                ));
+              })
             ) : (
               <TableRow>
                 <TableCell colSpan={7} align="center">
