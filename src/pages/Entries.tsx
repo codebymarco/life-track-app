@@ -56,7 +56,7 @@ type FormData = {
   coding?: number;
   scm?: boolean;
   scn?: boolean;
-  stretch?:boolean;
+  stretch?: boolean;
 };
 
 // New Type for Processed Entries
@@ -365,12 +365,11 @@ const Entries: React.FC = () => {
     filterValue: any
   ): ProcessedEntry[] => {
     if (filterValue === "" || filterValue === null) return data;
-    return data.filter((item:any) => {
+    return data.filter((item: any) => {
       if (typeof filterValue === "boolean") {
         return item.entry[key] === filterValue;
       } else if (typeof filterValue === "string") {
-        return item.entry[key]!
-          .toString()
+        return item.entry[key]!.toString()
           .toLowerCase()
           .includes(filterValue.toLowerCase());
       }
@@ -551,6 +550,39 @@ const Entries: React.FC = () => {
               </Typography>
             }
           />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.scm}
+                name="scm"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.checkboxLabel}>
+                cold shower morning
+              </Typography>
+            }
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.scn}
+                name="scn"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.checkboxLabel}>
+                cold shower night
+              </Typography>
+            }
+          />
+
           <FormControlLabel
             control={
               <Checkbox
