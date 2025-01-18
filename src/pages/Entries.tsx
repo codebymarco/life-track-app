@@ -21,6 +21,7 @@ import {
   InputLabel,
   FormControl,
   Typography,
+  Popover,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -28,6 +29,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility"; // Import Visibilit
 import { makeStyles } from "@mui/styles";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 // Type Definitions
 type FormData = {
@@ -54,6 +56,7 @@ type FormData = {
   coding?: number;
   scm?: boolean;
   scn?: boolean;
+  stretch?:boolean;
 };
 
 // New Type for Processed Entries
@@ -66,9 +69,6 @@ type ProcessedEntry = {
 const useStyles = makeStyles({
   container: {
     padding: "8px",
-  },
-  tableCell: {
-    padding: "16px",
   },
   weekend: {
     backgroundColor: "dodgerblue",
@@ -86,7 +86,7 @@ const useStyles = makeStyles({
     marginRight: "6px",
     padding: "4px 8px",
     minWidth: "80px",
-    fontSize: "0.75rem"
+    fontSize: "0.75rem",
   },
   formControl: {
     minWidth: 100,
@@ -111,7 +111,6 @@ const useStyles = makeStyles({
     overflowY: "auto",
     backgroundColor: "#fff",
     border: "1px solid #000",
-    boxShadow: 24,
     padding: "8px", // Further reduced padding
   },
   viewModalBox: {
@@ -125,7 +124,6 @@ const useStyles = makeStyles({
     overflowY: "auto",
     backgroundColor: "#fff",
     border: "1px solid #000",
-    boxShadow: 24,
     padding: "16px",
   },
   tableContainer: {
@@ -179,10 +177,6 @@ const Entries: React.FC = () => {
     pe: false,
     kegels: false,
     coding: "",
-    bike_time: 0,
-    bike_km: 0,
-    keep_ups: 0,
-    wrist_grips: 0,
     firstMeal: "",
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
@@ -358,8 +352,8 @@ const Entries: React.FC = () => {
     order: "asc" | "desc"
   ): ProcessedEntry[] => {
     return [...data].sort((a, b) => {
-      if (a.entry[key] < b.entry[key]) return order === "asc" ? -1 : 1;
-      if (a.entry[key] > b.entry[key]) return order === "asc" ? 1 : -1;
+      if (a.entry[key]! < b.entry[key]!) return order === "asc" ? -1 : 1;
+      if (a.entry[key]! > b.entry[key]!) return order === "asc" ? 1 : -1;
       return 0;
     });
   };
@@ -371,11 +365,11 @@ const Entries: React.FC = () => {
     filterValue: any
   ): ProcessedEntry[] => {
     if (filterValue === "" || filterValue === null) return data;
-    return data.filter((item) => {
+    return data.filter((item:any) => {
       if (typeof filterValue === "boolean") {
         return item.entry[key] === filterValue;
       } else if (typeof filterValue === "string") {
-        return item.entry[key]
+        return item.entry[key]!
           .toString()
           .toLowerCase()
           .includes(filterValue.toLowerCase());
@@ -411,6 +405,11 @@ const Entries: React.FC = () => {
     );
     return sorted[0].date;
   };
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedEntryIndex, setSelectedEntryIndex] = useState<number | null>(
+    null
+  );
 
   return (
     <div className={classes.container}>
@@ -994,23 +993,66 @@ const Entries: React.FC = () => {
 
                     <TableCell className={classes.tableCell}>
                       <IconButton
-                        onClick={() => handleEdit(originalIndex)}
+                        onClick={(event) => {
+                          setAnchorEl(event.currentTarget);
+                          setSelectedEntryIndex(originalIndex);
+                        }}
                         size="small"
                       >
-                        <EditIcon fontSize="small" />
+                        <MoreVertIcon fontSize="small" />
                       </IconButton>
-                      <IconButton
-                        onClick={() => handleDelete(originalIndex)}
-                        size="small"
+                      <Popover
+                        open={
+                          Boolean(anchorEl) &&
+                          selectedEntryIndex === originalIndex
+                        }
+                        anchorEl={anchorEl}
+                        onClose={() => {
+                          setAnchorEl(null);
+                          setSelectedEntryIndex(null);
+                        }}
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "left",
+                        }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "left",
+                        }}
                       >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleViewOpen(entry)}
-                        size="small"
-                      >
-                        <VisibilityIcon fontSize="small" />
-                      </IconButton>
+                        <Box p={1} display="flex" flexDirection="column">
+                          <Button
+                            startIcon={<EditIcon />}
+                            onClick={() => {
+                              handleEdit(originalIndex);
+                              setAnchorEl(null);
+                            }}
+                            size="small"
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            startIcon={<DeleteIcon />}
+                            onClick={() => {
+                              handleDelete(originalIndex);
+                              setAnchorEl(null);
+                            }}
+                            size="small"
+                          >
+                            Delete
+                          </Button>
+                          <Button
+                            startIcon={<VisibilityIcon />}
+                            onClick={() => {
+                              handleViewOpen(entry);
+                              setAnchorEl(null);
+                            }}
+                            size="small"
+                          >
+                            View
+                          </Button>
+                        </Box>
+                      </Popover>
                     </TableCell>
                   </TableRow>
                 );
