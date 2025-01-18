@@ -35,6 +35,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 type FormData = {
   date: string;
   prayMorning: boolean;
+  prayDay: boolean;
   bookSummary: boolean;
   prayEvening: boolean;
   workout: boolean;
@@ -159,6 +160,7 @@ const Entries: React.FC = () => {
   >({
     date: "",
     prayMorning: false,
+    prayDay: false,
     bookSummary: false,
     prayEvening: false,
     mast: false,
@@ -229,6 +231,7 @@ const Entries: React.FC = () => {
     setFormData({
       date: "",
       prayMorning: false,
+      prayDay: false,
       bookSummary: false,
       prayEvening: false,
       mast: false,
@@ -535,6 +538,23 @@ const Entries: React.FC = () => {
               </Typography>
             }
           />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.prayDay}
+                name="prayDay"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.checkboxLabel}>
+                Pray Day
+              </Typography>
+            }
+          />
+
           <FormControlLabel
             control={
               <Checkbox
@@ -596,33 +616,6 @@ const Entries: React.FC = () => {
               <Typography className={classes.checkboxLabel}>Workout</Typography>
             }
           />
-          {formData.workout && (
-            <>
-              <TextField
-                fullWidth
-                variant="outlined"
-                size="small"
-                className={classes.textField}
-                label="Workout Details"
-                name="workoutDetails"
-                value={formData.workoutDetails.join(",")}
-                onChange={handleWorkoutDetailsChange}
-                placeholder="Comma-separated"
-              />
-              <TextField
-                fullWidth
-                variant="outlined"
-                size="small"
-                className={classes.textField}
-                label="Workout Time"
-                type="number"
-                name="workoutTime"
-                value={formData.workoutTime}
-                onChange={handleChange}
-                inputProps={{ min: 0 }}
-              />
-            </>
-          )}
           <FormControlLabel
             control={
               <Checkbox
@@ -925,6 +918,7 @@ const Entries: React.FC = () => {
             <TableRow>
               <TableCell className={classes.tableHeader}>Date</TableCell>
               <TableCell className={classes.tableHeader}>Pray M</TableCell>
+              <TableCell className={classes.tableHeader}>Pray D</TableCell>
               <TableCell className={classes.tableHeader}>Pray E</TableCell>
               <TableCell className={classes.tableHeader}>Mast</TableCell>
               <TableCell className={classes.tableHeader}>PN</TableCell>
@@ -935,12 +929,10 @@ const Entries: React.FC = () => {
               <TableCell className={classes.tableHeader}>Showers</TableCell>
               <TableCell className={classes.tableHeader}>
                 Kegels Count
-              </TableCell>{" "}
+              </TableCell>
               <TableCell className={classes.tableHeader}>day type</TableCell>{" "}
-              {/* Renamed */}
               <TableCell className={classes.tableHeader}>Suntime</TableCell>
               <TableCell className={classes.tableHeader}>Jelqs</TableCell>
-              {/* Renamed */}
               <TableCell className={classes.tableHeader}>Coding</TableCell>
               <TableCell className={classes.tableHeader}>smc</TableCell>
               <TableCell className={classes.tableHeader}>snc</TableCell>
@@ -970,6 +962,13 @@ const Entries: React.FC = () => {
                     <TableCell className={classes.tableCell}>
                       {entry.prayMorning ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
+
+
+                    <TableCell className={classes.tableCell}>
+                      {entry.prayDay ? <CheckCircleIcon /> : <CancelIcon />}
+                    </TableCell>
+
+
                     <TableCell className={classes.tableCell}>
                       {entry.prayEvening ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>

@@ -204,6 +204,7 @@ const Home: React.FC = () => {
     name: string;
     currentStreak: number;
     average?: number;
+    type?: string;
     highest?: number;
     highestDate?: string;
     lowestDate?: string;
@@ -251,6 +252,7 @@ const Home: React.FC = () => {
 
   const trackerData: TrackerData = {
     stretch: {
+      type: "WORKOUT",
       name: "Stretch",
       currentStreak: 5,
       history: [true, true, true, false, true],
@@ -311,6 +313,7 @@ const Home: React.FC = () => {
       total: pnTotal,
     },
     workout: {
+      type:"WORKOUT",
       name: "Workout",
       currentStreak: 5,
       history: [false, true, true, true, false],
@@ -355,6 +358,7 @@ const Home: React.FC = () => {
       average: jelqsAverage,
     },
     wrist_grips: {
+      type:"WORKOUT",
       name: "Wrist Grips",
       currentStreak: 5,
       history: [true, true, false, true, true],
@@ -369,6 +373,7 @@ const Home: React.FC = () => {
       average: jelqsAverage,
     },
     jelqs: {
+      type:"WORKOUT",
       name: "Jelqs",
       currentStreak: 5,
       history: [true, true, false, true, true],
@@ -390,6 +395,7 @@ const Home: React.FC = () => {
       average: poopAverage,
     },
     kegels: {
+      type:"WORKOUT",
       name: "Kegels",
       currentStreak: 5,
       history: [true, true, false, true, true],
@@ -430,6 +436,7 @@ const Home: React.FC = () => {
     },
 
     steps: {
+      type:"WORKOUT",
       name: "Steps",
       currentStreak: 5,
       history: [true, true, false, true, true],
@@ -437,6 +444,7 @@ const Home: React.FC = () => {
       average: stepsAverage,
     },
     workoutTime: {
+      type:"WORKOUT",
       name: "Workout Time",
       currentStreak: 5,
       history: [true, true, false, true, true],
@@ -456,6 +464,7 @@ const Home: React.FC = () => {
       history: [true, true, true, true, true],
     },
     bikeTime: {
+      type:"WORKOUT",
       name: "Bike Time",
       currentStreak: 5,
       history: [true, true, false, true, true],
@@ -470,6 +479,7 @@ const Home: React.FC = () => {
       average: workoutTimeAverage,
     },
     bikeDistance: {
+      type:"WORKOUT",
       name: "Bike Distance",
       currentStreak: 5,
       history: [true, true, false, true, true],
@@ -702,8 +712,82 @@ const Home: React.FC = () => {
       </Typography>
 
       {/* Activity Streaks */}
+      <h1>all</h1>
       <Grid container spacing={3}>
         {trackers.map((tracker, index) => (
+          <Grid item xs={12} sm={6} md={4} key={index}>
+            <Card sx={{ display: "flex", flexDirection: "column", p: 2 }}>
+              <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                <Box sx={{ mr: 2 }}>{tracker.icon}</Box>
+                <CardContent>
+                  <Typography variant="h6">{tracker.activity.name}</Typography>
+                  <Typography color="text.secondary">
+                    Current Streak: {tracker.activity.currentStreak} day
+                    {tracker.activity.currentStreak > 1 ? "s" : ""}
+                  </Typography>
+                  <Typography color="text.secondary">
+                    total: {tracker.activity.total}/ {data.length}
+                  </Typography>
+                  {tracker.activity.goal ? (
+                    <Typography color="text.secondary">
+                      goal - {tracker.activity.goal}
+                    </Typography>
+                  ) : null}
+                  {tracker.activity.average ? (
+                    <Typography color="text.secondary">
+                      {tracker.activity.average} per day
+                    </Typography>
+                  ) : null}
+
+                  {tracker.activity.highest ? (
+                    <Typography color="text.secondary">
+                      highest:
+                      {tracker.activity.highest}
+                    </Typography>
+                  ) : null}
+
+                  {tracker.activity.highestDate ? (
+                    <Typography color="text.secondary">
+                      highestDate:
+                      {tracker.activity.highestDate}
+                    </Typography>
+                  ) : null}
+
+                  {tracker.activity.lowestDate ? (
+                    <Typography color="text.secondary">
+                      highestDate:
+                      {tracker.activity.lowestDate}
+                    </Typography>
+                  ) : null}
+
+                  {tracker.activity.lowest ? (
+                    <Typography color="text.secondary">
+                      lowest:
+                      {tracker.activity.lowest}
+                    </Typography>
+                  ) : null}
+                </CardContent>
+              </Box>
+              <Typography variant="body2" color="text.secondary">
+                Last 5 Days:{" "}
+                {tracker.activity.history.map((status, idx) =>
+                  status ? (
+                    <CheckCircleIcon key={idx} color="success" />
+                  ) : (
+                    <CancelIcon key={idx} color="error" />
+                  )
+                )}
+              </Typography>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+
+
+            {/* Activity Streaks */}
+            <h1>Workout</h1>
+      <Grid container spacing={3}>
+        {trackers.filter(tracker => tracker.activity?.type === "WORKOUT").map((tracker, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
             <Card sx={{ display: "flex", flexDirection: "column", p: 2 }}>
               <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
