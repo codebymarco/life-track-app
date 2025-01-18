@@ -982,7 +982,7 @@ const Entries: React.FC = () => {
                       {entry.jelqs || 0}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {entry.coding !== undefined ? entry.coding : "-"}
+                      {entry.coding !== undefined ? entry.coding : 0}
                     </TableCell>
 
                     <TableCell className={classes.tableCell}>

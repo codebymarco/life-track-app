@@ -209,6 +209,7 @@ const Home: React.FC = () => {
     lowestDate?: string;
     lowest?: number;
     total?: number;
+    goal?: number;
     history: boolean[]; // Last 5 days history (true for yes, false for no)
   }
 
@@ -323,6 +324,7 @@ const Home: React.FC = () => {
       average: 187,
       highest: 190,
       lowest: 181,
+      goal: 190,
     },
     weight: {
       name: "Weight",
@@ -341,6 +343,7 @@ const Home: React.FC = () => {
       average: waterAverage,
       highest: 39000,
       lowest: 39,
+      goal: 3,
       highestDate: new Date().toISOString(), // Sets the current date and time in ISO 8601 format,
       lowestDate: new Date().toISOString(), // Sets the current date and time in ISO 8601 format,
     },
@@ -714,6 +717,11 @@ const Home: React.FC = () => {
                   <Typography color="text.secondary">
                     total: {tracker.activity.total}/ {data.length}
                   </Typography>
+                  {tracker.activity.goal ? (
+                    <Typography color="text.secondary">
+                      goal - {tracker.activity.goal}
+                    </Typography>
+                  ) : null}
                   {tracker.activity.average ? (
                     <Typography color="text.secondary">
                       {tracker.activity.average} per day
