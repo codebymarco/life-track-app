@@ -17,6 +17,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { makeStyles } from "@mui/styles";
 
 // Type Definitions
 type JournalData = {
@@ -58,7 +59,94 @@ const fullPageStyle = {
   overflowY: "auto",
 };
 
+// Styles using makeStyles
+const useStyles = makeStyles({
+  container: {
+    padding: "8px",
+  },
+  weekend: {
+    backgroundColor: "dodgerblue",
+    color: "white",
+  },
+  weekday: {
+    backgroundColor: "aquamarine",
+    color: "white",
+  },
+  title: {
+    fontSize: "1.25rem", // Reduced from h5
+    marginBottom: "8px",
+  },
+  button: {
+    marginRight: "6px",
+    padding: "4px 8px",
+    minWidth: "80px",
+    fontSize: "0.75rem",
+  },
+  formControl: {
+    minWidth: 100,
+  },
+  selectInput: {
+    fontSize: "0.75rem",
+  },
+  textField: {
+    marginTop: "4px",
+    marginBottom: "4px",
+  },
+  checkboxLabel: {
+    fontSize: "0.75rem",
+  },
+  modalBox: {
+    position: "absolute" as const,
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400, // Further reduced width
+    maxHeight: "80vh",
+    overflowY: "auto",
+    backgroundColor: "#fff",
+    border: "1px solid #000",
+    boxShadow: 24,
+    padding: "8px", // Further reduced padding
+  },
+  viewModalBox: {
+    // Styles for the View Modal
+    position: "absolute" as const,
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "80%", // Full-page width
+    maxHeight: "90vh",
+    overflowY: "auto",
+    backgroundColor: "#fff",
+    border: "1px solid #000",
+    boxShadow: 24,
+    padding: "16px",
+  },
+  tableContainer: {
+    marginTop: "16px",
+    overflowX: "auto",
+  },
+  table: {
+    minWidth: 800,
+    fontSize: "0.65rem",
+  },
+  tableCell: {
+    padding: "4px 8px",
+    fontSize: "0.65rem",
+  },
+  tableHeader: {
+    fontSize: "0.7rem",
+    padding: "4px 8px",
+  },
+  trackingBox: {
+    marginTop: "16px",
+    fontSize: "0.7rem",
+  },
+});
+
 const JournalEntries: React.FC = () => {
+  const classes = useStyles();
+
   // State Management
   const [journalData, setJournalData] = useState<JournalData[]>([]);
   const [open, setOpen] = useState<boolean>(false);
@@ -101,7 +189,14 @@ const JournalEntries: React.FC = () => {
 
   // Reset Form Data
   const resetForm = () => {
-    setJournalForm({ date: "", body: "", mood: "", wore: "", better:"", travelTime: 0 });
+    setJournalForm({
+      date: "",
+      body: "",
+      mood: "",
+      wore: "",
+      better: "",
+      travelTime: 0,
+    });
     setEditIndex(null);
   };
 
@@ -271,26 +366,41 @@ const JournalEntries: React.FC = () => {
           </TableHead>
           <TableBody>
             {processedJournal.length > 0 ? (
-              processedJournal.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell>{row.date}</TableCell>
-                  <TableCell>{row.travelTime}</TableCell>
-                  <TableCell>{row.mood}</TableCell>
-                  <TableCell>{row.wore}</TableCell>
-                  <TableCell>{row.better}</TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleView(row)}>
-                      <VisibilityIcon />
-                    </IconButton>
-                    <IconButton onClick={() => handleEdit(index)}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton onClick={() => handleDelete(index)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))
+              processedJournal.map((row, index) => {
+                const dateObject = new Date(row.date);
+                const dayOfWeek = dateObject.getDay();
+                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                const dayName = dateObject.toLocaleDateString("en-US", {
+                  weekday: "long",
+                });
+
+                return (
+                  <TableRow key={index}>
+                    <TableCell
+                      className={`${classes.tableCell} ${
+                        isWeekend ? classes.weekend : classes.weekday
+                      }`}
+                    >
+                      {row.date} - {dayName}
+                    </TableCell>
+                    <TableCell>{row.travelTime}</TableCell>
+                    <TableCell>{row.mood}</TableCell>
+                    <TableCell>{row.wore}</TableCell>
+                    <TableCell>{row.better}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => handleView(row)}>
+                        <VisibilityIcon />
+                      </IconButton>
+                      <IconButton onClick={() => handleEdit(index)}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton onClick={() => handleDelete(index)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             ) : (
               <TableRow>
                 <TableCell colSpan={2} align="center">
@@ -354,7 +464,7 @@ const JournalEntries: React.FC = () => {
             rows={4}
             required
           />
-                    <TextField
+          <TextField
             fullWidth
             margin="normal"
             label="Better"
