@@ -86,7 +86,7 @@ const useStyles = makeStyles({
     marginRight: "6px",
     padding: "4px 8px",
     minWidth: "80px",
-    fontSize: "0.75rem",
+    fontSize: "0.75rem"
   },
   formControl: {
     minWidth: 100,
@@ -437,7 +437,7 @@ const Entries: React.FC = () => {
           className={classes.button}
           size="small"
         >
-          JSON
+          DOWNLOAD ENTRIES
         </Button>
       </div>
 
