@@ -225,6 +225,7 @@ const Home: React.FC = () => {
     bikeTime: Activity;
     bikeDistance: Activity;
     masturbate: Activity;
+    sex: Activity;
     prayNight: Activity;
     workout: Activity;
     jelqs: Activity;
@@ -279,7 +280,15 @@ const Home: React.FC = () => {
       history: [true, true, true, false, true],
       total: pmTotal,
     },
+    sex: {
+      type: "PLEASURE-SEXUAL",
+      name: "sex",
+      currentStreak: 5,
+      history: [true, false, true, true, true],
+      total: masturbateTotal,
+    },
     masturbate: {
+      type: "PLEASURE-SEXUAL",
       name: "mastrubate",
       currentStreak: 5,
       history: [true, false, true, true, true],
@@ -298,6 +307,7 @@ const Home: React.FC = () => {
       total: pornTotal,
     },
     porn: {
+      type: "PLEASURE-SEXUAL",
       name: "Porn",
       currentStreak: 5,
       history: [true, false, true, true, true],
@@ -372,6 +382,7 @@ const Home: React.FC = () => {
       average: jelqsAverage,
     },
     purchases: {
+      type:"MONEY",
       name: "Purcahses",
       currentStreak: 5,
       history: [true, true, false, true, true],
@@ -410,6 +421,7 @@ const Home: React.FC = () => {
     },
 
     books_summary: {
+      type: "WISDOM",
       name: "Books Summary",
       currentStreak: 5,
       history: [true, true, false, true, true],
@@ -436,6 +448,7 @@ const Home: React.FC = () => {
     },
 
     ted_talk: {
+      type: "WISDOM",
       name: "Ted Talk",
       currentStreak: 5,
       history: [true, true, false, true, true],
@@ -591,6 +604,10 @@ const Home: React.FC = () => {
       icon: <SportsMmaIcon fontSize="large" />,
     },
     {
+      activity: trackerData.sex,
+      icon: <SportsMmaIcon fontSize="large" />,
+    },
+    {
       activity: trackerData.water,
       icon: <WaterBottleIcon fontSize="large" />,
     },
@@ -720,13 +737,16 @@ const Home: React.FC = () => {
       </Typography>
 
       {/* Activity Streaks */}
-      <h1>all</h1>
+      <h1>General</h1>
       <Grid container spacing={3}>
         {trackers
           .filter(
             (tracker) =>
               tracker.activity?.type !== "DIET" &&
               tracker.activity?.type !== "SPIRITUAL" &&
+              tracker.activity?.type !== "PLEASURE-SEXUAL" &&
+              tracker.activity?.type !== "WISDOM" &&
+              tracker.activity?.type !== "MONEY" &&
               tracker.activity?.type !== "WORKOUT"
           )
           .map((tracker, index) => (
@@ -1027,6 +1047,248 @@ const Home: React.FC = () => {
             </Grid>
           ))}
       </Grid>
+
+
+      {/* Activity Streaks */}
+      <h1>pleasure sexual</h1>
+      <Grid container spacing={3}>
+        {trackers
+          .filter((tracker) => tracker.activity?.type === "PLEASURE-SEXUAL")
+          .map((tracker, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <Card sx={{ display: "flex", flexDirection: "column", p: 2 }}>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <Box sx={{ mr: 2 }}>{tracker.icon}</Box>
+                  <CardContent>
+                    <Typography variant="h6">
+                      {tracker.activity.name}
+                    </Typography>
+                    <Typography color="text.secondary">
+                      Current Streak: {tracker.activity.currentStreak} day
+                      {tracker.activity.currentStreak > 1 ? "s" : ""}
+                    </Typography>
+                    <Typography color="text.secondary">
+                      total: {tracker.activity.total}/ {data.length}
+                    </Typography>
+                    {tracker.activity.goal ? (
+                      <Typography color="text.secondary">
+                        goal - {tracker.activity.goal}
+                      </Typography>
+                    ) : null}
+                    {tracker.activity.average ? (
+                      <Typography color="text.secondary">
+                        {tracker.activity.average} per day
+                      </Typography>
+                    ) : null}
+
+                    {tracker.activity.highest ? (
+                      <Typography color="text.secondary">
+                        highest:
+                        {tracker.activity.highest}
+                      </Typography>
+                    ) : null}
+
+                    {tracker.activity.highestDate ? (
+                      <Typography color="text.secondary">
+                        highestDate:
+                        {tracker.activity.highestDate}
+                      </Typography>
+                    ) : null}
+
+                    {tracker.activity.lowestDate ? (
+                      <Typography color="text.secondary">
+                        highestDate:
+                        {tracker.activity.lowestDate}
+                      </Typography>
+                    ) : null}
+
+                    {tracker.activity.lowest ? (
+                      <Typography color="text.secondary">
+                        lowest:
+                        {tracker.activity.lowest}
+                      </Typography>
+                    ) : null}
+                  </CardContent>
+                </Box>
+                <Typography variant="body2" color="text.secondary">
+                  Last 5 Days:{" "}
+                  {tracker.activity.history.map((status, idx) =>
+                    status ? (
+                      <CheckCircleIcon key={idx} color="success" />
+                    ) : (
+                      <CancelIcon key={idx} color="error" />
+                    )
+                  )}
+                </Typography>
+              </Card>
+            </Grid>
+          ))}
+      </Grid>
+
+
+
+
+
+
+      {/* Activity Streaks */}
+      <h1>Wisdom</h1>
+      <Grid container spacing={3}>
+        {trackers
+          .filter((tracker) => tracker.activity?.type === "WISDOM")
+          .map((tracker, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <Card sx={{ display: "flex", flexDirection: "column", p: 2 }}>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <Box sx={{ mr: 2 }}>{tracker.icon}</Box>
+                  <CardContent>
+                    <Typography variant="h6">
+                      {tracker.activity.name}
+                    </Typography>
+                    <Typography color="text.secondary">
+                      Current Streak: {tracker.activity.currentStreak} day
+                      {tracker.activity.currentStreak > 1 ? "s" : ""}
+                    </Typography>
+                    <Typography color="text.secondary">
+                      total: {tracker.activity.total}/ {data.length}
+                    </Typography>
+                    {tracker.activity.goal ? (
+                      <Typography color="text.secondary">
+                        goal - {tracker.activity.goal}
+                      </Typography>
+                    ) : null}
+                    {tracker.activity.average ? (
+                      <Typography color="text.secondary">
+                        {tracker.activity.average} per day
+                      </Typography>
+                    ) : null}
+
+                    {tracker.activity.highest ? (
+                      <Typography color="text.secondary">
+                        highest:
+                        {tracker.activity.highest}
+                      </Typography>
+                    ) : null}
+
+                    {tracker.activity.highestDate ? (
+                      <Typography color="text.secondary">
+                        highestDate:
+                        {tracker.activity.highestDate}
+                      </Typography>
+                    ) : null}
+
+                    {tracker.activity.lowestDate ? (
+                      <Typography color="text.secondary">
+                        highestDate:
+                        {tracker.activity.lowestDate}
+                      </Typography>
+                    ) : null}
+
+                    {tracker.activity.lowest ? (
+                      <Typography color="text.secondary">
+                        lowest:
+                        {tracker.activity.lowest}
+                      </Typography>
+                    ) : null}
+                  </CardContent>
+                </Box>
+                <Typography variant="body2" color="text.secondary">
+                  Last 5 Days:{" "}
+                  {tracker.activity.history.map((status, idx) =>
+                    status ? (
+                      <CheckCircleIcon key={idx} color="success" />
+                    ) : (
+                      <CancelIcon key={idx} color="error" />
+                    )
+                  )}
+                </Typography>
+              </Card>
+            </Grid>
+          ))}
+      </Grid>
+
+
+
+
+
+
+
+
+      {/* Activity Streaks */}
+      <h1>Money</h1>
+      <Grid container spacing={3}>
+        {trackers
+          .filter((tracker) => tracker.activity?.type === "MONEY")
+          .map((tracker, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <Card sx={{ display: "flex", flexDirection: "column", p: 2 }}>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <Box sx={{ mr: 2 }}>{tracker.icon}</Box>
+                  <CardContent>
+                    <Typography variant="h6">
+                      {tracker.activity.name}
+                    </Typography>
+                    <Typography color="text.secondary">
+                      Current Streak: {tracker.activity.currentStreak} day
+                      {tracker.activity.currentStreak > 1 ? "s" : ""}
+                    </Typography>
+                    <Typography color="text.secondary">
+                      total: {tracker.activity.total}/ {data.length}
+                    </Typography>
+                    {tracker.activity.goal ? (
+                      <Typography color="text.secondary">
+                        goal - {tracker.activity.goal}
+                      </Typography>
+                    ) : null}
+                    {tracker.activity.average ? (
+                      <Typography color="text.secondary">
+                        {tracker.activity.average} per day
+                      </Typography>
+                    ) : null}
+
+                    {tracker.activity.highest ? (
+                      <Typography color="text.secondary">
+                        highest:
+                        {tracker.activity.highest}
+                      </Typography>
+                    ) : null}
+
+                    {tracker.activity.highestDate ? (
+                      <Typography color="text.secondary">
+                        highestDate:
+                        {tracker.activity.highestDate}
+                      </Typography>
+                    ) : null}
+
+                    {tracker.activity.lowestDate ? (
+                      <Typography color="text.secondary">
+                        highestDate:
+                        {tracker.activity.lowestDate}
+                      </Typography>
+                    ) : null}
+
+                    {tracker.activity.lowest ? (
+                      <Typography color="text.secondary">
+                        lowest:
+                        {tracker.activity.lowest}
+                      </Typography>
+                    ) : null}
+                  </CardContent>
+                </Box>
+                <Typography variant="body2" color="text.secondary">
+                  Last 5 Days:{" "}
+                  {tracker.activity.history.map((status, idx) =>
+                    status ? (
+                      <CheckCircleIcon key={idx} color="success" />
+                    ) : (
+                      <CancelIcon key={idx} color="error" />
+                    )
+                  )}
+                </Typography>
+              </Card>
+            </Grid>
+          ))}
+      </Grid>
+
 
       {/* Carousel Section */}
       <Box sx={{ mt: 6 }}>
