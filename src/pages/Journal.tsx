@@ -345,8 +345,22 @@ const JournalEntries: React.FC = () => {
   const handleMoodModalOpen = () => setMoodModalOpen(true);
   const handleMoodModalClose = () => setMoodModalOpen(false);
 
-  const [currentMood, setCurrentMood] = useState<{ hour: number; value: string }[]>(
-    Array.from({ length: 24 }, (_, hour) => ({ hour, value: "" }))
+  const [currentMood, setCurrentMood] = useState<
+    { time: string; value: string }[]
+  >(
+    Array.from({ length: 48 }, (_, index) => {
+      const startHours = Math.floor(index / 2); // Start hour
+      const startMinutes = index % 2 === 0 ? "00" : "30"; // Start minutes
+      const endHours = index % 2 === 0 ? startHours : startHours + 1; // End hour
+      const endMinutes = index % 2 === 0 ? "30" : "00"; // End minutes
+
+      const startTime = `${startHours
+        .toString()
+        .padStart(2, "0")}:${startMinutes}`;
+      const endTime = `${endHours.toString().padStart(2, "0")}:${endMinutes}`;
+      const time = `${startTime} - ${endTime}`;
+      return { time, value: "" };
+    })
   );
 
   const handleMoodSave = () => {
@@ -356,9 +370,7 @@ const JournalEntries: React.FC = () => {
 
   const handleMoodChange = (hour: number, value: string) => {
     setCurrentMood((prev) =>
-      prev.map((entry) =>
-        entry.hour === hour ? { ...entry, value } : entry
-      )
+      prev.map((entry) => (entry.hour === hour ? { ...entry, value } : entry))
     );
   };
 
@@ -561,16 +573,23 @@ const JournalEntries: React.FC = () => {
         </Box>
       </Modal>
 
-
       <Modal open={moodModalOpen} onClose={handleMoodModalClose}>
         <Box sx={moodModalStyle}>
           <Typography variant="h6">Set Mood for Each Hour</Typography>
-          {currentMood.map(({ hour, value }) => (
-            <Box key={hour} display="flex" alignItems="center" marginY={1}>
-              <Typography style={{ width: "50px" }}>{hour}:00</Typography>
+          {currentMood.map(({ time, value }) => (
+            <Box key={time} display="flex" alignItems="center" marginY={1}>
+              <Typography style={{ width: "150px" }}>{time}</Typography>
               <Select
                 value={value}
-                onChange={(e) => handleMoodChange(hour, e.target.value)}
+                onChange={(e) =>
+                  setCurrentMood((prev) =>
+                    prev.map((entry) =>
+                      entry.time === time
+                        ? { ...entry, value: e.target.value }
+                        : entry
+                    )
+                  )
+                }
                 fullWidth
               >
                 <MenuItem value="">None</MenuItem>
@@ -590,7 +609,6 @@ const JournalEntries: React.FC = () => {
           </Button>
         </Box>
       </Modal>
-
     </div>
   );
 };
