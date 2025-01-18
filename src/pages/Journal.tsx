@@ -13,6 +13,8 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -25,6 +27,7 @@ type JournalData = {
   body: string;
   travelTime?: number;
   mood?: string;
+  mood2?: { hour: number; value: string }[];
   wore?: string;
   better?: string;
 };
@@ -42,6 +45,11 @@ const style = {
   border: "2px solid #000",
   boxShadow: 24,
   p: 4,
+};
+
+const moodModalStyle = {
+  ...style,
+  width: 400,
 };
 
 // Full-Page Modal Styling
@@ -154,6 +162,7 @@ const JournalEntries: React.FC = () => {
     date: "",
     body: "",
     mood: "",
+    mood2: [],
     wore: "",
     better: "",
     travelTime: 0,
@@ -332,6 +341,27 @@ const JournalEntries: React.FC = () => {
     sortOrder
   );
 
+  const [moodModalOpen, setMoodModalOpen] = useState<boolean>(false);
+  const handleMoodModalOpen = () => setMoodModalOpen(true);
+  const handleMoodModalClose = () => setMoodModalOpen(false);
+
+  const [currentMood, setCurrentMood] = useState<{ hour: number; value: string }[]>(
+    Array.from({ length: 24 }, (_, hour) => ({ hour, value: "" }))
+  );
+
+  const handleMoodSave = () => {
+    setJournalForm((prev) => ({ ...prev, mood2: currentMood }));
+    handleMoodModalClose();
+  };
+
+  const handleMoodChange = (hour: number, value: string) => {
+    setCurrentMood((prev) =>
+      prev.map((entry) =>
+        entry.hour === hour ? { ...entry, value } : entry
+      )
+    );
+  };
+
   return (
     <div style={{ padding: "20px" }}>
       <Typography variant="h4" gutterBottom>
@@ -464,6 +494,13 @@ const JournalEntries: React.FC = () => {
             rows={4}
             required
           />
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={handleMoodModalOpen}
+          >
+            Set Mood
+          </Button>{" "}
           <TextField
             fullWidth
             margin="normal"
@@ -523,6 +560,37 @@ const JournalEntries: React.FC = () => {
           )}
         </Box>
       </Modal>
+
+
+      <Modal open={moodModalOpen} onClose={handleMoodModalClose}>
+        <Box sx={moodModalStyle}>
+          <Typography variant="h6">Set Mood for Each Hour</Typography>
+          {currentMood.map(({ hour, value }) => (
+            <Box key={hour} display="flex" alignItems="center" marginY={1}>
+              <Typography style={{ width: "50px" }}>{hour}:00</Typography>
+              <Select
+                value={value}
+                onChange={(e) => handleMoodChange(hour, e.target.value)}
+                fullWidth
+              >
+                <MenuItem value="">None</MenuItem>
+                <MenuItem value="Happy">Happy</MenuItem>
+                <MenuItem value="Sad">Sad</MenuItem>
+                <MenuItem value="Neutral">Neutral</MenuItem>
+              </Select>
+            </Box>
+          ))}
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleMoodSave}
+            style={{ marginTop: "10px" }}
+          >
+            Save Mood
+          </Button>
+        </Box>
+      </Modal>
+
     </div>
   );
 };
