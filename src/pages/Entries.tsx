@@ -899,11 +899,6 @@ const Entries: React.FC = () => {
               <TableCell className={classes.tableHeader}>PN</TableCell>
               <TableCell className={classes.tableHeader}>booksum</TableCell>
               <TableCell className={classes.tableHeader}>Steps</TableCell>
-              <TableCell className={classes.tableHeader}>Workout</TableCell>
-              {/* Removed Workout Details Column */}
-              <TableCell className={classes.tableHeader}>
-                Workout Time
-              </TableCell>
               <TableCell className={classes.tableHeader}>Sleep</TableCell>
               <TableCell className={classes.tableHeader}>Poop</TableCell>
               <TableCell className={classes.tableHeader}>Showers</TableCell>
@@ -960,12 +955,6 @@ const Entries: React.FC = () => {
 
                     <TableCell className={classes.tableCell}>
                       {entry.steps || 0}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.workout ? <CheckCircleIcon /> : <CancelIcon />}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.workoutTime || 0}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.sleepTime || 0}
