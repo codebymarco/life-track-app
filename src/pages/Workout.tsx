@@ -64,6 +64,14 @@ type ProcessedEntry = {
 
 // Styles using makeStyles
 const useStyles = makeStyles({
+  weekend: {
+    backgroundColor: "dodgerblue",
+    color: "white",
+  },
+  weekday: {
+    backgroundColor: "aquamarine",
+    color: "white",
+  },
   container: {
     padding: "8px",
   },
@@ -983,122 +991,113 @@ const Workout: React.FC = () => {
           </TableHead>
           <TableBody>
             {processedEntries.length > 0 ? (
-              processedEntries.map(({ entry, originalIndex }) => (
-                <TableRow key={originalIndex}>
-                  <TableCell className={classes.tableCell}>
-                    {entry.date}
-                  </TableCell>
+              processedEntries.map(({ entry, originalIndex }) => {
+                const dateObject = new Date(entry.date);
+                const dayOfWeek = dateObject.getDay();
+                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                const dayName = dateObject.toLocaleDateString("en-US", {
+                  weekday: "long",
+                });
 
-                  {/*                   deltRaiseFoward: 0,
-    deltRaiseSide: 0,
-    bicepCurls: 0,
-    workout: false,
-    workoutTime: 0, 
-    calfRaise: 0, 
-    pushUps: 0, 
-    legRaise: 0, 
-    crunches: 0, 
-    kickOuts: 0, 
-    crunchesReverse: 0,
-    bikeDistance: 0,
-    bikeTime: 0,
-    wristGrips: 0,
-    footballkeepUps: 0,
-    footballAtw: 0,
-    stretch: false,
-    squats: 0,
-    sitDown: 0,
-    lunges: 0, */}
-
-                  <TableCell className={classes.tableCell}>
-                    {entry.deltRaiseFoward || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.deltRaiseSide || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.bicepCurls || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.workout ? <CheckCircleIcon /> : <CancelIcon />}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.workoutTime || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.calfRaise || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.pushUps || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.legRaise || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.crunches || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.obliques || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.kickOuts || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.crunchesReverse || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.bikeDistance || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.bikeTime || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.wristGrips || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.footballkeepUps || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.footballkneeUps || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.footballAtw || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.stretch ? <CheckCircleIcon /> : <CancelIcon />}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.squats || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.sitDown || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {entry.lunges || 0}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    <IconButton
-                      onClick={() => handleEdit(originalIndex)}
-                      size="small"
+                return (
+                  <TableRow key={originalIndex}>
+                    <TableCell
+                      className={`${classes.tableCell} ${
+                        isWeekend ? classes.weekend : classes.weekday
+                      }`}
                     >
-                      <EditIcon fontSize="small" />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => handleDelete(originalIndex)}
-                      size="small"
-                    >
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                    {/* Added View Button */}
-                    <IconButton
-                      onClick={() => handleViewOpen(entry)}
-                      size="small"
-                    >
-                      <VisibilityIcon fontSize="small" />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))
+                      {entry.date} - {dayName}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.deltRaiseFoward || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.deltRaiseSide || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.bicepCurls || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.workout ? <CheckCircleIcon /> : <CancelIcon />}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.workoutTime || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.calfRaise || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.pushUps || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.legRaise || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.crunches || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.obliques || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.kickOuts || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.crunchesReverse || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.bikeDistance || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.bikeTime || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.wristGrips || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.footballkeepUps || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.footballkneeUps || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.footballAtw || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.stretch ? <CheckCircleIcon /> : <CancelIcon />}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.squats || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.sitDown || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.lunges || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      <IconButton
+                        onClick={() => handleEdit(originalIndex)}
+                        size="small"
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleDelete(originalIndex)}
+                        size="small"
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                      {/* Added View Button */}
+                      <IconButton
+                        onClick={() => handleViewOpen(entry)}
+                        size="small"
+                      >
+                        <VisibilityIcon fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             ) : (
               <TableRow>
                 <TableCell
