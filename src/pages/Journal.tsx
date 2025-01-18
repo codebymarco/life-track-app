@@ -545,33 +545,51 @@ const JournalEntries: React.FC = () => {
         </Box>
       </Modal>
 
-      {/* Full-Page View Modal */}
-      <Modal open={viewOpen} onClose={handleViewClose}>
-        <Box sx={fullPageStyle}>
-          {selectedEntry && (
-            <>
-              <Typography variant="h4" gutterBottom>
-                Journal Entry
-              </Typography>
-              <Typography variant="h6">Date: {selectedEntry.date}</Typography>
-              <Typography
-                variant="body1"
-                style={{ marginTop: "20px", whiteSpace: "pre-line" }}
-              >
-                {selectedEntry.body}
-              </Typography>
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={handleViewClose}
-                style={{ marginTop: "20px" }}
-              >
-                Close
-              </Button>
-            </>
-          )}
-        </Box>
-      </Modal>
+{/* Full-Page View Modal */}
+<Modal open={viewOpen} onClose={handleViewClose}>
+  <Box sx={fullPageStyle}>
+    {selectedEntry && (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "flex-start", // Align items at the top
+          gap: "20px", // Space between items
+        }}
+      >
+        <div style={{ flex: 1 }}>
+          <Typography variant="h4" gutterBottom>
+            Journal Entry
+          </Typography>
+          <Typography variant="h6">Date: {selectedEntry.date}</Typography>
+        </div>
+        <div style={{ flex: 2 }}>
+          <Typography
+            variant="body1"
+            style={{ marginTop: "20px", whiteSpace: "pre-line" }}
+          >
+            {JSON.stringify(selectedEntry.mood2)}
+          </Typography>
+          <Typography
+            variant="body1"
+            style={{ marginTop: "20px", whiteSpace: "pre-line" }}
+          >
+            {selectedEntry.body}
+          </Typography>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={handleViewClose}
+            style={{ marginTop: "20px" }}
+          >
+            Close
+          </Button>
+        </div>
+      </div>
+    )}
+  </Box>
+</Modal>;
+
 
       <Modal open={moodModalOpen} onClose={handleMoodModalClose}>
         <Box sx={moodModalStyle}>
