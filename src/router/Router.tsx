@@ -19,6 +19,8 @@ import Workout from "../pages/Workout";
 import BucketList from "../pages/BucketList";
 import Finances from "../pages/Finance";
 import Memories from "../pages/Memeries";
+import LandmarkPage from "../pages/LandmarkPage";
+import RelationshipsPage from "../pages/RelationshipsPage";
 
 const routes: RouteObject[] = [
   {
@@ -118,6 +120,22 @@ const routes: RouteObject[] = [
     ),
   },
   {
+    path: "/landmarks",
+    element: (
+      <MainLayout>
+        <Route index element={<LandmarkPage />} />
+      </MainLayout>
+    ),
+  },
+  {
+    path: "/relationships",
+    element: (
+      <MainLayout>
+        <Route index element={<RelationshipsPage />} />
+      </MainLayout>
+    ),
+  },
+  {
     path: "/workout",
     element: (
       <MainLayout>
@@ -172,7 +190,7 @@ const routes: RouteObject[] = [
         <Route index element={<Tobuy />} />
       </MainLayout>
     ),
-  }
+  },
 ];
 
 export default routes;
