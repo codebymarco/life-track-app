@@ -27,6 +27,8 @@ type JournalData = {
   body: string;
   travelTime?: number;
   mood?: string;
+  bookSummary?: string;
+  tedEx?: string;
   mood2?: { hour: number; value: string }[];
   wore?: string;
   better?: string;
@@ -113,7 +115,6 @@ const useStyles = makeStyles({
     overflowY: "auto",
     backgroundColor: "#fff",
     border: "1px solid #000",
-    boxShadow: 24,
     padding: "8px", // Further reduced padding
   },
   viewModalBox: {
@@ -127,7 +128,6 @@ const useStyles = makeStyles({
     overflowY: "auto",
     backgroundColor: "#fff",
     border: "1px solid #000",
-    boxShadow: 24,
     padding: "16px",
   },
   tableContainer: {
@@ -162,6 +162,8 @@ const JournalEntries: React.FC = () => {
     date: "",
     body: "",
     mood: "",
+    tedEx: "",
+    bookSummary: "",
     mood2: [],
     wore: "",
     better: "",
@@ -202,6 +204,8 @@ const JournalEntries: React.FC = () => {
       date: "",
       body: "",
       mood: "",
+      tedEx: "",
+      bookSummary: "",
       wore: "",
       better: "",
       travelTime: 0,
@@ -364,14 +368,8 @@ const JournalEntries: React.FC = () => {
   );
 
   const handleMoodSave = () => {
-    setJournalForm((prev) => ({ ...prev, mood2: currentMood }));
+    setJournalForm((prev:any) => ({ ...prev, mood2: currentMood }));
     handleMoodModalClose();
-  };
-
-  const handleMoodChange = (hour: number, value: string) => {
-    setCurrentMood((prev) =>
-      prev.map((entry) => (entry.hour === hour ? { ...entry, value } : entry))
-    );
   };
 
   return (
@@ -379,7 +377,6 @@ const JournalEntries: React.FC = () => {
       <Typography variant="h4" gutterBottom>
         Journal Entries
       </Typography>
-
       <div style={{ marginBottom: "10px" }}>
         <Button variant="contained" color="primary" onClick={handleOpen}>
           Add Journal Entry
@@ -393,7 +390,6 @@ const JournalEntries: React.FC = () => {
           Download Journal Entries as JSON
         </Button>
       </div>
-
       <TableContainer component={Paper} sx={{ marginTop: 4 }}>
         <Table>
           <TableHead>
@@ -401,6 +397,8 @@ const JournalEntries: React.FC = () => {
               <TableCell>Date</TableCell>
               <TableCell>TravelTime</TableCell>
               <TableCell>mood</TableCell>
+              <TableCell>tedex</TableCell>
+              <TableCell>booksummary</TableCell>
               <TableCell>wore</TableCell>
               <TableCell>better</TableCell>
               <TableCell>Actions</TableCell>
@@ -427,6 +425,8 @@ const JournalEntries: React.FC = () => {
                     </TableCell>
                     <TableCell>{row.travelTime}</TableCell>
                     <TableCell>{row.mood}</TableCell>
+                    <TableCell>{row.tedEx}</TableCell>
+                    <TableCell>{row.bookSummary}</TableCell>
                     <TableCell>{row.wore}</TableCell>
                     <TableCell>{row.better}</TableCell>
                     <TableCell>
@@ -453,7 +453,6 @@ const JournalEntries: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
-
       {/* Add/Edit Modal */}
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
@@ -479,6 +478,28 @@ const JournalEntries: React.FC = () => {
             label="Journal Body"
             name="body"
             value={journalForm.body}
+            onChange={handleChange}
+            multiline
+            rows={4}
+            required
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="TedEx"
+            name="tedEx"
+            value={journalForm.tedEx}
+            onChange={handleChange}
+            multiline
+            rows={4}
+            required
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="bookSummary"
+            name="bookSummary"
+            value={journalForm.bookSummary}
             onChange={handleChange}
             multiline
             rows={4}
@@ -544,53 +565,51 @@ const JournalEntries: React.FC = () => {
           </Button>
         </Box>
       </Modal>
-
-{/* Full-Page View Modal */}
-<Modal open={viewOpen} onClose={handleViewClose}>
-  <Box sx={fullPageStyle}>
-    {selectedEntry && (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "flex-start", // Align items at the top
-          gap: "20px", // Space between items
-        }}
-      >
-        <div style={{ flex: 1 }}>
-          <Typography variant="h4" gutterBottom>
-            Journal Entry
-          </Typography>
-          <Typography variant="h6">Date: {selectedEntry.date}</Typography>
-        </div>
-        <div style={{ flex: 2 }}>
-          <Typography
-            variant="body1"
-            style={{ marginTop: "20px", whiteSpace: "pre-line" }}
-          >
-            {JSON.stringify(selectedEntry.mood2)}
-          </Typography>
-          <Typography
-            variant="body1"
-            style={{ marginTop: "20px", whiteSpace: "pre-line" }}
-          >
-            {selectedEntry.body}
-          </Typography>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={handleViewClose}
-            style={{ marginTop: "20px" }}
-          >
-            Close
-          </Button>
-        </div>
-      </div>
-    )}
-  </Box>
-</Modal>;
-
-
+      {/* Full-Page View Modal */}
+      <Modal open={viewOpen} onClose={handleViewClose}>
+        <Box sx={fullPageStyle}>
+          {selectedEntry && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "flex-start", // Align items at the top
+                gap: "20px", // Space between items
+              }}
+            >
+              <div style={{ flex: 1 }}>
+                <Typography variant="h4" gutterBottom>
+                  Journal Entry
+                </Typography>
+                <Typography variant="h6">Date: {selectedEntry.date}</Typography>
+              </div>
+              <div style={{ flex: 2 }}>
+                <Typography
+                  variant="body1"
+                  style={{ marginTop: "20px", whiteSpace: "pre-line" }}
+                >
+                  {JSON.stringify(selectedEntry.mood2)}
+                </Typography>
+                <Typography
+                  variant="body1"
+                  style={{ marginTop: "20px", whiteSpace: "pre-line" }}
+                >
+                  {selectedEntry.body}
+                </Typography>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleViewClose}
+                  style={{ marginTop: "20px" }}
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          )}
+        </Box>
+      </Modal>
+      ;
       <Modal open={moodModalOpen} onClose={handleMoodModalClose}>
         <Box sx={moodModalStyle}>
           <Typography variant="h6">Set Mood for Each Hour</Typography>
