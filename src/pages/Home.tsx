@@ -20,8 +20,6 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import PedalBikeIcon from "@mui/icons-material/PedalBike";
 import StraightenIcon from "@mui/icons-material/Straighten";
 import HandsIcon from "@mui/icons-material/PanTool";
-
-import PrayIcon from "@mui/icons-material/EmojiPeople";
 import BibleIcon from "@mui/icons-material/MenuBook";
 import StretchIcon from "@mui/icons-material/SelfImprovement";
 import CoffeeIcon from "@mui/icons-material/LocalCafe";
@@ -46,7 +44,7 @@ import WaterBottleIcon from "@mui/icons-material/WaterDrop";
 
 const Home: React.FC = () => {
   const [data, setData] = useState<FormData[]>([]);
-  const [data2, setData2] = useState<FormData[]>([]);
+  const [_, setData2] = useState<FormData[]>([]);
   const [pmTotal, setPmTotal] = useState<number>(0);
   const [pnTotal, setPnTotal] = useState<number>(0);
   const [workoutTotal, setWorkoutTotal] = useState<number>(0);
@@ -226,6 +224,7 @@ const Home: React.FC = () => {
     bikeDistance: Activity;
     masturbate: Activity;
     sex: Activity;
+    orgasm: Activity;
     prayNight: Activity;
     workout: Activity;
     jelqs: Activity;
@@ -252,6 +251,13 @@ const Home: React.FC = () => {
   }
 
   const trackerData: TrackerData = {
+    orgasm: {
+      type: "PLEASURE-SEXUAL",
+      name: "Orgasm",
+      currentStreak: 5,
+      history: [true, true, true, false, true],
+      total: pmTotal,
+    },
     stretch: {
       type: "WORKOUT",
       name: "Stretch",
@@ -382,7 +388,7 @@ const Home: React.FC = () => {
       average: jelqsAverage,
     },
     purchases: {
-      type:"MONEY",
+      type: "MONEY",
       name: "Purcahses",
       currentStreak: 5,
       history: [true, true, false, true, true],
@@ -511,6 +517,10 @@ const Home: React.FC = () => {
   };
 
   const trackers = [
+    {
+      activity: trackerData.orgasm,
+      icon: <PurchasesIcon fontSize="large" />,
+    },
     {
       activity: trackerData.purchases,
       icon: <PurchasesIcon fontSize="large" />,
@@ -1048,7 +1058,6 @@ const Home: React.FC = () => {
           ))}
       </Grid>
 
-
       {/* Activity Streaks */}
       <h1>pleasure sexual</h1>
       <Grid container spacing={3}>
@@ -1124,11 +1133,6 @@ const Home: React.FC = () => {
             </Grid>
           ))}
       </Grid>
-
-
-
-
-
 
       {/* Activity Streaks */}
       <h1>Wisdom</h1>
@@ -1206,13 +1210,6 @@ const Home: React.FC = () => {
           ))}
       </Grid>
 
-
-
-
-
-
-
-
       {/* Activity Streaks */}
       <h1>Money</h1>
       <Grid container spacing={3}>
@@ -1288,7 +1285,6 @@ const Home: React.FC = () => {
             </Grid>
           ))}
       </Grid>
-
 
       {/* Carousel Section */}
       <Box sx={{ mt: 6 }}>

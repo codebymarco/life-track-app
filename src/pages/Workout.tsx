@@ -49,9 +49,11 @@ type FormData = {
   wristGrips: number;
   footballkeepUps: number;
   footballAtw: number;
+  footballAtwLeft: number;
   stretch: boolean;
   squats: number;
   sitDown: number;
+  steps: number;
   lunges: number;
   footballkneeUps: number;
 };
@@ -154,6 +156,7 @@ const Workout: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     date: "",
     deltRaiseFoward: 0,
+    steps: 0,
     deltRaiseSide: 0,
     bicepCurls: 0,
     workout: false,
@@ -171,6 +174,7 @@ const Workout: React.FC = () => {
     footballkeepUps: 0,
     footballkneeUps: 0,
     footballAtw: 0,
+    footballAtwLeft: 0,
     stretch: false,
     squats: 0,
     sitDown: 0,
@@ -224,6 +228,7 @@ const Workout: React.FC = () => {
     setFormData({
       date: "",
       deltRaiseFoward: 0,
+      steps: 0,
       deltRaiseSide: 0,
       bicepCurls: 0,
       workout: false,
@@ -241,6 +246,7 @@ const Workout: React.FC = () => {
       footballkeepUps: 0,
       footballkneeUps: 0,
       footballAtw: 0,
+      footballAtwLeft: 0,
       stretch: false,
       squats: 0,
       sitDown: 0,
@@ -534,6 +540,19 @@ const Workout: React.FC = () => {
             variant="outlined"
             size="small"
             className={classes.textField}
+            label="steps"
+            type="number"
+            name="steps"
+            value={formData.steps}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            className={classes.textField}
             label="workoutTime"
             type="number"
             name="workoutTime"
@@ -745,6 +764,19 @@ const Workout: React.FC = () => {
             inputProps={{ min: 0 }}
           />
 
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="footballAtwLeft"
+            type="number"
+            name="footballAtwLeft"
+            value={formData.footballAtwLeft}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+
           {/* wrist grips Field */}
           <TextField
             fullWidth
@@ -834,6 +866,10 @@ const Workout: React.FC = () => {
               </Typography>
 
               <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>steps:</strong> {viewEntry.steps || "No"}
+              </Typography>
+
+              <Typography style={{ fontSize: "0.85rem" }}>
                 <strong>delt Raise Foward:</strong>{" "}
                 {viewEntry.deltRaiseFoward ? "Yes" : "No"}
               </Typography>
@@ -912,6 +948,11 @@ const Workout: React.FC = () => {
               </Typography>
 
               <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>footballAtwLeft:</strong>{" "}
+                {viewEntry.footballAtwLeft ? "Yes" : "No"}
+              </Typography>
+
+              <Typography style={{ fontSize: "0.85rem" }}>
                 <strong>stretch:</strong>{" "}
                 {viewEntry.stretch ? <CheckCircleIcon /> : <CancelIcon />}
               </Typography>
@@ -952,6 +993,9 @@ const Workout: React.FC = () => {
           <TableHead>
             <TableRow>
               <TableCell className={classes.tableHeader}>Date</TableCell>
+
+              <TableCell className={classes.tableHeader}>steps</TableCell>
+
               <TableCell className={classes.tableHeader}>
                 deltRaiseFoward
               </TableCell>
@@ -982,6 +1026,9 @@ const Workout: React.FC = () => {
                 footballkneeUps
               </TableCell>
               <TableCell className={classes.tableHeader}>footballAtw</TableCell>
+              <TableCell className={classes.tableHeader}>
+                footballAtwLeft
+              </TableCell>
               <TableCell className={classes.tableHeader}>stretch</TableCell>
               <TableCell className={classes.tableHeader}>squats</TableCell>
               <TableCell className={classes.tableHeader}>sitDown</TableCell>
@@ -1007,6 +1054,9 @@ const Workout: React.FC = () => {
                       }`}
                     >
                       {entry.date} - {dayName}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.steps || 0}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.deltRaiseFoward || 0}
@@ -1061,6 +1111,9 @@ const Workout: React.FC = () => {
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.footballAtw || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.footballAtwLeft || 0}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.stretch ? <CheckCircleIcon /> : <CancelIcon />}

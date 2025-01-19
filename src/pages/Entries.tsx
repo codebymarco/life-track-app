@@ -36,6 +36,8 @@ type FormData = {
   date: string;
   prayMorning: boolean;
   prayDay: boolean;
+  sex: number;
+  orgasm: number;
   bookSummary: boolean;
   prayEvening: boolean;
   workout: boolean;
@@ -161,6 +163,8 @@ const Entries: React.FC = () => {
     date: "",
     prayMorning: false,
     prayDay: false,
+    sex: 0,
+    orgasm: 0,
     bookSummary: false,
     prayEvening: false,
     mast: false,
@@ -232,6 +236,8 @@ const Entries: React.FC = () => {
       date: "",
       prayMorning: false,
       prayDay: false,
+      sex: 0,
+      orgasm: 0,
       bookSummary: false,
       prayEvening: false,
       mast: false,
@@ -267,20 +273,6 @@ const Entries: React.FC = () => {
       ...prev,
       [name!]:
         type === "checkbox" ? checked : name === "coding" ? value : value,
-    }));
-  };
-
-  // Handle Changes in Workout Details
-  const handleWorkoutDetailsChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const details = e.target.value
-      .split(",")
-      .map((detail) => detail.trim())
-      .filter((detail) => detail !== "");
-    setFormData((prev) => ({
-      ...prev,
-      workoutDetails: details,
     }));
   };
 
@@ -681,6 +673,32 @@ const Entries: React.FC = () => {
             onChange={handleChange}
             inputProps={{ min: 0 }}
           />
+
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="Sex"
+            type="number"
+            name="sex"
+            value={formData.sex}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: 0.1 }}
+          />
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="Orgasm"
+            type="number"
+            name="orgasm"
+            value={formData.orgasm}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: 0.1 }}
+          />
+
           <TextField
             fullWidth
             variant="outlined"
@@ -922,6 +940,8 @@ const Entries: React.FC = () => {
               <TableCell className={classes.tableHeader}>Pray E</TableCell>
               <TableCell className={classes.tableHeader}>Mast</TableCell>
               <TableCell className={classes.tableHeader}>PN</TableCell>
+              <TableCell className={classes.tableHeader}>Sex</TableCell>
+              <TableCell className={classes.tableHeader}>Orgasm</TableCell>
               <TableCell className={classes.tableHeader}>booksum</TableCell>
               <TableCell className={classes.tableHeader}>Steps</TableCell>
               <TableCell className={classes.tableHeader}>Sleep</TableCell>
@@ -963,11 +983,9 @@ const Entries: React.FC = () => {
                       {entry.prayMorning ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
 
-
                     <TableCell className={classes.tableCell}>
                       {entry.prayDay ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
-
 
                     <TableCell className={classes.tableCell}>
                       {entry.prayEvening ? <CheckCircleIcon /> : <CancelIcon />}
@@ -977,6 +995,14 @@ const Entries: React.FC = () => {
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.pn ? <CheckCircleIcon /> : <CancelIcon />}
+                    </TableCell>
+
+                    <TableCell className={classes.tableCell}>
+                      {entry.sex || <CancelIcon />}
+                    </TableCell>
+
+                    <TableCell className={classes.tableCell}>
+                      {entry.orgasm || <CancelIcon />}
                     </TableCell>
 
                     <TableCell className={classes.tableCell}>
