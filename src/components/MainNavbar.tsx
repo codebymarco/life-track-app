@@ -13,7 +13,8 @@ const MainNavbar: React.FC = () => {
     { title: "General", path: "/entries" },
     { title: "Diet", path: "/diet" },
     { title: "Journal", path: "/journal" },
-    { title: "workout", path: "/workout" },
+    { title: "Workout", path: "/workout" },
+    { title: "Landmarks", path: "/workout" },
   ];
 
   return (

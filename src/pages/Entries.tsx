@@ -35,6 +35,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 type FormData = {
   date: string;
   prayMorning: boolean;
+  bible: boolean;
   prayDay: boolean;
   sex: number;
   orgasm: number;
@@ -162,6 +163,7 @@ const Entries: React.FC = () => {
   >({
     date: "",
     prayMorning: false,
+    bible: false,
     prayDay: false,
     sex: 0,
     orgasm: 0,
@@ -235,6 +237,7 @@ const Entries: React.FC = () => {
     setFormData({
       date: "",
       prayMorning: false,
+      bible: false,
       prayDay: false,
       sex: 0,
       orgasm: 0,
@@ -515,6 +518,21 @@ const Entries: React.FC = () => {
             }}
             required
           />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.bible}
+                name="bible"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.checkboxLabel}>Bible</Typography>
+            }
+          />
+
           <FormControlLabel
             control={
               <Checkbox
@@ -843,6 +861,10 @@ const Entries: React.FC = () => {
                 <strong>Date:</strong> {viewEntry.date}
               </Typography>
               <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>Bible:</strong>{" "}
+                {viewEntry.bible ? <CheckCircleIcon /> : <CancelIcon />}
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
                 <strong>Pray Morning:</strong>{" "}
                 {viewEntry.prayMorning ? <CheckCircleIcon /> : <CancelIcon />}
               </Typography>
@@ -937,7 +959,8 @@ const Entries: React.FC = () => {
               <TableCell className={classes.tableHeader}>Date</TableCell>
               <TableCell className={classes.tableHeader}>Pray M</TableCell>
               <TableCell className={classes.tableHeader}>Pray D</TableCell>
-              <TableCell className={classes.tableHeader}>Pray E</TableCell>
+              <TableCell className={classes.tableHeader}>Pray e</TableCell>
+              <TableCell className={classes.tableHeader}>Bible</TableCell>
               <TableCell className={classes.tableHeader}>Mast</TableCell>
               <TableCell className={classes.tableHeader}>PN</TableCell>
               <TableCell className={classes.tableHeader}>Sex</TableCell>
@@ -989,6 +1012,9 @@ const Entries: React.FC = () => {
 
                     <TableCell className={classes.tableCell}>
                       {entry.prayEvening ? <CheckCircleIcon /> : <CancelIcon />}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.bible ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.mast ? <CheckCircleIcon /> : <CancelIcon />}
