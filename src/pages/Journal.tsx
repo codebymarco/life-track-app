@@ -30,6 +30,7 @@ type JournalData = {
   bookSummary?: string;
   tedEx?: string;
   mood2?: { hour: number; value: string }[];
+  purchases?: { item: string; value: number }[];
   wore?: string;
   better?: string;
 };
@@ -165,6 +166,7 @@ const JournalEntries: React.FC = () => {
     tedEx: "",
     bookSummary: "",
     mood2: [],
+    purchases: [],
     wore: "",
     better: "",
     travelTime: 0,
@@ -397,6 +399,7 @@ const JournalEntries: React.FC = () => {
               <TableCell>Date</TableCell>
               <TableCell>TravelTime</TableCell>
               <TableCell>mood</TableCell>
+              <TableCell>purchases</TableCell>
               <TableCell>tedex</TableCell>
               <TableCell>booksummary</TableCell>
               <TableCell>wore</TableCell>
@@ -425,6 +428,7 @@ const JournalEntries: React.FC = () => {
                     </TableCell>
                     <TableCell>{row.travelTime}</TableCell>
                     <TableCell>{row.mood}</TableCell>
+                    <TableCell>{JSON.stringify(row.purchases)}</TableCell>
                     <TableCell>{row.tedEx}</TableCell>
                     <TableCell>{row.bookSummary}</TableCell>
                     <TableCell>{row.wore}</TableCell>
@@ -527,13 +531,20 @@ const JournalEntries: React.FC = () => {
             rows={4}
             required
           />
+                    <Button
+            variant="outlined"
+            color="primary"
+            onClick={handleMoodModalOpen}
+          >
+            Set Purcahses
+          </Button>
           <Button
             variant="outlined"
             color="primary"
             onClick={handleMoodModalOpen}
           >
             Set Mood
-          </Button>{" "}
+          </Button>
           <TextField
             fullWidth
             margin="normal"
