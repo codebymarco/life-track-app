@@ -26,6 +26,9 @@ type JournalData = {
   date: string;
   body: string;
   travelTime?: number;
+  officeTime?: number;
+  wakeTime?: string;
+  bedTime?: string;
   mood?: string;
   bookSummary?: string;
   tedEx?: string;
@@ -170,6 +173,9 @@ const JournalEntries: React.FC = () => {
     wore: "",
     better: "",
     travelTime: 0,
+    officeTime: 0,
+    wakeTime: "",
+    bedTime: "",
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [viewOpen, setViewOpen] = useState<boolean>(false);
@@ -211,6 +217,9 @@ const JournalEntries: React.FC = () => {
       wore: "",
       better: "",
       travelTime: 0,
+      wakeTime: "",
+      bedTime: "",
+      officeTime: 0,
     });
     setEditIndex(null);
   };
@@ -370,7 +379,7 @@ const JournalEntries: React.FC = () => {
   );
 
   const handleMoodSave = () => {
-    setJournalForm((prev:any) => ({ ...prev, mood2: currentMood }));
+    setJournalForm((prev: any) => ({ ...prev, mood2: currentMood }));
     handleMoodModalClose();
   };
 
@@ -398,6 +407,7 @@ const JournalEntries: React.FC = () => {
             <TableRow>
               <TableCell>Date</TableCell>
               <TableCell>TravelTime</TableCell>
+              <TableCell>officeTime</TableCell>
               <TableCell>mood</TableCell>
               <TableCell>purchases</TableCell>
               <TableCell>tedex</TableCell>
@@ -427,6 +437,7 @@ const JournalEntries: React.FC = () => {
                       {row.date} - {dayName}
                     </TableCell>
                     <TableCell>{row.travelTime}</TableCell>
+                    <TableCell>{row.officeTime}</TableCell>
                     <TableCell>{row.mood}</TableCell>
                     <TableCell>{JSON.stringify(row.purchases)}</TableCell>
                     <TableCell>{row.tedEx}</TableCell>
@@ -531,7 +542,7 @@ const JournalEntries: React.FC = () => {
             rows={4}
             required
           />
-                    <Button
+          <Button
             variant="outlined"
             color="primary"
             onClick={handleMoodModalOpen}
@@ -562,6 +573,16 @@ const JournalEntries: React.FC = () => {
             label="travel time"
             name="travelTime"
             value={journalForm.travelTime}
+            onChange={handleChange}
+            type="number"
+            required
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="officeTime"
+            name="officeTime"
+            value={journalForm.officeTime}
             onChange={handleChange}
             type="number"
             required
