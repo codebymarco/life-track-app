@@ -35,6 +35,11 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 type FormData = {
   date: string;
   prayMorning: boolean;
+  carOil: boolean;
+  carWater: boolean;
+  carTyre: boolean;
+  carFuel: boolean;
+  carWash: boolean;
   bible: boolean;
   prayDay: boolean;
   sex: number;
@@ -161,6 +166,11 @@ const Entries: React.FC = () => {
   const [formData, setFormData] = useState<
     Omit<FormData, "coding"> & { coding: string }
   >({
+    carOil: false,
+    carWater: false,
+    carTyre: false,
+    carFuel: false,
+    carWash: false,
     date: "",
     prayMorning: false,
     bible: false,
@@ -235,6 +245,11 @@ const Entries: React.FC = () => {
   // Reset Form Data
   const resetForm = () => {
     setFormData({
+      carOil: false,
+      carWater: false,
+      carTyre: false,
+      carFuel: false,
+      carWash: false,
       date: "",
       prayMorning: false,
       bible: false,
@@ -802,6 +817,65 @@ const Entries: React.FC = () => {
               <Typography className={classes.checkboxLabel}>PE</Typography>
             }
           />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.carWater}
+                name="carWater"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.checkboxLabel}>
+                carWater
+              </Typography>
+            }
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.carFuel}
+                name="carFuel"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.checkboxLabel}>carFuel</Typography>
+            }
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.carWash}
+                name="carWash"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.checkboxLabel}>carWash</Typography>
+            }
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.carOil}
+                name="carOil"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.checkboxLabel}>carOil</Typography>
+            }
+          />
+
           <FormControlLabel
             control={
               <Checkbox
@@ -979,6 +1053,10 @@ const Entries: React.FC = () => {
               <TableCell className={classes.tableHeader}>Coding</TableCell>
               <TableCell className={classes.tableHeader}>smc</TableCell>
               <TableCell className={classes.tableHeader}>snc</TableCell>
+              <TableCell className={classes.tableHeader}>caroil</TableCell>
+              <TableCell className={classes.tableHeader}>carwater</TableCell>
+              <TableCell className={classes.tableHeader}>carwash</TableCell>
+              <TableCell className={classes.tableHeader}>carfuel</TableCell>
               <TableCell className={classes.tableHeader}>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -1072,6 +1150,19 @@ const Entries: React.FC = () => {
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.scn ? <CheckCircleIcon /> : <CancelIcon />}
+                    </TableCell>
+
+                    <TableCell className={classes.tableCell}>
+                      {entry.carOil ? <CheckCircleIcon /> : <CancelIcon />}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.carWater ? <CheckCircleIcon /> : <CancelIcon />}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.carWash ? <CheckCircleIcon /> : <CancelIcon />}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.carFuel ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
 
                     <TableCell className={classes.tableCell}>

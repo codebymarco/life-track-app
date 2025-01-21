@@ -34,7 +34,10 @@ type FormData = {
   date: string;
   deltRaiseFoward: number;
   deltRaiseSide: number;
+  pullupsUnder: number;
+  pullupsOver: number;
   bicepCurls: number;
+  bicepCurlsReverse: number;
   workout: boolean;
   workoutTime: number; // New Field
   calfRaise: number; // New Field
@@ -155,6 +158,9 @@ const Workout: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>({
     date: "",
+    pullupsOver: 0,
+    pullupsUnder: 0,
+    bicepCurlsReverse: 0,
     deltRaiseFoward: 0,
     steps: 0,
     deltRaiseSide: 0,
@@ -695,6 +701,48 @@ const Workout: React.FC = () => {
             inputProps={{ min: 0 }}
           />
 
+          {/* pullupsOver */}
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="pullupsOver"
+            type="number"
+            name="pullupsOver"
+            value={formData.pullupsOver}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+
+          {/* pullupsUnder */}
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="pullupsUnder"
+            type="number"
+            name="pullupsUnder"
+            value={formData.pullupsUnder}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+
+          {/* pullupsUnder */}
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="bicepCurlsReverse"
+            type="number"
+            name="bicepCurlsReverse"
+            value={formData.bicepCurlsReverse}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+
           {/* wrist grips Field */}
           <TextField
             fullWidth
@@ -1003,6 +1051,13 @@ const Workout: React.FC = () => {
                 deltRaiseSide
               </TableCell>
               <TableCell className={classes.tableHeader}>bicepCurls</TableCell>
+              <TableCell className={classes.tableHeader}>
+                bicepCurlsReverse
+              </TableCell>
+              <TableCell className={classes.tableHeader}>
+                pullupsUnder
+              </TableCell>
+              <TableCell className={classes.tableHeader}>pullupsOver</TableCell>
               <TableCell className={classes.tableHeader}>workout</TableCell>
               <TableCell className={classes.tableHeader}>workoutTime</TableCell>
               <TableCell className={classes.tableHeader}>calfRaise</TableCell>
@@ -1067,6 +1122,17 @@ const Workout: React.FC = () => {
                     <TableCell className={classes.tableCell}>
                       {entry.bicepCurls || 0}
                     </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.bicepCurlsReverse || 0}
+                    </TableCell>
+
+                    <TableCell className={classes.tableCell}>
+                      {entry.pullupsUnder || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.pullupsOver || 0}
+                    </TableCell>
+
                     <TableCell className={classes.tableCell}>
                       {entry.workout ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
