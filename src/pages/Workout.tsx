@@ -59,6 +59,7 @@ type FormData = {
   steps: number;
   lunges: number;
   footballkneeUps: number;
+  indoor: number;
 };
 
 // New Type for Processed Entries
@@ -179,6 +180,7 @@ const Workout: React.FC = () => {
     wristGrips: 0,
     footballkeepUps: 0,
     footballkneeUps: 0,
+    indoor: 0,
     footballAtw: 0,
     footballAtwLeft: 0,
     stretch: false,
@@ -251,12 +253,16 @@ const Workout: React.FC = () => {
       wristGrips: 0,
       footballkeepUps: 0,
       footballkneeUps: 0,
+      indoor: 0,
       footballAtw: 0,
       footballAtwLeft: 0,
       stretch: false,
       squats: 0,
       sitDown: 0,
       lunges: 0,
+      pullupsUnder:0,
+      pullupsOver:0,
+      bicepCurlsReverse:0
     });
     setEditIndex(null);
   };
@@ -798,6 +804,21 @@ const Workout: React.FC = () => {
             inputProps={{ min: 0 }}
           />
 
+<TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="indoor"
+            type="number"
+            name="indoor"
+            value={formData.indoor}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+
+
+
           {/* wrist grips Field */}
           <TextField
             fullWidth
@@ -991,6 +1012,12 @@ const Workout: React.FC = () => {
               </Typography>
 
               <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>indoor:</strong>{" "}
+                {viewEntry.indoor ? "Yes" : "No"}
+              </Typography>
+
+
+              <Typography style={{ fontSize: "0.85rem" }}>
                 <strong>footballAtw:</strong>{" "}
                 {viewEntry.footballAtw ? "Yes" : "No"}
               </Typography>
@@ -1079,6 +1106,9 @@ const Workout: React.FC = () => {
               </TableCell>
               <TableCell className={classes.tableHeader}>
                 footballkneeUps
+              </TableCell>
+              <TableCell className={classes.tableHeader}>
+                indoor
               </TableCell>
               <TableCell className={classes.tableHeader}>footballAtw</TableCell>
               <TableCell className={classes.tableHeader}>
@@ -1174,6 +1204,9 @@ const Workout: React.FC = () => {
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.footballkneeUps || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.indoor || 0}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.footballAtw || 0}
