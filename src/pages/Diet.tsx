@@ -40,6 +40,8 @@ type FoodEntry = {
   soda?: boolean;
   coffee?: number;
   sugar?: number;
+  kiwi?: number;
+  almonds?: number;
 };
 
 type DietData = {
@@ -51,6 +53,8 @@ type DietData = {
   coffee?: number;
   sugar?: number;
   edibles?: number;
+  kiwi?: number;
+  almonds?: number;
 };
 
 // Modal Styling
@@ -148,6 +152,8 @@ const Diet: React.FC = () => {
     sugar: 0,
     water: "",
     edibles: 0,
+    kiwi: 0,
+    almonds: 0,
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
@@ -592,6 +598,28 @@ const Diet: React.FC = () => {
             inputProps={{ min: 0, step: "0.1" }}
           />
 
+          <TextField
+            fullWidth
+            margin="normal"
+            label="kiwi"
+            type="number"
+            name="kiwi"
+            value={dietForm.kiwi}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="almonds"
+            type="number"
+            name="almonds"
+            value={dietForm.almonds}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
           <FormControlLabel
             control={
               <Checkbox
@@ -631,6 +659,8 @@ const Diet: React.FC = () => {
               <TableCell>coffee</TableCell>
               <TableCell>sugar</TableCell>
               <TableCell>edibles</TableCell>
+              <TableCell>kiwi</TableCell>
+              <TableCell>almonds</TableCell>
               <TableCell>Water (Liters)</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -638,7 +668,6 @@ const Diet: React.FC = () => {
           <TableBody>
             {processedDiet.length > 0 ? (
               processedDiet.map((entry, index) => {
-
                 const dateObject = new Date(entry.date);
                 const dayOfWeek = dateObject.getDay();
                 const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
@@ -688,6 +717,18 @@ const Diet: React.FC = () => {
                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
                         {entry.edibles || 0}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.kiwi || 0}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.almonds || 0}
                       </TableCell>
                     )}
 

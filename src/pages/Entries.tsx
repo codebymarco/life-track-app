@@ -56,7 +56,6 @@ type FormData = {
   no_of_kegels: number; // New Field
   mast: boolean;
   pn: boolean;
-  steps: string;
   dayType?: string;
   suntime: number;
   jelqs: number;
@@ -181,7 +180,6 @@ const Entries: React.FC = () => {
     prayEvening: false,
     mast: false,
     pn: false,
-    steps: "",
     workout: false,
     workoutDetails: [],
     workoutTime: 0, // New Field
@@ -260,7 +258,6 @@ const Entries: React.FC = () => {
       prayEvening: false,
       mast: false,
       pn: false,
-      steps: "",
       workout: false,
       workoutDetails: [],
       workoutTime: 0, // New Field
@@ -699,19 +696,6 @@ const Entries: React.FC = () => {
             variant="outlined"
             size="small"
             className={classes.textField}
-            label="Steps"
-            type="number"
-            name="steps"
-            value={formData.steps}
-            onChange={handleChange}
-            inputProps={{ min: 0 }}
-          />
-
-          <TextField
-            fullWidth
-            variant="outlined"
-            size="small"
-            className={classes.textField}
             label="Sex"
             type="number"
             name="sex"
@@ -957,9 +941,6 @@ const Entries: React.FC = () => {
                 {viewEntry.bookSummary ? <CheckCircleIcon /> : <CancelIcon />}
               </Typography>
               <Typography style={{ fontSize: "0.85rem" }}>
-                <strong>Steps:</strong> {viewEntry.steps}
-              </Typography>
-              <Typography style={{ fontSize: "0.85rem" }}>
                 <strong>Workout:</strong> {viewEntry.workout ? "Yes" : "No"}
               </Typography>
               {viewEntry.workout && (
@@ -1040,7 +1021,6 @@ const Entries: React.FC = () => {
               <TableCell className={classes.tableHeader}>Sex</TableCell>
               <TableCell className={classes.tableHeader}>Orgasm</TableCell>
               <TableCell className={classes.tableHeader}>booksum</TableCell>
-              <TableCell className={classes.tableHeader}>Steps</TableCell>
               <TableCell className={classes.tableHeader}>Sleep</TableCell>
               <TableCell className={classes.tableHeader}>Poop</TableCell>
               <TableCell className={classes.tableHeader}>Showers</TableCell>
@@ -1111,10 +1091,6 @@ const Entries: React.FC = () => {
 
                     <TableCell className={classes.tableCell}>
                       {entry.bookSummary ? <CheckCircleIcon /> : <CancelIcon />}
-                    </TableCell>
-
-                    <TableCell className={classes.tableCell}>
-                      {entry.steps || 0}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.sleepTime || 0}
