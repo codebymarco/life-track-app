@@ -42,6 +42,9 @@ type FoodEntry = {
   sugar?: number;
   kiwi?: number;
   almonds?: number;
+  milk?: number;
+  chickenmayo?: number;
+  chickenperiperi?: number;
 };
 
 type DietData = {
@@ -55,6 +58,9 @@ type DietData = {
   edibles?: number;
   kiwi?: number;
   almonds?: number;
+  milk?: number;
+  chickenmayo?: number;
+  chickenperiperi?: number;
 };
 
 // Modal Styling
@@ -154,6 +160,9 @@ const Diet: React.FC = () => {
     edibles: 0,
     kiwi: 0,
     almonds: 0,
+    milk: 0,
+    chickenmayo: 0,
+    chickenperiperi: 0,
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
@@ -620,6 +629,39 @@ const Diet: React.FC = () => {
             inputProps={{ min: 0, step: "0.1" }}
           />
 
+          <TextField
+            fullWidth
+            margin="normal"
+            label="milk"
+            type="number"
+            name="milk"
+            value={dietForm.milk}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="chickenmayo"
+            type="number"
+            name="chickenmayo"
+            value={dietForm.chickenmayo}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="chickenperiperi"
+            type="number"
+            name="chickenperiperi"
+            value={dietForm.chickenperiperi}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
           <FormControlLabel
             control={
               <Checkbox
@@ -661,6 +703,9 @@ const Diet: React.FC = () => {
               <TableCell>edibles</TableCell>
               <TableCell>kiwi</TableCell>
               <TableCell>almonds</TableCell>
+              <TableCell>milk</TableCell>
+              <TableCell>chickenmayo</TableCell>
+              <TableCell>chickenperiperi</TableCell>
               <TableCell>Water (Liters)</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -729,6 +774,24 @@ const Diet: React.FC = () => {
                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
                         {entry.almonds || 0}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.milk || 0}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.chickenmayo || 0}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.chickenperiperi || 0}
                       </TableCell>
                     )}
 
