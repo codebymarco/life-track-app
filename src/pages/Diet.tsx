@@ -46,6 +46,7 @@ type FoodEntry = {
   grapesblack?: number;
   chickenmayo?: number;
   chickenperiperi?: number;
+  berriesstraw?: number;
 };
 
 type DietData = {
@@ -63,6 +64,7 @@ type DietData = {
   chickenmayo?: number;
   chickenperiperi?: number;
   grapesblack?: number;
+  berriesstraw?: number;
 };
 
 // Modal Styling
@@ -164,6 +166,7 @@ const Diet: React.FC = () => {
     almonds: 0,
     milk: 0,
     grapesblack: 0,
+    berriesstraw: 0,
     chickenmayo: 0,
     chickenperiperi: 0,
   });
@@ -657,6 +660,17 @@ const Diet: React.FC = () => {
           <TextField
             fullWidth
             margin="normal"
+            label="berriesstraw"
+            type="number"
+            name="berriesstraw"
+            value={dietForm.berriesstraw}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
             label="chickenmayo"
             type="number"
             name="chickenmayo"
@@ -719,6 +733,7 @@ const Diet: React.FC = () => {
               <TableCell>almonds</TableCell>
               <TableCell>milk</TableCell>
               <TableCell>grapesblack</TableCell>
+              <TableCell>berriesstraw</TableCell>
               <TableCell>chickenmayo</TableCell>
               <TableCell>chickenperiperi</TableCell>
               <TableCell>Water (Liters)</TableCell>
@@ -801,6 +816,12 @@ const Diet: React.FC = () => {
                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
                         {entry.grapesblack || 0}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.berriesstraw || 0}
                       </TableCell>
                     )}
 
