@@ -35,6 +35,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 type FormData = {
   date: string;
   prayMorning: boolean;
+  speachEx: boolean;
   carOil: boolean;
   carWater: boolean;
   carTyre: boolean;
@@ -172,6 +173,7 @@ const Entries: React.FC = () => {
     carWash: false,
     date: "",
     prayMorning: false,
+    speachEx: false,
     bible: false,
     prayDay: false,
     sex: 0,
@@ -250,6 +252,7 @@ const Entries: React.FC = () => {
       carWash: false,
       date: "",
       prayMorning: false,
+      speachEx: false,
       bible: false,
       prayDay: false,
       sex: 0,
@@ -557,6 +560,22 @@ const Entries: React.FC = () => {
             label={
               <Typography className={classes.checkboxLabel}>
                 Pray Morning
+              </Typography>
+            }
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.speachEx}
+                name="speachEx"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.checkboxLabel}>
+                speach Ex
               </Typography>
             }
           />
@@ -927,6 +946,10 @@ const Entries: React.FC = () => {
                 {viewEntry.prayMorning ? <CheckCircleIcon /> : <CancelIcon />}
               </Typography>
               <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>speachEx:</strong>{" "}
+                {viewEntry.speachEx ? <CheckCircleIcon /> : <CancelIcon />}
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
                 <strong>Pray Evening:</strong>{" "}
                 {viewEntry.prayEvening ? "Yes" : "No"}
               </Typography>
@@ -1013,6 +1036,7 @@ const Entries: React.FC = () => {
             <TableRow>
               <TableCell className={classes.tableHeader}>Date</TableCell>
               <TableCell className={classes.tableHeader}>Pray M</TableCell>
+              <TableCell className={classes.tableHeader}>speach ex</TableCell>
               <TableCell className={classes.tableHeader}>Pray D</TableCell>
               <TableCell className={classes.tableHeader}>Pray e</TableCell>
               <TableCell className={classes.tableHeader}>Bible</TableCell>
@@ -1062,6 +1086,9 @@ const Entries: React.FC = () => {
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.prayMorning ? <CheckCircleIcon /> : <CancelIcon />}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.speachEx ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
 
                     <TableCell className={classes.tableCell}>
