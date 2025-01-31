@@ -58,6 +58,7 @@ type FormData = {
   sitDown: number;
   steps: number;
   lunges: number;
+  masai: number;
   footballkneeUps: number;
   indoor: number;
 };
@@ -187,6 +188,7 @@ const Workout: React.FC = () => {
     squats: 0,
     sitDown: 0,
     lunges: 0,
+    masai:0
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
@@ -260,6 +262,7 @@ const Workout: React.FC = () => {
       squats: 0,
       sitDown: 0,
       lunges: 0,
+      masai: 0,
       pullupsUnder:0,
       pullupsOver:0,
       bicepCurlsReverse:0
@@ -902,6 +905,20 @@ const Workout: React.FC = () => {
             inputProps={{ min: 0 }}
           />
 
+                    {/* keepups Field */}
+                    <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="masai"
+            type="number"
+            name="masai"
+            value={formData.masai}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+
           {/* Save Button */}
           <Button
             variant="contained"
@@ -1044,6 +1061,10 @@ const Workout: React.FC = () => {
                 <strong>lunges:</strong> {viewEntry.lunges ? "Yes" : "No"}
               </Typography>
 
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>masai:</strong> {viewEntry.masai ? "Yes" : "No"}
+              </Typography>
+
               <Button
                 variant="contained"
                 color="primary"
@@ -1118,6 +1139,7 @@ const Workout: React.FC = () => {
               <TableCell className={classes.tableHeader}>squats</TableCell>
               <TableCell className={classes.tableHeader}>sitDown</TableCell>
               <TableCell className={classes.tableHeader}>lunges</TableCell>
+              <TableCell className={classes.tableHeader}>masai</TableCell>
               <TableCell className={classes.tableHeader}>actions</TableCell>
             </TableRow>
           </TableHead>
@@ -1225,6 +1247,9 @@ const Workout: React.FC = () => {
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.lunges || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.masai || 0}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       <IconButton
