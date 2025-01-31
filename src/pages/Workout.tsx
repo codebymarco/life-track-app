@@ -39,6 +39,8 @@ type FormData = {
   bicepCurls: number;
   bicepCurlsReverse: number;
   workout: boolean;
+  nose: boolean;
+  kneeTucks: boolean;
   workoutTime: number; // New Field
   calfRaise: number; // New Field
   pushUps: number; // New Field
@@ -168,6 +170,8 @@ const Workout: React.FC = () => {
     deltRaiseSide: 0,
     bicepCurls: 0,
     workout: false,
+    nose: false,
+    kneeTucks: false,
     workoutTime: 0, // New Field
     calfRaise: 0, // New Field
     pushUps: 0, // New Field
@@ -242,6 +246,8 @@ const Workout: React.FC = () => {
       deltRaiseSide: 0,
       bicepCurls: 0,
       workout: false,
+      nose: false,
+      kneeTucks: false,
       workoutTime: 0, // New Field
       calfRaise: 0, // New Field
       pushUps: 0, // New Field
@@ -668,6 +674,34 @@ const Workout: React.FC = () => {
             }
           />
 
+<FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.nose}
+                name="nose"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.checkboxLabel}>Nose</Typography>
+            }
+          />
+
+<FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.kneeTucks}
+                name="kneeTucks"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.checkboxLabel}>kneeTucks</Typography>
+            }
+          />
+
           <FormControlLabel
             control={
               <Checkbox
@@ -971,6 +1005,16 @@ const Workout: React.FC = () => {
               </Typography>
 
               <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>nose:</strong>{" "}
+                {viewEntry.nose ? <CheckCircleIcon /> : <CancelIcon />}
+              </Typography>
+
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>kneeTucks:</strong>{" "}
+                {viewEntry.kneeTucks ? <CheckCircleIcon /> : <CancelIcon />}
+              </Typography>
+
+              <Typography style={{ fontSize: "0.85rem" }}>
                 <strong>workoutTime:</strong>{" "}
                 {viewEntry.workoutTime ? "Yes" : "No"}
               </Typography>
@@ -1107,6 +1151,8 @@ const Workout: React.FC = () => {
               </TableCell>
               <TableCell className={classes.tableHeader}>pullupsOver</TableCell>
               <TableCell className={classes.tableHeader}>workout</TableCell>
+              <TableCell className={classes.tableHeader}>nose</TableCell>
+              <TableCell className={classes.tableHeader}>kneetucks</TableCell>
               <TableCell className={classes.tableHeader}>workoutTime</TableCell>
               <TableCell className={classes.tableHeader}>calfRaise</TableCell>
               <TableCell className={classes.tableHeader}>pushUps</TableCell>
@@ -1187,6 +1233,12 @@ const Workout: React.FC = () => {
 
                     <TableCell className={classes.tableCell}>
                       {entry.workout ? <CheckCircleIcon /> : <CancelIcon />}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.nose ? <CheckCircleIcon /> : <CancelIcon />}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.kneeTucks ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.workoutTime || 0}
