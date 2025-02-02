@@ -36,7 +36,14 @@ type FoodEntry = {
   quantity: number;
   grams?: number;
   takeout?: boolean;
+  kfc?: boolean;
+  rcl?: boolean;
+  mcdonalds?: boolean;
+  hot_chocolate?: number;
+  switch?: boolean;
+  roco_mammas?: boolean;
   edibles?: number;
+  fanta?: number;
   soda?: boolean;
   coffee?: number;
   sugar?: number;
@@ -54,6 +61,11 @@ type DietData = {
   foods: FoodEntry[];
   water: string;
   takeout?: boolean;
+  fanta?: number;
+  hot_chocolate?: number;
+  rcl?: boolean;
+  switch?: boolean;
+  kfc?: boolean;
   soda?: boolean;
   coffee?: number;
   sugar?: number;
@@ -157,6 +169,11 @@ const Diet: React.FC = () => {
       },
     ],
     takeout: false,
+    fanta: 0,
+    hot_chocolate: 0,
+    rcl: false,
+    switch: false,
+    kfc: false,
     coffee: 0,
     soda: false,
     sugar: 0,
@@ -568,6 +585,29 @@ const Diet: React.FC = () => {
             inputProps={{ min: 0, step: "0.1" }}
           />
 
+<TextField
+            fullWidth
+            margin="normal"
+            label="hot choc cups"
+            type="number"
+            name="hot_chocolate"
+            value={dietForm.hot_chocolate}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+<TextField
+            fullWidth
+            margin="normal"
+            label="fanta"
+            type="number"
+            name="fanta"
+            value={dietForm.fanta}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+
           <FormControlLabel
             control={
               <Checkbox
@@ -578,6 +618,42 @@ const Diet: React.FC = () => {
               />
             }
             label={<Typography>Takeout</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.rcl}
+                name="rcl"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>rcl</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.switch}
+                name="switch"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>switch</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.kfc}
+                name="kfc"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>kfc</Typography>}
           />
 
           <TextField
@@ -725,6 +801,11 @@ const Diet: React.FC = () => {
               <TableCell>Quantity</TableCell>
               <TableCell>Grams</TableCell>
               <TableCell>Takeout</TableCell>
+              <TableCell>Fanta</TableCell>
+              <TableCell>hot_chocolate</TableCell>
+              <TableCell>rcl</TableCell>
+              <TableCell>switch</TableCell>
+              <TableCell>kfc</TableCell>
               <TableCell>soda</TableCell>
               <TableCell>coffee</TableCell>
               <TableCell>sugar</TableCell>
@@ -769,6 +850,35 @@ const Diet: React.FC = () => {
                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
                         {entry.takeout ? <CheckCircleIcon /> : <CancelIcon />}
+                      </TableCell>
+                    )}
+
+{i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.fanta ? <CheckCircleIcon /> : <CancelIcon />}
+                      </TableCell>
+                    )}
+
+{i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.hot_chocolate ? <CheckCircleIcon /> : <CancelIcon />}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.rcl ? <CheckCircleIcon /> : <CancelIcon />}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.switch ? <CheckCircleIcon /> : <CancelIcon />}
+                      </TableCell>
+                    )}
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.kfc ? <CheckCircleIcon /> : <CancelIcon />}
                       </TableCell>
                     )}
 
