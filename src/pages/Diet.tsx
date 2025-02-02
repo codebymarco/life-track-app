@@ -40,12 +40,14 @@ type FoodEntry = {
   rcl?: boolean;
   mcdonalds?: boolean;
   hot_chocolate?: number;
+  ginger_beer?: number;
   apple_juice?: number;
   cranberry_juice?: number;
   orange_juice?: number;
   switch?: boolean;
   roco_mammas?: boolean;
   edibles?: number;
+  bread?: number;
   fanta?: number;
   soda?: boolean;
   coffee?: number;
@@ -66,16 +68,20 @@ type DietData = {
   takeout?: boolean;
   fanta?: number;
   hot_chocolate?: number;
+  ginger_beer?: number;
   apple_juice?: number;
   cranberry_juice?: number;
   orange_juice?: number;
   rcl?: boolean;
   switch?: boolean;
   kfc?: boolean;
+  mcdonalds?: boolean;
+  roco_mammas?: boolean;
   soda?: boolean;
   coffee?: number;
   sugar?: number;
   edibles?: number;
+  bread?: number;
   kiwi?: number;
   almonds?: number;
   milk?: number;
@@ -177,17 +183,21 @@ const Diet: React.FC = () => {
     takeout: false,
     fanta: 0,
     hot_chocolate: 0,
+    ginger_beer: 0,
     apple_juice: 0,
     cranberry_juice: 0,
     orange_juice: 0,
     rcl: false,
     switch: false,
     kfc: false,
+    mcdonalds: false,
+    roco_mammas: false,
     coffee: 0,
     soda: false,
     sugar: 0,
     water: "",
     edibles: 0,
+    bread: 0,
     kiwi: 0,
     almonds: 0,
     milk: 0,
@@ -608,6 +618,17 @@ const Diet: React.FC = () => {
           <TextField
             fullWidth
             margin="normal"
+            label="ginger_beer"
+            type="number"
+            name="ginger_beer"
+            value={dietForm.ginger_beer}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
             label="apple_juice"
             type="number"
             name="apple_juice"
@@ -697,6 +718,30 @@ const Diet: React.FC = () => {
             label={<Typography>kfc</Typography>}
           />
 
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.mcdonalds}
+                name="mcdonalds"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>mcdonalds</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.roco_mammas}
+                name="roco_mammas"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>roco_mammas</Typography>}
+          />
+
           <TextField
             fullWidth
             margin="normal"
@@ -726,6 +771,17 @@ const Diet: React.FC = () => {
             type="number"
             name="edibles"
             value={dietForm.edibles}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="bread"
+            type="number"
+            name="bread"
+            value={dietForm.bread}
             onChange={handleChange}
             inputProps={{ min: 0, step: "0.1" }}
           />
@@ -844,16 +900,20 @@ const Diet: React.FC = () => {
               <TableCell>Takeout</TableCell>
               <TableCell>Fanta</TableCell>
               <TableCell>hot_chocolate</TableCell>
+              <TableCell>ginger_beer</TableCell>
               <TableCell>apple_juice</TableCell>
               <TableCell>cranberry_juice</TableCell>
               <TableCell>orange_juice</TableCell>
               <TableCell>rcl</TableCell>
               <TableCell>switch</TableCell>
               <TableCell>kfc</TableCell>
+              <TableCell>mcdonalds</TableCell>
+              <TableCell>roco_mammas</TableCell>
               <TableCell>soda</TableCell>
               <TableCell>coffee</TableCell>
               <TableCell>sugar</TableCell>
               <TableCell>edibles</TableCell>
+              <TableCell>bread</TableCell>
               <TableCell>kiwi</TableCell>
               <TableCell>almonds</TableCell>
               <TableCell>milk</TableCell>
@@ -915,6 +975,16 @@ const Diet: React.FC = () => {
 
                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
+                        {entry.ginger_beer ? (
+                          <CheckCircleIcon />
+                        ) : (
+                          <CancelIcon />
+                        )}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
                         {entry.apple_juice ? (
                           <CheckCircleIcon />
                         ) : (
@@ -959,6 +1029,20 @@ const Diet: React.FC = () => {
                         {entry.kfc ? <CheckCircleIcon /> : <CancelIcon />}
                       </TableCell>
                     )}
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.mcdonalds ? <CheckCircleIcon /> : <CancelIcon />}
+                      </TableCell>
+                    )}
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.roco_mammas ? (
+                          <CheckCircleIcon />
+                        ) : (
+                          <CancelIcon />
+                        )}
+                      </TableCell>
+                    )}
 
                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
@@ -980,6 +1064,12 @@ const Diet: React.FC = () => {
                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
                         {entry.edibles || 0}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.bread || 0}
                       </TableCell>
                     )}
 
