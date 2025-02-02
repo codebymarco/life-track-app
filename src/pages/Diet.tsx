@@ -40,6 +40,9 @@ type FoodEntry = {
   rcl?: boolean;
   mcdonalds?: boolean;
   hot_chocolate?: number;
+  apple_juice?: number;
+  cranberry_juice?: number;
+  orange_juice?: number;
   switch?: boolean;
   roco_mammas?: boolean;
   edibles?: number;
@@ -63,6 +66,9 @@ type DietData = {
   takeout?: boolean;
   fanta?: number;
   hot_chocolate?: number;
+  apple_juice?: number;
+  cranberry_juice?: number;
+  orange_juice?: number;
   rcl?: boolean;
   switch?: boolean;
   kfc?: boolean;
@@ -171,6 +177,9 @@ const Diet: React.FC = () => {
     takeout: false,
     fanta: 0,
     hot_chocolate: 0,
+    apple_juice: 0,
+    cranberry_juice: 0,
+    orange_juice: 0,
     rcl: false,
     switch: false,
     kfc: false,
@@ -585,7 +594,7 @@ const Diet: React.FC = () => {
             inputProps={{ min: 0, step: "0.1" }}
           />
 
-<TextField
+          <TextField
             fullWidth
             margin="normal"
             label="hot choc cups"
@@ -596,7 +605,40 @@ const Diet: React.FC = () => {
             inputProps={{ min: 0, step: "0.1" }}
           />
 
-<TextField
+          <TextField
+            fullWidth
+            margin="normal"
+            label="apple_juice"
+            type="number"
+            name="apple_juice"
+            value={dietForm.apple_juice}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="cranberry_juice"
+            type="number"
+            name="cranberry_juice"
+            value={dietForm.cranberry_juice}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="orange_juice"
+            type="number"
+            name="orange_juice"
+            value={dietForm.orange_juice}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
             fullWidth
             margin="normal"
             label="fanta"
@@ -606,7 +648,6 @@ const Diet: React.FC = () => {
             onChange={handleChange}
             inputProps={{ min: 0, step: "0.1" }}
           />
-
 
           <FormControlLabel
             control={
@@ -803,6 +844,9 @@ const Diet: React.FC = () => {
               <TableCell>Takeout</TableCell>
               <TableCell>Fanta</TableCell>
               <TableCell>hot_chocolate</TableCell>
+              <TableCell>apple_juice</TableCell>
+              <TableCell>cranberry_juice</TableCell>
+              <TableCell>orange_juice</TableCell>
               <TableCell>rcl</TableCell>
               <TableCell>switch</TableCell>
               <TableCell>kfc</TableCell>
@@ -853,15 +897,49 @@ const Diet: React.FC = () => {
                       </TableCell>
                     )}
 
-{i === 0 && (
+                    {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
                         {entry.fanta ? <CheckCircleIcon /> : <CancelIcon />}
                       </TableCell>
                     )}
 
-{i === 0 && (
+                    {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
-                        {entry.hot_chocolate ? <CheckCircleIcon /> : <CancelIcon />}
+                        {entry.hot_chocolate ? (
+                          <CheckCircleIcon />
+                        ) : (
+                          <CancelIcon />
+                        )}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.apple_juice ? (
+                          <CheckCircleIcon />
+                        ) : (
+                          <CancelIcon />
+                        )}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.cranberry_juice ? (
+                          <CheckCircleIcon />
+                        ) : (
+                          <CancelIcon />
+                        )}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.orange_juice ? (
+                          <CheckCircleIcon />
+                        ) : (
+                          <CancelIcon />
+                        )}
                       </TableCell>
                     )}
 
