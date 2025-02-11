@@ -60,6 +60,8 @@ type FormData = {
   sitDown: number;
   steps: number;
   lunges: number;
+  tricepCurls: number;
+  hammerCurls: number;
   masai: number;
   footballkneeUps: number;
   indoor: number;
@@ -192,7 +194,9 @@ const Workout: React.FC = () => {
     squats: 0,
     sitDown: 0,
     lunges: 0,
-    masai:0
+    hammerCurls: 0,
+    tricepCurls: 0,
+    masai: 0,
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
@@ -268,10 +272,12 @@ const Workout: React.FC = () => {
       squats: 0,
       sitDown: 0,
       lunges: 0,
+      hammerCurls: 0,
+      tricepCurls: 0,
       masai: 0,
-      pullupsUnder:0,
-      pullupsOver:0,
-      bicepCurlsReverse:0
+      pullupsUnder: 0,
+      pullupsOver: 0,
+      bicepCurlsReverse: 0,
     });
     setEditIndex(null);
   };
@@ -674,7 +680,7 @@ const Workout: React.FC = () => {
             }
           />
 
-<FormControlLabel
+          <FormControlLabel
             control={
               <Checkbox
                 checked={formData.nose}
@@ -688,7 +694,7 @@ const Workout: React.FC = () => {
             }
           />
 
-<FormControlLabel
+          <FormControlLabel
             control={
               <Checkbox
                 checked={formData.kneeTucks}
@@ -698,7 +704,9 @@ const Workout: React.FC = () => {
               />
             }
             label={
-              <Typography className={classes.checkboxLabel}>kneeTucks</Typography>
+              <Typography className={classes.checkboxLabel}>
+                kneeTucks
+              </Typography>
             }
           />
 
@@ -841,7 +849,7 @@ const Workout: React.FC = () => {
             inputProps={{ min: 0 }}
           />
 
-<TextField
+          <TextField
             fullWidth
             variant="outlined"
             size="small"
@@ -853,8 +861,6 @@ const Workout: React.FC = () => {
             onChange={handleChange}
             inputProps={{ min: 0 }}
           />
-
-
 
           {/* wrist grips Field */}
           <TextField
@@ -939,8 +945,36 @@ const Workout: React.FC = () => {
             inputProps={{ min: 0 }}
           />
 
-                    {/* keepups Field */}
-                    <TextField
+          {/* keepups Field */}
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="hammerCurls"
+            type="number"
+            name="hammerCurls"
+            value={formData.hammerCurls}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+
+          {/* keepups Field */}
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            className={classes.textField}
+            label="tricepCurls"
+            type="number"
+            name="tricepCurls"
+            value={formData.tricepCurls}
+            onChange={handleChange}
+            inputProps={{ min: 0 }}
+          />
+
+          {/* keepups Field */}
+          <TextField
             fullWidth
             variant="outlined"
             size="small"
@@ -1073,10 +1107,8 @@ const Workout: React.FC = () => {
               </Typography>
 
               <Typography style={{ fontSize: "0.85rem" }}>
-                <strong>indoor:</strong>{" "}
-                {viewEntry.indoor ? "Yes" : "No"}
+                <strong>indoor:</strong> {viewEntry.indoor ? "Yes" : "No"}
               </Typography>
-
 
               <Typography style={{ fontSize: "0.85rem" }}>
                 <strong>footballAtw:</strong>{" "}
@@ -1103,6 +1135,16 @@ const Workout: React.FC = () => {
 
               <Typography style={{ fontSize: "0.85rem" }}>
                 <strong>lunges:</strong> {viewEntry.lunges ? "Yes" : "No"}
+              </Typography>
+
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>hammerCurls:</strong>{" "}
+                {viewEntry.hammerCurls ? "Yes" : "No"}
+              </Typography>
+
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>tricepCurls:</strong>{" "}
+                {viewEntry.tricepCurls ? "Yes" : "No"}
               </Typography>
 
               <Typography style={{ fontSize: "0.85rem" }}>
@@ -1174,9 +1216,7 @@ const Workout: React.FC = () => {
               <TableCell className={classes.tableHeader}>
                 footballkneeUps
               </TableCell>
-              <TableCell className={classes.tableHeader}>
-                indoor
-              </TableCell>
+              <TableCell className={classes.tableHeader}>indoor</TableCell>
               <TableCell className={classes.tableHeader}>footballAtw</TableCell>
               <TableCell className={classes.tableHeader}>
                 footballAtwLeft
@@ -1185,6 +1225,8 @@ const Workout: React.FC = () => {
               <TableCell className={classes.tableHeader}>squats</TableCell>
               <TableCell className={classes.tableHeader}>sitDown</TableCell>
               <TableCell className={classes.tableHeader}>lunges</TableCell>
+              <TableCell className={classes.tableHeader}>hammerCurls</TableCell>
+              <TableCell className={classes.tableHeader}>tricepCurls</TableCell>
               <TableCell className={classes.tableHeader}>masai</TableCell>
               <TableCell className={classes.tableHeader}>actions</TableCell>
             </TableRow>
@@ -1299,6 +1341,12 @@ const Workout: React.FC = () => {
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.lunges || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.hammerCurls || 0}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.tricepCurls || 0}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.masai || 0}
