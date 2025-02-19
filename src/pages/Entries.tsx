@@ -46,6 +46,8 @@ type FormData = {
   sex: number;
   orgasm: number;
   bookSummary: boolean;
+  nails: boolean;
+  ears: boolean;
   prayEvening: boolean;
   workout: boolean;
   workoutDetails: string[];
@@ -179,6 +181,8 @@ const Entries: React.FC = () => {
     sex: 0,
     orgasm: 0,
     bookSummary: false,
+    nails: false,
+    ears: false,
     prayEvening: false,
     mast: false,
     pn: false,
@@ -258,6 +262,8 @@ const Entries: React.FC = () => {
       sex: 0,
       orgasm: 0,
       bookSummary: false,
+      nails: false,
+      ears: false,
       prayEvening: false,
       mast: false,
       pn: false,
@@ -615,6 +621,34 @@ const Entries: React.FC = () => {
           <FormControlLabel
             control={
               <Checkbox
+                checked={formData.nails}
+                name="nails"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.checkboxLabel}>nails</Typography>
+            }
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.ears}
+                name="ears"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.checkboxLabel}>ears</Typography>
+            }
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
                 checked={formData.scm}
                 name="scm"
                 onChange={handleChange}
@@ -964,6 +998,14 @@ const Entries: React.FC = () => {
                 {viewEntry.bookSummary ? <CheckCircleIcon /> : <CancelIcon />}
               </Typography>
               <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>nails:</strong>{" "}
+                {viewEntry.nails ? <CheckCircleIcon /> : <CancelIcon />}
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
+                <strong>ears:</strong>{" "}
+                {viewEntry.ears ? <CheckCircleIcon /> : <CancelIcon />}
+              </Typography>
+              <Typography style={{ fontSize: "0.85rem" }}>
                 <strong>Workout:</strong> {viewEntry.workout ? "Yes" : "No"}
               </Typography>
               {viewEntry.workout && (
@@ -1118,6 +1160,12 @@ const Entries: React.FC = () => {
 
                     <TableCell className={classes.tableCell}>
                       {entry.bookSummary ? <CheckCircleIcon /> : <CancelIcon />}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.nails ? <CheckCircleIcon /> : <CancelIcon />}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {entry.ears ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {entry.sleepTime || 0}

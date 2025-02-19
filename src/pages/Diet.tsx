@@ -44,13 +44,32 @@ type FoodEntry = {
   apple_juice?: number;
   cranberry_juice?: number;
   orange_juice?: number;
+  morning_biscut?: number;
+  yougurt?: number;
+  snappers?: number;
+  thunder?: number;
+  fries?: boolean;
+  burger?: boolean;
+  choc_muffin?: number;
   switch?: boolean;
+  chops?: boolean;
+  roti?: boolean;
+  mince_curry?: boolean;
+  monster?: boolean;
+  samp?: boolean;
   roco_mammas?: boolean;
   edibles?: number;
+  coke?: number;
+  cream_soda?: number;
+  cake?: number;
+  provita?: number;
+  tennis_biscut?: number;
+  eat_sum_more_biscut?: number;
   bread?: number;
   fanta?: number;
   soda?: boolean;
   coffee?: number;
+  tea?: number;
   sugar?: number;
   kiwi?: number;
   almonds?: number;
@@ -72,15 +91,34 @@ type DietData = {
   apple_juice?: number;
   cranberry_juice?: number;
   orange_juice?: number;
+  morning_biscut?: number;
+  yougurt?: number;
+  snappers?: number;
+  thunder?: number;
+  choc_muffin?: number;
   rcl?: boolean;
   switch?: boolean;
+  chops?: boolean;
+  roti?: boolean;
+  mince_curry?: boolean;
+  monster?: boolean;
+  samp?: boolean;
+  fries?: boolean;
+  burger?: boolean;
   kfc?: boolean;
   mcdonalds?: boolean;
   roco_mammas?: boolean;
   soda?: boolean;
   coffee?: number;
+  tea?: number;
   sugar?: number;
   edibles?: number;
+  coke?: number;
+  cream_soda?: number;
+  cake?: number;
+  provita?: number;
+  tennis_biscut?: number;
+  eat_sum_more_biscut?: number;
   bread?: number;
   kiwi?: number;
   almonds?: number;
@@ -187,16 +225,35 @@ const Diet: React.FC = () => {
     apple_juice: 0,
     cranberry_juice: 0,
     orange_juice: 0,
+    morning_biscut: 0,
+    yougurt: 0,
+    snappers: 0,
+    thunder: 0,
+    choc_muffin: 0,
     rcl: false,
     switch: false,
+    chops: false,
+    roti: false,
+    mince_curry: false,
+    monster: false,
+    samp: false,
+    fries: false,
+    burger: false,
     kfc: false,
     mcdonalds: false,
     roco_mammas: false,
     coffee: 0,
+    tea: 0,
     soda: false,
     sugar: 0,
     water: "",
     edibles: 0,
+    coke: 0,
+    cream_soda: 0,
+    cake: 0,
+    provita: 0,
+    tennis_biscut: 0,
+    eat_sum_more_biscut: 0,
     bread: 0,
     kiwi: 0,
     almonds: 0,
@@ -662,6 +719,61 @@ const Diet: React.FC = () => {
           <TextField
             fullWidth
             margin="normal"
+            label="morning_biscut"
+            type="number"
+            name="morning_biscut"
+            value={dietForm.morning_biscut}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="yougurt"
+            type="number"
+            name="yougurt"
+            value={dietForm.yougurt}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="snappers"
+            type="number"
+            name="snappers"
+            value={dietForm.snappers}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="thunder"
+            type="number"
+            name="thunder"
+            value={dietForm.thunder}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="choc_muffin"
+            type="number"
+            name="choc_muffin"
+            value={dietForm.choc_muffin}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
             label="fanta"
             type="number"
             name="fanta"
@@ -704,6 +816,90 @@ const Diet: React.FC = () => {
               />
             }
             label={<Typography>switch</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.chops}
+                name="chops"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>chops</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.roti}
+                name="roti"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>roti</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.mince_curry}
+                name="mince_curry"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>mince_curry</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.monster}
+                name="monster"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>monster</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.samp}
+                name="samp"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>samp</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.fries}
+                name="fries"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>fries</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.burger}
+                name="burger"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>burger</Typography>}
           />
 
           <FormControlLabel
@@ -767,10 +963,87 @@ const Diet: React.FC = () => {
           <TextField
             fullWidth
             margin="normal"
+            label="tea"
+            type="number"
+            name="tea"
+            value={dietForm.tea}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
             label="edibles"
             type="number"
             name="edibles"
             value={dietForm.edibles}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="coke"
+            type="number"
+            name="coke"
+            value={dietForm.coke}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="cream_soda"
+            type="number"
+            name="cream_soda"
+            value={dietForm.cream_soda}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="cake"
+            type="number"
+            name="cake"
+            value={dietForm.cake}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="provita"
+            type="number"
+            name="provita"
+            value={dietForm.provita}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="tennis_biscut"
+            type="number"
+            name="tennis_biscut"
+            value={dietForm.tennis_biscut}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="eat_sum_more_biscut"
+            type="number"
+            name="eat_sum_more_biscut"
+            value={dietForm.eat_sum_more_biscut}
             onChange={handleChange}
             inputProps={{ min: 0, step: "0.1" }}
           />
@@ -904,15 +1177,34 @@ const Diet: React.FC = () => {
               <TableCell>apple_juice</TableCell>
               <TableCell>cranberry_juice</TableCell>
               <TableCell>orange_juice</TableCell>
+              <TableCell>morning_biscut</TableCell>
+              <TableCell>yougurt</TableCell>
+              <TableCell>snappers</TableCell>
+              <TableCell>thunder</TableCell>
+              <TableCell>choc_muffin</TableCell>
               <TableCell>rcl</TableCell>
               <TableCell>switch</TableCell>
+              <TableCell>chops</TableCell>
+              <TableCell>roti</TableCell>
+              <TableCell>mince_curry</TableCell>
+              <TableCell>monster</TableCell>
+              <TableCell>samp</TableCell>
+              <TableCell>fries</TableCell>
+              <TableCell>burger</TableCell>
               <TableCell>kfc</TableCell>
               <TableCell>mcdonalds</TableCell>
               <TableCell>roco_mammas</TableCell>
               <TableCell>soda</TableCell>
               <TableCell>coffee</TableCell>
+              <TableCell>tea</TableCell>
               <TableCell>sugar</TableCell>
               <TableCell>edibles</TableCell>
+              <TableCell>coke</TableCell>
+              <TableCell>cream_soda</TableCell>
+              <TableCell>cake</TableCell>
+              <TableCell>provita</TableCell>
+              <TableCell>tennis_biscut</TableCell>
+              <TableCell>eat_sum_more_biscut</TableCell>
               <TableCell>bread</TableCell>
               <TableCell>kiwi</TableCell>
               <TableCell>almonds</TableCell>
@@ -1015,13 +1307,87 @@ const Diet: React.FC = () => {
 
                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
-                        {entry.rcl ? <CheckCircleIcon /> : <CancelIcon />}
+                        {entry.morning_biscut ? (
+                          <CheckCircleIcon />
+                        ) : (
+                          <CancelIcon />
+                        )}
                       </TableCell>
                     )}
 
                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
+                        {entry.yougurt ? <CheckCircleIcon /> : <CancelIcon />}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.snappers ? <CheckCircleIcon /> : <CancelIcon />}
+                      </TableCell>
+                    )}
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.thunder ? <CheckCircleIcon /> : <CancelIcon />}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.choc_muffin ? (
+                          <CheckCircleIcon />
+                        ) : (
+                          <CancelIcon />
+                        )}
+                      </TableCell>
+                    )}
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.rcl ? <CheckCircleIcon /> : <CancelIcon />}
+                      </TableCell>
+                    )}
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
                         {entry.switch ? <CheckCircleIcon /> : <CancelIcon />}
+                      </TableCell>
+                    )}
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.chops ? <CheckCircleIcon /> : <CancelIcon />}
+                      </TableCell>
+                    )}
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.roti ? <CheckCircleIcon /> : <CancelIcon />}
+                      </TableCell>
+                    )}
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.mince_curry ? (
+                          <CheckCircleIcon />
+                        ) : (
+                          <CancelIcon />
+                        )}
+                      </TableCell>
+                    )}
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.monster ? <CheckCircleIcon /> : <CancelIcon />}
+                      </TableCell>
+                    )}
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.samp ? <CheckCircleIcon /> : <CancelIcon />}
+                      </TableCell>
+                    )}
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.fries ? <CheckCircleIcon /> : <CancelIcon />}
+                      </TableCell>
+                    )}
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.burger ? <CheckCircleIcon /> : <CancelIcon />}
                       </TableCell>
                     )}
                     {i === 0 && (
@@ -1054,6 +1420,11 @@ const Diet: React.FC = () => {
                         {entry.coffee || 0}
                       </TableCell>
                     )}
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.tea || 0}
+                      </TableCell>
+                    )}
 
                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
@@ -1064,6 +1435,42 @@ const Diet: React.FC = () => {
                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
                         {entry.edibles || 0}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.coke || 0}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.cream_soda || 0}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.cake || 0}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.provita || 0}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.tennis_biscut || 0}
+                      </TableCell>
+                    )}
+
+                    {i === 0 && (
+                      <TableCell rowSpan={entry.foods.length}>
+                        {entry.eat_sum_more_biscut || 0}
                       </TableCell>
                     )}
 
