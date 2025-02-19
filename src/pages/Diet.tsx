@@ -1166,6 +1166,7 @@ const Diet: React.FC = () => {
           <TableHead>
             <TableRow>
               <TableCell>Date</TableCell>
+              {/*              
               <TableCell>Food</TableCell>
               <TableCell>Calorie</TableCell>
               <TableCell>Quantity</TableCell>
@@ -1212,7 +1213,7 @@ const Diet: React.FC = () => {
               <TableCell>grapesblack</TableCell>
               <TableCell>berriesstraw</TableCell>
               <TableCell>chickenmayo</TableCell>
-              <TableCell>chickenperiperi</TableCell>
+              <TableCell>chickenperiperi</TableCell> */}
               <TableCell>Water (Liters)</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -1239,6 +1240,7 @@ const Diet: React.FC = () => {
                         {entry.date} - {dayName}
                       </TableCell>
                     )}
+                    {/*   
                     <TableCell>{food.food}</TableCell>
                     <TableCell>{food.calorie}</TableCell>
                     <TableCell>{food.quantity}</TableCell>
@@ -1521,10 +1523,10 @@ const Diet: React.FC = () => {
                         {entry.chickenperiperi || 0}
                       </TableCell>
                     )}
-
+ */}
                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
-                        {entry.water}
+                        {entry.water || 0}
                       </TableCell>
                     )}
                     {i === 0 && (
