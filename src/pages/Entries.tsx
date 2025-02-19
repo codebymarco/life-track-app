@@ -1078,8 +1078,6 @@ const Entries: React.FC = () => {
             <TableRow>
               <TableCell className={classes.tableHeader}>Date</TableCell>
               <TableCell className={classes.tableHeader}>Pray M</TableCell>
-              <TableCell className={classes.tableHeader}>speach ex</TableCell>
-              <TableCell className={classes.tableHeader}>Pray D</TableCell>
               <TableCell className={classes.tableHeader}>Pray e</TableCell>
               <TableCell className={classes.tableHeader}>Bible</TableCell>
               <TableCell className={classes.tableHeader}>Mast</TableCell>
@@ -1093,23 +1091,15 @@ const Entries: React.FC = () => {
               <TableCell className={classes.tableHeader}>
                 Kegels Count
               </TableCell>
-              <TableCell className={classes.tableHeader}>day type</TableCell>{" "}
               <TableCell className={classes.tableHeader}>Suntime</TableCell>
               <TableCell className={classes.tableHeader}>Jelqs</TableCell>
               <TableCell className={classes.tableHeader}>Coding</TableCell>
-              <TableCell className={classes.tableHeader}>smc</TableCell>
-              <TableCell className={classes.tableHeader}>snc</TableCell>
-              <TableCell className={classes.tableHeader}>caroil</TableCell>
-              <TableCell className={classes.tableHeader}>carwater</TableCell>
-              <TableCell className={classes.tableHeader}>carwash</TableCell>
-              <TableCell className={classes.tableHeader}>carfuel</TableCell>
               <TableCell className={classes.tableHeader}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {processedEntries.length > 0 ? (
               processedEntries.map(({ entry, originalIndex }) => {
-                // JavaScript logic must be inside curly braces in the map callback
                 const dateObject = new Date(entry.date);
                 const dayOfWeek = dateObject.getDay();
                 const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
@@ -1129,14 +1119,6 @@ const Entries: React.FC = () => {
                     <TableCell className={classes.tableCell}>
                       {entry.prayMorning ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.speachEx ? <CheckCircleIcon /> : <CancelIcon />}
-                    </TableCell>
-
-                    <TableCell className={classes.tableCell}>
-                      {entry.prayDay ? <CheckCircleIcon /> : <CancelIcon />}
-                    </TableCell>
-
                     <TableCell className={classes.tableCell}>
                       {entry.prayEvening ? <CheckCircleIcon /> : <CancelIcon />}
                     </TableCell>
@@ -1180,13 +1162,6 @@ const Entries: React.FC = () => {
                       {entry.no_of_kegels || 0}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {entry.dayType
-                        ? entry.dayType
-                        : isWeekend
-                        ? "weekend"
-                        : "work"}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
                       {entry.suntime || 0}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
@@ -1195,27 +1170,6 @@ const Entries: React.FC = () => {
                     <TableCell className={classes.tableCell}>
                       {entry.coding !== undefined ? entry.coding : 0}
                     </TableCell>
-
-                    <TableCell className={classes.tableCell}>
-                      {entry.scm ? <CheckCircleIcon /> : <CancelIcon />}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.scn ? <CheckCircleIcon /> : <CancelIcon />}
-                    </TableCell>
-
-                    <TableCell className={classes.tableCell}>
-                      {entry.carOil ? <CheckCircleIcon /> : <CancelIcon />}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.carWater ? <CheckCircleIcon /> : <CancelIcon />}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.carWash ? <CheckCircleIcon /> : <CancelIcon />}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.carFuel ? <CheckCircleIcon /> : <CancelIcon />}
-                    </TableCell>
-
                     <TableCell className={classes.tableCell}>
                       <IconButton
                         onClick={(event) => {
