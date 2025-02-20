@@ -25,8 +25,6 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
 import VisibilityIcon from "@mui/icons-material/Visibility"; // Import Visibility Icon
 
 // Type Definitions
@@ -55,6 +53,7 @@ type FoodEntry = {
   chops?: boolean;
   roti?: boolean;
   mince_curry?: boolean;
+  beef_and_cauliflower_curry?: boolean;
   monster?: boolean;
   samp?: boolean;
   roco_mammas?: boolean;
@@ -101,6 +100,7 @@ type DietData = {
   chops?: boolean;
   roti?: boolean;
   mince_curry?: boolean;
+  beef_and_cauliflower_curry?: boolean;
   monster?: boolean;
   samp?: boolean;
   fries?: boolean;
@@ -235,6 +235,7 @@ const Diet: React.FC = () => {
     chops: false,
     roti: false,
     mince_curry: false,
+    beef_and_cauliflower_curry: false,
     monster: false,
     samp: false,
     fries: false,
@@ -479,6 +480,7 @@ const Diet: React.FC = () => {
   // State for View Modal
   const [viewOpen, setViewOpen] = useState<boolean>(false);
   const [viewEntry, setViewEntry] = useState<DietData | null>(null);
+  console.log(viewEntry);
   // Handle View Modal Open/Close
   const handleViewOpen = (entry: DietData) => {
     setViewEntry(entry);
@@ -857,6 +859,18 @@ const Diet: React.FC = () => {
           <FormControlLabel
             control={
               <Checkbox
+                checked={dietForm.beef_and_cauliflower_curry}
+                name="beef_and_cauliflower_curry"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>beef_and_cauliflower_curry</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
                 checked={dietForm.monster}
                 name="monster"
                 onChange={handleChange}
@@ -1228,7 +1242,7 @@ const Diet: React.FC = () => {
                   weekday: "long",
                 });
 
-                return entry.foods.map((food, i) => (
+                return entry.foods.map((_, i) => (
                   <TableRow key={`${index}-${i}`}>
                     {i === 0 && (
                       <TableCell
