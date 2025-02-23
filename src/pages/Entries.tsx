@@ -36,6 +36,12 @@ type FormData = {
   date: string;
   prayMorning: boolean;
   speachEx: boolean;
+
+  cleanedBag: boolean;
+  cleanedClothingDraw: boolean;
+  cleanedSmallDraw: boolean;
+  cleanedPullingDraw: boolean;
+
   carOil: boolean;
   carWater: boolean;
   carTyre: boolean;
@@ -169,6 +175,10 @@ const Entries: React.FC = () => {
     Omit<FormData, "coding"> & { coding: string }
   >({
     carOil: false,
+    cleanedBag: false,
+    cleanedClothingDraw: false,
+    cleanedSmallDraw: false,
+    cleanedPullingDraw: false,
     carWater: false,
     carTyre: false,
     carFuel: false,
@@ -250,6 +260,10 @@ const Entries: React.FC = () => {
   const resetForm = () => {
     setFormData({
       carOil: false,
+      cleanedBag: false,
+      cleanedClothingDraw: false,
+      cleanedSmallDraw: false,
+      cleanedPullingDraw: false,
       carWater: false,
       carTyre: false,
       carFuel: false,
@@ -910,6 +924,70 @@ const Entries: React.FC = () => {
             }
             label={
               <Typography className={classes.checkboxLabel}>carOil</Typography>
+            }
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.cleanedClothingDraw}
+                name="cleanedClothingDraw"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.checkboxLabel}>
+                cleanedClothingDraw
+              </Typography>
+            }
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.cleanedSmallDraw}
+                name="cleanedSmallDraw"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.checkboxLabel}>
+                cleanedSmallDraw
+              </Typography>
+            }
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.cleanedPullingDraw}
+                name="cleanedPullingDraw"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.checkboxLabel}>
+                cleanedPullingDraw
+              </Typography>
+            }
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.cleanedBag}
+                name="cleanedBag"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.checkboxLabel}>
+                cleanedBag
+              </Typography>
             }
           />
 
