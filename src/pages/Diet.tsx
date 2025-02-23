@@ -53,6 +53,14 @@ type FoodEntry = {
   chops?: boolean;
   roti?: boolean;
   mince_curry?: boolean;
+  chicken_curry?: boolean;
+  mutton_curry?: boolean;
+  chicken_pie?: boolean;
+  noodles?: boolean;
+  sweets?: boolean;
+  pickle?: boolean;
+  custard?: boolean;
+  ice_cream?: boolean;
   beef_and_cauliflower_curry?: boolean;
   monster?: boolean;
   samp?: boolean;
@@ -100,6 +108,14 @@ type DietData = {
   chops?: boolean;
   roti?: boolean;
   mince_curry?: boolean;
+  chicken_curry?: boolean;
+  mutton_curry?: boolean;
+  chicken_pie?: boolean;
+  noodles?: boolean;
+  sweets?: boolean;
+  pickle?: boolean;
+  custard?: boolean;
+  ice_cream?: boolean;
   beef_and_cauliflower_curry?: boolean;
   monster?: boolean;
   samp?: boolean;
@@ -235,6 +251,14 @@ const Diet: React.FC = () => {
     chops: false,
     roti: false,
     mince_curry: false,
+    chicken_curry: false,
+    mutton_curry: false,
+    chicken_pie: false,
+    noodles: false,
+    sweets: false,
+    pickle: false,
+    custard: false,
+    ice_cream: false,
     beef_and_cauliflower_curry: false,
     monster: false,
     samp: false,
@@ -854,6 +878,102 @@ const Diet: React.FC = () => {
               />
             }
             label={<Typography>mince_curry</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.chicken_curry}
+                name="chicken_curry"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>chicken_curry</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.mutton_curry}
+                name="mutton_curry"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>mutton_curry</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.chicken_pie}
+                name="chicken_pie"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>chicken_pie</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.noodles}
+                name="noodles"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>noodles</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.sweets}
+                name="sweets"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>sweets</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.pickle}
+                name="pickle"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>pickle</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.custard}
+                name="custard"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>custard</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.ice_cream}
+                name="ice_cream"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>ice_cream</Typography>}
           />
 
           <FormControlLabel
