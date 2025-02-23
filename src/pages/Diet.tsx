@@ -42,7 +42,10 @@ type FoodEntry = {
   apple_juice?: number;
   cranberry_juice?: number;
   orange_juice?: number;
+  hot_dogs?: number;
+  energade?: number;
   morning_biscut?: number;
+  ginger_biscut?: number;
   yougurt?: number;
   snappers?: number;
   thunder?: number;
@@ -98,7 +101,10 @@ type DietData = {
   apple_juice?: number;
   cranberry_juice?: number;
   orange_juice?: number;
+  hot_dogs?: number;
+  energade?: number;
   morning_biscut?: number;
+  ginger_biscut?: number;
   yougurt?: number;
   snappers?: number;
   thunder?: number;
@@ -241,7 +247,10 @@ const Diet: React.FC = () => {
     apple_juice: 0,
     cranberry_juice: 0,
     orange_juice: 0,
+    hot_dogs: 0,
+    energade: 0,
     morning_biscut: 0,
+    ginger_biscut: 0,
     yougurt: 0,
     snappers: 0,
     thunder: 0,
@@ -745,10 +754,43 @@ const Diet: React.FC = () => {
           <TextField
             fullWidth
             margin="normal"
+            label="hot_dogs"
+            type="number"
+            name="hot_dogs"
+            value={dietForm.hot_dogs}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="energade"
+            type="number"
+            name="energade"
+            value={dietForm.energade}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
             label="morning_biscut"
             type="number"
             name="morning_biscut"
             value={dietForm.morning_biscut}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="ginger_biscut"
+            type="number"
+            name="ginger_biscut"
+            value={dietForm.ginger_biscut}
             onChange={handleChange}
             inputProps={{ min: 0, step: "0.1" }}
           />
