@@ -40,6 +40,7 @@ type FoodEntry = {
   hot_chocolate?: number;
   ginger_beer?: number;
   apple_juice?: number;
+  fruit_juice?: number;
   cranberry_juice?: number;
   orange_juice?: number;
   hot_dogs?: number;
@@ -57,7 +58,12 @@ type FoodEntry = {
   roti?: boolean;
   mince_curry?: boolean;
   chicken_curry?: boolean;
+  rice?: boolean;
+  salad?: boolean;
+  coleslaw?: boolean;
+  chicken?: boolean;
   mutton_curry?: boolean;
+  mutton_bunny?: boolean;
   chicken_pie?: boolean;
   noodles?: boolean;
   sweets?: boolean;
@@ -99,6 +105,7 @@ type DietData = {
   hot_chocolate?: number;
   ginger_beer?: number;
   apple_juice?: number;
+  fruit_juice?: number;
   cranberry_juice?: number;
   orange_juice?: number;
   hot_dogs?: number;
@@ -115,7 +122,12 @@ type DietData = {
   roti?: boolean;
   mince_curry?: boolean;
   chicken_curry?: boolean;
+  rice?: boolean;
+  salad?: boolean;
+  coleslaw?: boolean;
+  chicken?: boolean;
   mutton_curry?: boolean;
+  mutton_bunny?: boolean;
   chicken_pie?: boolean;
   noodles?: boolean;
   sweets?: boolean;
@@ -245,6 +257,7 @@ const Diet: React.FC = () => {
     hot_chocolate: 0,
     ginger_beer: 0,
     apple_juice: 0,
+    fruit_juice: 0,
     cranberry_juice: 0,
     orange_juice: 0,
     hot_dogs: 0,
@@ -261,7 +274,12 @@ const Diet: React.FC = () => {
     roti: false,
     mince_curry: false,
     chicken_curry: false,
+    rice: false,
+    salad: false,
+    coleslaw: false,
+    chicken: false,
     mutton_curry: false,
+    mutton_bunny: false,
     chicken_pie: false,
     noodles: false,
     sweets: false,
@@ -732,6 +750,17 @@ const Diet: React.FC = () => {
           <TextField
             fullWidth
             margin="normal"
+            label="fruit_juice"
+            type="number"
+            name="fruit_juice"
+            value={dietForm.fruit_juice}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
             label="cranberry_juice"
             type="number"
             name="cranberry_juice"
@@ -937,6 +966,54 @@ const Diet: React.FC = () => {
           <FormControlLabel
             control={
               <Checkbox
+                checked={dietForm.rice}
+                name="rice"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>rice</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.salad}
+                name="salad"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>salad</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.coleslaw}
+                name="coleslaw"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>coleslaw</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.chicken}
+                name="chicken"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>chicken</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
                 checked={dietForm.mutton_curry}
                 name="mutton_curry"
                 onChange={handleChange}
@@ -944,6 +1021,18 @@ const Diet: React.FC = () => {
               />
             }
             label={<Typography>mutton_curry</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.mutton_bunny}
+                name="mutton_bunny"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>mutton_bunny</Typography>}
           />
 
           <FormControlLabel
