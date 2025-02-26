@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 const Home = () => {
   const [entries, setEntries] = useState([]);
-  const [selectedPrayerType, setSelectedPrayerType] = useState("prayMorning");
+  const [selectedType, setSelectedType] = useState("prayMorning");
   const [daysToShow, setDaysToShow] = useState(5);
 
   useEffect(() => {
@@ -23,11 +23,24 @@ const Home = () => {
     }
   }, []);
 
-  // Get the last "daysToShow" entries and map the selected prayer type to "yes"/"no"
+  // Get the last "daysToShow" entries and map the selected property accordingly
   const displayedValues = entries.slice(0, daysToShow).map((entry) => {
-    const value = entry[selectedPrayerType];
-    return value ? "yes" : "no";
+    const value = entry[selectedType];
+    // If value is a boolean, map it to "yes" or "no"
+    if (typeof value === "boolean") {
+      return value ? "yes" : "no";
+    }
+    // Otherwise, return the value (e.g., coding)
+    return value;
   });
+
+  // Determine the display title based on the selected type
+  const displayTitle =
+    selectedType === "prayMorning"
+      ? "Pray Morning"
+      : selectedType === "prayEvening"
+      ? "Pray Evening"
+      : "Coding";
 
   // Inline style objects
   const containerStyle = {
@@ -49,10 +62,10 @@ const Home = () => {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    gap: "20px",
   };
 
   const labelStyle = {
-    marginRight: "20px",
     fontSize: "16px",
     color: "#333",
   };
@@ -92,14 +105,15 @@ const Home = () => {
       <h1 style={headerStyle}>Statistics</h1>
       <div style={controlsStyle}>
         <label style={labelStyle}>
-          Select Prayer Type:
+          Select Data:
           <select
             style={selectStyle}
-            value={selectedPrayerType}
-            onChange={(e) => setSelectedPrayerType(e.target.value)}
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value)}
           >
             <option value="prayMorning">Pray Morning</option>
             <option value="prayEvening">Pray Evening</option>
+            <option value="coding">Coding</option>
           </select>
         </label>
         <label style={labelStyle}>
@@ -117,15 +131,11 @@ const Home = () => {
         </label>
       </div>
       <div style={sectionStyle}>
-        <h2 style={titleStyle}>
-          {selectedPrayerType === "prayMorning"
-            ? "Pray Morning"
-            : "Pray Evening"}
-        </h2>
+        <h2 style={titleStyle}>{displayTitle}</h2>
         <div>
           {displayedValues.map((value, index) => (
             <span key={index} style={spanStyle}>
-              {value}
+              {value || "-"}
             </span>
           ))}
         </div>
