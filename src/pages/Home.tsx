@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 
 const Home = () => {
   const [entries, setEntries] = useState([]);
+  const [workoutEntries, setWorkoutEntries] = useState([]);
   const [selectedType, setSelectedType] = useState("prayMorning");
   const [daysToShow, setDaysToShow] = useState(5);
 
+  // Retrieve entries for prayMorning, prayEvening, and coding
   useEffect(() => {
     const storedEntries = localStorage.getItem("entries");
     if (storedEntries) {
@@ -23,24 +25,45 @@ const Home = () => {
     }
   }, []);
 
-  // Get the last "daysToShow" entries and map the selected property accordingly
-  const displayedValues = entries.slice(0, daysToShow).map((entry) => {
-    const value = entry[selectedType];
-    // If value is a boolean, map it to "yes" or "no"
-    if (typeof value === "boolean") {
-      return value ? "yes" : "no";
+  // Retrieve workoutEntries for steps
+  useEffect(() => {
+    const storedWorkoutEntries = localStorage.getItem("workoutEntries");
+    if (storedWorkoutEntries) {
+      try {
+        const parsedWorkoutEntries = JSON.parse(storedWorkoutEntries);
+        if (Array.isArray(parsedWorkoutEntries)) {
+          // Sort workoutEntries by date descending (newest first)
+          const sortedWorkoutEntries = parsedWorkoutEntries.sort(
+            (a, b) => new Date(b.date) - new Date(a.date)
+          );
+          setWorkoutEntries(sortedWorkoutEntries);
+        }
+      } catch (error) {
+        console.error("Error parsing workoutEntries from localStorage:", error);
+      }
     }
-    // Otherwise, return the value (e.g., coding)
-    return value;
-  });
+  }, []);
+
+  // Select the appropriate data source based on selectedType
+  let displayedValues = [];
+  if (selectedType === "steps") {
+    displayedValues = workoutEntries.slice(0, daysToShow).map((entry) => entry.steps);
+  } else {
+    displayedValues = entries.slice(0, daysToShow).map((entry) => {
+      const value = entry[selectedType];
+      if (typeof value === "boolean") {
+        return value ? "yes" : "no";
+      }
+      return value;
+    });
+  }
 
   // Determine the display title based on the selected type
-  const displayTitle =
-    selectedType === "prayMorning"
-      ? "Pray Morning"
-      : selectedType === "prayEvening"
-      ? "Pray Evening"
-      : "Coding";
+  let displayTitle = "";
+  if (selectedType === "prayMorning") displayTitle = "Pray Morning";
+  else if (selectedType === "prayEvening") displayTitle = "Pray Evening";
+  else if (selectedType === "coding") displayTitle = "Coding";
+  else if (selectedType === "steps") displayTitle = "Steps";
 
   // Inline style objects
   const containerStyle = {
@@ -114,6 +137,7 @@ const Home = () => {
             <option value="prayMorning">Pray Morning</option>
             <option value="prayEvening">Pray Evening</option>
             <option value="coding">Coding</option>
+            <option value="steps">Steps</option>
           </select>
         </label>
         <label style={labelStyle}>
@@ -135,7 +159,7 @@ const Home = () => {
         <div>
           {displayedValues.map((value, index) => (
             <span key={index} style={spanStyle}>
-              {value || "-"}
+              {value}
             </span>
           ))}
         </div>
