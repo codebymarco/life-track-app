@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 
 const Home = () => {
-  const [last5PrayMorning, setLast5PrayMorning] = useState([]);
-  const [last5PrayEvening, setLast5PrayEvening] = useState([]);
+  const [entries, setEntries] = useState([]);
+  const [selectedPrayerType, setSelectedPrayerType] = useState("prayMorning");
+  const [daysToShow, setDaysToShow] = useState(5);
 
   useEffect(() => {
     const storedEntries = localStorage.getItem("entries");
@@ -14,23 +15,19 @@ const Home = () => {
           const sortedEntries = parsedEntries.sort(
             (a, b) => new Date(b.date) - new Date(a.date)
           );
-          // Take the latest 5 entries
-          const last5Entries = sortedEntries.slice(0, 5);
-          // Map prayMorning and prayEvening booleans to "yes" or "no"
-          const prayMorningValues = last5Entries.map((entry) =>
-            entry.prayMorning ? "yes" : "no"
-          );
-          const prayEveningValues = last5Entries.map((entry) =>
-            entry.prayEvening ? "yes" : "no"
-          );
-          setLast5PrayMorning(prayMorningValues);
-          setLast5PrayEvening(prayEveningValues);
+          setEntries(sortedEntries);
         }
       } catch (error) {
         console.error("Error parsing entries from localStorage:", error);
       }
     }
   }, []);
+
+  // Get the last "daysToShow" entries and map the selected prayer type to "yes"/"no"
+  const displayedValues = entries.slice(0, daysToShow).map((entry) => {
+    const value = entry[selectedPrayerType];
+    return value ? "yes" : "no";
+  });
 
   // Inline style objects
   const containerStyle = {
@@ -45,6 +42,25 @@ const Home = () => {
     textAlign: "center",
     color: "#333",
     marginBottom: "20px",
+  };
+
+  const controlsStyle = {
+    marginBottom: "20px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  };
+
+  const labelStyle = {
+    marginRight: "20px",
+    fontSize: "16px",
+    color: "#333",
+  };
+
+  const selectStyle = {
+    marginLeft: "10px",
+    padding: "8px",
+    fontSize: "16px",
   };
 
   const sectionStyle = {
@@ -74,20 +90,40 @@ const Home = () => {
   return (
     <div style={containerStyle}>
       <h1 style={headerStyle}>Statistics</h1>
-      <div style={sectionStyle}>
-        <h2 style={titleStyle}>Pray Morning</h2>
-        <div>
-          {last5PrayMorning.map((value, index) => (
-            <span key={index} style={spanStyle}>
-              {value}
-            </span>
-          ))}
-        </div>
+      <div style={controlsStyle}>
+        <label style={labelStyle}>
+          Select Prayer Type:
+          <select
+            style={selectStyle}
+            value={selectedPrayerType}
+            onChange={(e) => setSelectedPrayerType(e.target.value)}
+          >
+            <option value="prayMorning">Pray Morning</option>
+            <option value="prayEvening">Pray Evening</option>
+          </select>
+        </label>
+        <label style={labelStyle}>
+          Select Number of Days:
+          <select
+            style={selectStyle}
+            value={daysToShow}
+            onChange={(e) => setDaysToShow(parseInt(e.target.value, 10))}
+          >
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+          </select>
+        </label>
       </div>
       <div style={sectionStyle}>
-        <h2 style={titleStyle}>Pray Evening</h2>
+        <h2 style={titleStyle}>
+          {selectedPrayerType === "prayMorning"
+            ? "Pray Morning"
+            : "Pray Evening"}
+        </h2>
         <div>
-          {last5PrayEvening.map((value, index) => (
+          {displayedValues.map((value, index) => (
             <span key={index} style={spanStyle}>
               {value}
             </span>
