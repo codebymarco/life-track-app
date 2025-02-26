@@ -32,6 +32,14 @@ const routes: RouteObject[] = [
     ),
   },
   {
+    path: "/login",
+    element: (
+      <MainLayout>
+        <Route index element={<Home />} />
+      </MainLayout>
+    ),
+  },
+  {
     path: "/entries",
     element: (
       <MainLayout>
