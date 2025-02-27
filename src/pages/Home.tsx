@@ -47,7 +47,9 @@ const Home = () => {
   // Select the appropriate data source based on selectedType
   let displayedValues = [];
   if (selectedType === "steps") {
-    displayedValues = workoutEntries.slice(0, daysToShow).map((entry) => entry.steps);
+    displayedValues = workoutEntries
+      .slice(0, daysToShow)
+      .map((entry) => entry.steps);
   } else {
     displayedValues = entries.slice(0, daysToShow).map((entry) => {
       const value = entry[selectedType];
@@ -63,7 +65,11 @@ const Home = () => {
   if (selectedType === "prayMorning") displayTitle = "Pray Morning";
   else if (selectedType === "prayEvening") displayTitle = "Pray Evening";
   else if (selectedType === "coding") displayTitle = "Coding";
+  else if (selectedType === "sleepTime") displayTitle = "Sleep";
+  else if (selectedType === "jelqs") displayTitle = "Jelqs";
+  else if (selectedType === "suntime") displayTitle = "Suntime";
   else if (selectedType === "steps") displayTitle = "Steps";
+  else if (selectedType === "bookSummary") displayTitle = "bookSummary";
 
   // Inline style objects
   const containerStyle = {
@@ -137,6 +143,10 @@ const Home = () => {
             <option value="prayMorning">Pray Morning</option>
             <option value="prayEvening">Pray Evening</option>
             <option value="coding">Coding</option>
+            <option value="sleepTime">Sleep</option>
+            <option value="bookSummary">bookSummary</option>
+            <option value="jelqs">Jelqs</option>
+            <option value="suntime">Suntime</option>
             <option value="steps">Steps</option>
           </select>
         </label>
