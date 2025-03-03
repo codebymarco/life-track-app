@@ -48,6 +48,7 @@ type FoodEntry = {
   morning_biscut?: number;
   ginger_biscut?: number;
   yougurt?: number;
+  scones?: number;
   snappers?: number;
   thunder?: number;
   fries?: boolean;
@@ -63,6 +64,15 @@ type FoodEntry = {
   salad?: boolean;
   coleslaw?: boolean;
   chicken?: boolean;
+  puri_patha?: boolean;
+  cheese?: boolean;
+  oreos?: boolean;
+  hot_sauce?: boolean;
+  beans?: boolean;
+  steak?: boolean;
+  peanut_butter?: boolean;
+  jam?: boolean;
+  toast?: boolean;
   mutton_curry?: boolean;
   mutton_bunny?: boolean;
   chicken_pie?: boolean;
@@ -114,6 +124,7 @@ type DietData = {
   morning_biscut?: number;
   ginger_biscut?: number;
   yougurt?: number;
+  scones?: number;
   snappers?: number;
   thunder?: number;
   choc_muffin?: number;
@@ -128,6 +139,15 @@ type DietData = {
   salad?: boolean;
   coleslaw?: boolean;
   chicken?: boolean;
+  puri_patha?: boolean;
+  cheese?: boolean;
+  oreos?: boolean;
+  hot_sauce?: boolean;
+  beans?: boolean;
+  steak?: boolean;
+  peanut_butter?: boolean;
+  jam?: boolean;
+  toast?: boolean;
   mutton_curry?: boolean;
   mutton_bunny?: boolean;
   chicken_pie?: boolean;
@@ -267,6 +287,7 @@ const Diet: React.FC = () => {
     morning_biscut: 0,
     ginger_biscut: 0,
     yougurt: 0,
+    scones: 0,
     snappers: 0,
     thunder: 0,
     choc_muffin: 0,
@@ -281,6 +302,15 @@ const Diet: React.FC = () => {
     salad: false,
     coleslaw: false,
     chicken: false,
+    puri_patha: false,
+    cheese: false,
+    oreos: false,
+    hot_sauce: false,
+    beans: false,
+    steak: false,
+    peanut_butter: false,
+    jam: false,
+    toast: false,
     mutton_curry: false,
     mutton_bunny: false,
     chicken_pie: false,
@@ -841,6 +871,17 @@ const Diet: React.FC = () => {
           <TextField
             fullWidth
             margin="normal"
+            label="scones"
+            type="number"
+            name="scones"
+            value={dietForm.scones}
+            onChange={handleChange}
+            inputProps={{ min: 0, step: "0.1" }}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
             label="snappers"
             type="number"
             name="snappers"
@@ -1024,6 +1065,114 @@ const Diet: React.FC = () => {
               />
             }
             label={<Typography>chicken</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.puri_patha}
+                name="puri_patha"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>puri_patha</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.cheese}
+                name="cheese"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>cheese</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.oreos}
+                name="oreos"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>oreos</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.hot_sauce}
+                name="hot_sauce"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>hot_sauce</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.beans}
+                name="beans"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>beans</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.steak}
+                name="steak"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>steak</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.peanut_butter}
+                name="peanut_butter"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>peanut_butter</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.jam}
+                name="jam"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>jam</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.toast}
+                name="toast"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>toast</Typography>}
           />
 
           <FormControlLabel
