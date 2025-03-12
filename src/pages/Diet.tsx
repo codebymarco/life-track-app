@@ -58,6 +58,8 @@ type FoodEntry = {
   chops?: boolean;
   roti?: boolean;
   mince_curry?: boolean;
+  curry?: boolean;
+  chips?: boolean;
   chicken_curry?: boolean;
   chicken_breyani?: boolean;
   rice?: boolean;
@@ -71,6 +73,7 @@ type FoodEntry = {
   beans?: boolean;
   steak?: boolean;
   peanut_butter?: boolean;
+  sandwitch?: boolean;
   jam?: boolean;
   toast?: boolean;
   mutton_curry?: boolean;
@@ -133,6 +136,8 @@ type DietData = {
   chops?: boolean;
   roti?: boolean;
   mince_curry?: boolean;
+  curry?: boolean;
+  chips?: boolean;
   chicken_curry?: boolean;
   chicken_breyani?: boolean;
   rice?: boolean;
@@ -146,6 +151,7 @@ type DietData = {
   beans?: boolean;
   steak?: boolean;
   peanut_butter?: boolean;
+  sandwitch?: boolean;
   jam?: boolean;
   toast?: boolean;
   mutton_curry?: boolean;
@@ -296,6 +302,8 @@ const Diet: React.FC = () => {
     chops: false,
     roti: false,
     mince_curry: false,
+    curry: false,
+    chips: false,
     chicken_curry: false,
     chicken_breyani: false,
     rice: false,
@@ -309,6 +317,7 @@ const Diet: React.FC = () => {
     beans: false,
     steak: false,
     peanut_butter: false,
+    sandwitch: false,
     jam: false,
     toast: false,
     mutton_curry: false,
@@ -998,6 +1007,30 @@ const Diet: React.FC = () => {
           <FormControlLabel
             control={
               <Checkbox
+                checked={dietForm.curry}
+                name="curry"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>curry</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.chips}
+                name="chips"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>chips</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
                 checked={dietForm.chicken_curry}
                 name="chicken_curry"
                 onChange={handleChange}
@@ -1149,6 +1182,18 @@ const Diet: React.FC = () => {
               />
             }
             label={<Typography>peanut_butter</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.sandwitch}
+                name="sandwitch"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>sandwitch</Typography>}
           />
 
           <FormControlLabel
