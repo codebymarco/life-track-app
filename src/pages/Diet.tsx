@@ -64,6 +64,8 @@ type FoodEntry = {
   chicken_breyani?: boolean;
   rice?: boolean;
   salad?: boolean;
+  sports_drinks?: boolean;
+  energy_drinks?: boolean;
   coleslaw?: boolean;
   chicken?: boolean;
   puri_patha?: boolean;
@@ -142,6 +144,8 @@ type DietData = {
   chicken_breyani?: boolean;
   rice?: boolean;
   salad?: boolean;
+  sports_drinks?: boolean;
+  energy_drinks?: boolean;
   coleslaw?: boolean;
   chicken?: boolean;
   puri_patha?: boolean;
@@ -308,6 +312,8 @@ const Diet: React.FC = () => {
     chicken_breyani: false,
     rice: false,
     salad: false,
+    sports_drinks: false,
+    energy_drinks: false,
     coleslaw: false,
     chicken: false,
     puri_patha: false,
@@ -1075,6 +1081,34 @@ const Diet: React.FC = () => {
             }
             label={<Typography>salad</Typography>}
           />
+
+<FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.sports_drinks}
+                name="sports_drinks"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>sports drinks</Typography>}
+          />
+
+
+
+<FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.energy_drinks}
+                name="energy_drinks"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>energy drinks</Typography>}
+          />
+
+
 
           <FormControlLabel
             control={
