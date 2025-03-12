@@ -64,6 +64,7 @@ type FoodEntry = {
   chicken_breyani?: boolean;
   rice?: boolean;
   salad?: boolean;
+  chocolate?: boolean;
   pie?: boolean;
   yogurt?: boolean;
   biscut?: boolean;
@@ -150,6 +151,7 @@ type DietData = {
   chicken_breyani?: boolean;
   rice?: boolean;
   salad?: boolean;
+  chocolate?: boolean;
   pie?: boolean;
   yogurt?: boolean;
   biscut?: boolean;
@@ -324,6 +326,7 @@ const Diet: React.FC = () => {
     chicken_breyani: false,
     rice: false,
     salad: false,
+    chocolate: false,
     pie: false,
     yogurt: false,
     biscut: false,
@@ -1103,6 +1106,18 @@ const Diet: React.FC = () => {
           <FormControlLabel
             control={
               <Checkbox
+                checked={dietForm.chocolate}
+                name="chocolate"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>chocolate</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
                 checked={dietForm.pie}
                 name="pie"
                 onChange={handleChange}
@@ -1800,7 +1815,7 @@ const Diet: React.FC = () => {
               <TableCell>provita</TableCell>
               <TableCell>tennis_biscut</TableCell>
               <TableCell>eat_sum_more_biscut</TableCell>
-              <TableCell>bread</TableCell>
+              <TableCell></TableCell>
               <TableCell>kiwi</TableCell>
               <TableCell>almonds</TableCell>
               <TableCell>milk</TableCell>
