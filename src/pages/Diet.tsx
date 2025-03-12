@@ -64,6 +64,12 @@ type FoodEntry = {
   chicken_breyani?: boolean;
   rice?: boolean;
   salad?: boolean;
+  pie?: boolean;
+  yogurt?: boolean;
+  biscut?: boolean;
+  egg?: boolean;
+  bacon?: boolean;
+  sausage?: boolean;
   sports_drinks?: boolean;
   energy_drinks?: boolean;
   coleslaw?: boolean;
@@ -144,6 +150,12 @@ type DietData = {
   chicken_breyani?: boolean;
   rice?: boolean;
   salad?: boolean;
+  pie?: boolean;
+  yogurt?: boolean;
+  biscut?: boolean;
+  eggs?: boolean;
+  bacon?: boolean;
+  sausage?: boolean;
   sports_drinks?: boolean;
   energy_drinks?: boolean;
   coleslaw?: boolean;
@@ -312,6 +324,12 @@ const Diet: React.FC = () => {
     chicken_breyani: false,
     rice: false,
     salad: false,
+    pie: false,
+    yogurt: false,
+    biscut: false,
+    eggs: false,
+    bacon: false,
+    sausage: false,
     sports_drinks: false,
     energy_drinks: false,
     coleslaw: false,
@@ -1082,7 +1100,79 @@ const Diet: React.FC = () => {
             label={<Typography>salad</Typography>}
           />
 
-<FormControlLabel
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.pie}
+                name="pie"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>pie</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.yogurt}
+                name="yogurt"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>yogurt</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.biscut}
+                name="biscut"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>biscut</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.eggs}
+                name="eggs"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>eggs</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.bacon}
+                name="bacon"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>bacon</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.sausage}
+                name="sausage"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>sausage</Typography>}
+          />
+
+          <FormControlLabel
             control={
               <Checkbox
                 checked={dietForm.sports_drinks}
@@ -1094,9 +1184,7 @@ const Diet: React.FC = () => {
             label={<Typography>sports drinks</Typography>}
           />
 
-
-
-<FormControlLabel
+          <FormControlLabel
             control={
               <Checkbox
                 checked={dietForm.energy_drinks}
@@ -1107,8 +1195,6 @@ const Diet: React.FC = () => {
             }
             label={<Typography>energy drinks</Typography>}
           />
-
-
 
           <FormControlLabel
             control={
