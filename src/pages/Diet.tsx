@@ -1913,8 +1913,8 @@ const Diet: React.FC = () => {
               <TableCell>berriesstraw</TableCell>
               <TableCell>chickenmayo</TableCell>
               <TableCell>chickenperiperi</TableCell> */}
-              <TableCell>Water (Liters)</TableCell>
-              <TableCell>Actions</TableCell>
+{/*               <TableCell>Water (Liters)</TableCell>
+ */}              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -2223,11 +2223,11 @@ const Diet: React.FC = () => {
                       </TableCell>
                     )}
  */}
-                    {i === 0 && (
+{/*                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
                         {entry.water || 0}
                       </TableCell>
-                    )}
+                    )} */}
                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
                         <IconButton onClick={() => handleEdit(index)}>
