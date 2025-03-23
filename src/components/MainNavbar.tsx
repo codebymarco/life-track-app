@@ -12,7 +12,6 @@ const MainNavbar: React.FC = () => {
   const navLinks = [
     { title: "General", path: "/entries" },
     { title: "Diet", path: "/diet" },
-    { title: "Journal", path: "/journal" },
     { title: "Workout", path: "/workout" }
   ];
 

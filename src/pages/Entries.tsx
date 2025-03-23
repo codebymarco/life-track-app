@@ -1155,23 +1155,6 @@ const Entries: React.FC = () => {
           <TableHead>
             <TableRow>
               <TableCell className={classes.tableHeader}>Date</TableCell>
-              <TableCell className={classes.tableHeader}>Pray M</TableCell>
-              <TableCell className={classes.tableHeader}>Pray e</TableCell>
-              <TableCell className={classes.tableHeader}>Bible</TableCell>
-              <TableCell className={classes.tableHeader}>Mast</TableCell>
-              <TableCell className={classes.tableHeader}>PN</TableCell>
-              <TableCell className={classes.tableHeader}>Sex</TableCell>
-              <TableCell className={classes.tableHeader}>Orgasm</TableCell>
-              <TableCell className={classes.tableHeader}>booksum</TableCell>
-              <TableCell className={classes.tableHeader}>Sleep</TableCell>
-              <TableCell className={classes.tableHeader}>Poop</TableCell>
-              <TableCell className={classes.tableHeader}>Showers</TableCell>
-              <TableCell className={classes.tableHeader}>
-                Kegels Count
-              </TableCell>
-              <TableCell className={classes.tableHeader}>Suntime</TableCell>
-              <TableCell className={classes.tableHeader}>Jelqs</TableCell>
-              <TableCell className={classes.tableHeader}>Coding</TableCell>
               <TableCell className={classes.tableHeader}>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -1194,60 +1177,7 @@ const Entries: React.FC = () => {
                     >
                       {entry.date} - {dayName}
                     </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.prayMorning ? <CheckCircleIcon /> : <CancelIcon />}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.prayEvening ? <CheckCircleIcon /> : <CancelIcon />}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.bible ? <CheckCircleIcon /> : <CancelIcon />}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.mast ? <CheckCircleIcon /> : <CancelIcon />}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.pn ? <CheckCircleIcon /> : <CancelIcon />}
-                    </TableCell>
 
-                    <TableCell className={classes.tableCell}>
-                      {entry.sex || <CancelIcon />}
-                    </TableCell>
-
-                    <TableCell className={classes.tableCell}>
-                      {entry.orgasm || <CancelIcon />}
-                    </TableCell>
-
-                    <TableCell className={classes.tableCell}>
-                      {entry.bookSummary ? <CheckCircleIcon /> : <CancelIcon />}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.nails ? <CheckCircleIcon /> : <CancelIcon />}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.ears ? <CheckCircleIcon /> : <CancelIcon />}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.sleepTime || 0}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.poop || 0}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.numberOfShowers || 0}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.no_of_kegels || 0}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.suntime || 0}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.jelqs || 0}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {entry.coding !== undefined ? entry.coding : 0}
-                    </TableCell>
                     <TableCell className={classes.tableCell}>
                       <IconButton
                         onClick={(event) => {
