@@ -56,6 +56,8 @@ type FoodEntry = {
   choc_muffin?: number;
   switch?: boolean;
   chops?: boolean;
+  lemon_water?: boolean;
+  ice_tea?: boolean;
   roti?: boolean;
   mince_curry?: boolean;
   curry?: boolean;
@@ -97,6 +99,7 @@ type FoodEntry = {
   noodles?: boolean;
   sweets?: boolean;
   pickle?: boolean;
+  jelly?: boolean;
   custard?: boolean;
   ice_cream?: boolean;
   beef_and_cauliflower_curry?: boolean;
@@ -149,6 +152,8 @@ type DietData = {
   rcl?: boolean;
   switch?: boolean;
   chops?: boolean;
+  lemon_water?: boolean;
+  ice_tea?: boolean;
   roti?: boolean;
   mince_curry?: boolean;
   curry?: boolean;
@@ -168,6 +173,9 @@ type DietData = {
   yogurt?: boolean;
   biscut?: boolean;
   eggs?: boolean;
+  veg?: boolean;
+  meat?: boolean;
+  avo?: boolean;
   bacon?: boolean;
   sausage?: boolean;
   sports_drinks?: boolean;
@@ -190,6 +198,7 @@ type DietData = {
   noodles?: boolean;
   sweets?: boolean;
   pickle?: boolean;
+  jelly?: boolean;
   custard?: boolean;
   ice_cream?: boolean;
   beef_and_cauliflower_curry?: boolean;
@@ -330,6 +339,8 @@ const Diet: React.FC = () => {
     rcl: false,
     switch: false,
     chops: false,
+    lemon_water: false,
+    ice_tea: false,
     roti: false,
     mince_curry: false,
     curry: false,
@@ -349,6 +360,9 @@ const Diet: React.FC = () => {
     yogurt: false,
     biscut: false,
     eggs: false,
+    veg: false,
+    meat: false,
+    avo: false,
     bacon: false,
     sausage: false,
     sports_drinks: false,
@@ -371,6 +385,7 @@ const Diet: React.FC = () => {
     noodles: false,
     sweets: false,
     pickle: false,
+    jelly: false,
     custard: false,
     ice_cream: false,
     beef_and_cauliflower_curry: false,
@@ -1028,6 +1043,30 @@ const Diet: React.FC = () => {
           <FormControlLabel
             control={
               <Checkbox
+                checked={dietForm.lemon_water}
+                name="lemon_water"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>lemon_water</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.ice_tea}
+                name="ice_tea"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>ice_tea</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
                 checked={dietForm.roti}
                 name="roti"
                 onChange={handleChange}
@@ -1251,6 +1290,42 @@ const Diet: React.FC = () => {
               />
             }
             label={<Typography>eggs</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.veg}
+                name="veg"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>veg</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.meat}
+                name="meat"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>meat</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.avo}
+                name="avo"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>avo</Typography>}
           />
 
           <FormControlLabel
@@ -1515,6 +1590,18 @@ const Diet: React.FC = () => {
               />
             }
             label={<Typography>pickle</Typography>}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={dietForm.jelly}
+                name="jelly"
+                onChange={handleChange}
+                size="small"
+              />
+            }
+            label={<Typography>jelly</Typography>}
           />
 
           <FormControlLabel
@@ -1913,8 +2000,9 @@ const Diet: React.FC = () => {
               <TableCell>berriesstraw</TableCell>
               <TableCell>chickenmayo</TableCell>
               <TableCell>chickenperiperi</TableCell> */}
-{/*               <TableCell>Water (Liters)</TableCell>
- */}              <TableCell>Actions</TableCell>
+              {/*               <TableCell>Water (Liters)</TableCell>
+               */}{" "}
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -2223,7 +2311,7 @@ const Diet: React.FC = () => {
                       </TableCell>
                     )}
  */}
-{/*                     {i === 0 && (
+                    {/*                     {i === 0 && (
                       <TableCell rowSpan={entry.foods.length}>
                         {entry.water || 0}
                       </TableCell>
