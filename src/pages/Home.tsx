@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 const Home = () => {
   const [entries, setEntries] = useState([]);
   const [workoutEntries, setWorkoutEntries] = useState([]);
+  const [dietEntries, setDietEntries] = useState([]);
   const [selectedType, setSelectedType] = useState("prayMorning");
   const [daysToShow, setDaysToShow] = useState(5);
   const [displayData, setDisplayData] = useState([]);
@@ -22,7 +23,7 @@ const Home = () => {
     }
   }, []);
 
-  // Retrieve workoutEntries for steps
+  // Retrieve workoutEntries for steps and workoutTime
   useEffect(() => {
     const storedWorkoutEntries = localStorage.getItem("workoutEntries");
     if (storedWorkoutEntries) {
@@ -33,6 +34,21 @@ const Home = () => {
         }
       } catch (error) {
         console.error("Error parsing workoutEntries from localStorage:", error);
+      }
+    }
+  }, []);
+  
+  // Retrieve dietEntries for water tracking
+  useEffect(() => {
+    const storedDietEntries = localStorage.getItem("dietEntries");
+    if (storedDietEntries) {
+      try {
+        const parsedDietEntries = JSON.parse(storedDietEntries);
+        if (Array.isArray(parsedDietEntries)) {
+          setDietEntries(parsedDietEntries);
+        }
+      } catch (error) {
+        console.error("Error parsing dietEntries from localStorage:", error);
       }
     }
   }, []);
@@ -58,15 +74,38 @@ const Home = () => {
     
     // Map dates to values with placeholders for missing days
     const values = dates.map(dateStr => {
-      if (selectedType === "steps") {
+      // Handle different data sources based on selectedType
+      if (selectedType === "steps" || selectedType === "workoutTime") {
         // Find workout entry for this date
+        const entry = workoutEntries.find(e => e.date.split('T')[0] === dateStr);
+        
+        if (selectedType === "steps") {
+          return {
+            date: dateStr,
+            value: entry ? entry.steps : "—" // Use dash as placeholder
+          };
+        } else { // workoutTime
+          return {
+            date: dateStr,
+            value: entry && entry.workoutTime ? entry.workoutTime : "—"
+          };
+        }
+      } else if (selectedType === "water") {
+        // Find diet entry for this date
+        const entry = dietEntries.find(e => e.date.split('T')[0] === dateStr);
+        return {
+          date: dateStr,
+          value: entry && entry.water ? entry.water : "—"
+        };
+      } else if (selectedType === "workout") {
+        // Find workout entry for this date (for boolean workout status)
         const entry = workoutEntries.find(e => e.date.split('T')[0] === dateStr);
         return {
           date: dateStr,
-          value: entry ? entry.steps : "—" // Use dash as placeholder
+          value: entry ? (entry.workout === true ? "yes" : "no") : "—"
         };
       } else {
-        // Find regular entry for this date
+        // Find regular entry for this date (for other fields)
         const entry = entries.find(e => e.date.split('T')[0] === dateStr);
         if (!entry) return { date: dateStr, value: "—" }; // Use dash as placeholder
         
@@ -79,7 +118,7 @@ const Home = () => {
     });
     
     setDisplayData(values);
-  }, [entries, workoutEntries, selectedType, daysToShow]);
+  }, [entries, workoutEntries, dietEntries, selectedType, daysToShow]);
 
   // Determine the display title based on the selected type
   let displayTitle = "";
@@ -91,6 +130,9 @@ const Home = () => {
   else if (selectedType === "suntime") displayTitle = "Suntime";
   else if (selectedType === "steps") displayTitle = "Steps";
   else if (selectedType === "bookSummary") displayTitle = "Book Summary";
+  else if (selectedType === "workoutTime") displayTitle = "Workout Time";
+  else if (selectedType === "workout") displayTitle = "Workout";
+  else if (selectedType === "water") displayTitle = "Water";
 
   // Function to get value color based on type
   const getValueColor = (value) => {
@@ -108,13 +150,6 @@ const Home = () => {
         if (num >= 7500) return "#FFC107"; // Yellow/amber for close
         return "#F44336"; // Red for low
       }
-
-      // For steps (assuming goal is 10000)
-      if (selectedType === "workoutTime") {
-        if (num >= 10000) return "#4CAF50"; // Green for goal achieved
-        if (num >= 7500) return "#FFC107"; // Yellow/amber for close
-        return "#F44336"; // Red for low
-      }
       
       // For sleep time (assuming 7-8 hours is ideal)
       if (selectedType === "sleepTime") {
@@ -122,6 +157,18 @@ const Home = () => {
         if (num >= 6 && num < 7) return "#FFC107"; // Yellow for borderline
         return "#F44336"; // Red for too little or too much
       }
+    }
+    
+    // For workout time - assuming any workout time is good (non-empty string)
+    if (selectedType === "workoutTime") {
+      if (value && value !== "—") return "#4CAF50"; // Green for any workout time
+      return "#E0E0E0"; // Gray for no workout time
+    }
+    
+    // For water - could implement color coding based on water consumption if needed
+    if (selectedType === "water") {
+      if (value && value !== "—") return "#4CAF50"; // Green for any water tracking
+      return "#E0E0E0"; // Gray for no water tracking
     }
     
     return "#2196F3"; // Default blue for other values
@@ -147,6 +194,9 @@ const Home = () => {
               <option value="bookSummary">Book Summary</option>
               <option value="suntime">Suntime</option>
               <option value="steps">Steps</option>
+              <option value="workoutTime">Workout Time</option>
+              <option value="workout">Workout</option>
+              <option value="water">Water</option>
             </select>
           </label>
         </div>
