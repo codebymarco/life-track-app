@@ -5,6 +5,7 @@ const Home = () => {
   const [workoutEntries, setWorkoutEntries] = useState([]);
   const [selectedType, setSelectedType] = useState("prayMorning");
   const [daysToShow, setDaysToShow] = useState(5);
+  const [displayData, setDisplayData] = useState([]);
 
   // Retrieve entries for prayMorning, prayEvening, and coding
   useEffect(() => {
@@ -13,11 +14,7 @@ const Home = () => {
       try {
         const parsedEntries = JSON.parse(storedEntries);
         if (Array.isArray(parsedEntries)) {
-          // Sort entries by date descending (newest first)
-          const sortedEntries = parsedEntries.sort(
-            (a, b) => new Date(b.date) - new Date(a.date)
-          );
-          setEntries(sortedEntries);
+          setEntries(parsedEntries);
         }
       } catch (error) {
         console.error("Error parsing entries from localStorage:", error);
@@ -32,11 +29,7 @@ const Home = () => {
       try {
         const parsedWorkoutEntries = JSON.parse(storedWorkoutEntries);
         if (Array.isArray(parsedWorkoutEntries)) {
-          // Sort workoutEntries by date descending (newest first)
-          const sortedWorkoutEntries = parsedWorkoutEntries.sort(
-            (a, b) => new Date(b.date) - new Date(a.date)
-          );
-          setWorkoutEntries(sortedWorkoutEntries);
+          setWorkoutEntries(parsedWorkoutEntries);
         }
       } catch (error) {
         console.error("Error parsing workoutEntries from localStorage:", error);
@@ -44,21 +37,49 @@ const Home = () => {
     }
   }, []);
 
-  // Select the appropriate data source based on selectedType
-  let displayedValues = [];
-  if (selectedType === "steps") {
-    displayedValues = workoutEntries
-      .slice(0, daysToShow)
-      .map((entry) => entry.steps);
-  } else {
-    displayedValues = entries.slice(0, daysToShow).map((entry) => {
-      const value = entry[selectedType];
-      if (typeof value === "boolean") {
-        return value ? "yes" : "no";
+  // Generate display data with placeholders for missing days
+  useEffect(() => {
+    // Generate array of dates from today backwards
+    const generateDateArray = (days) => {
+      const dateArray = [];
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset time to start of day
+      
+      for (let i = 0; i < days; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+        dateArray.push(date.toISOString().split('T')[0]); // Format as YYYY-MM-DD
       }
-      return value;
+      return dateArray;
+    };
+
+    // Generate the date array
+    const dates = generateDateArray(daysToShow);
+    
+    // Map dates to values with placeholders for missing days
+    const values = dates.map(dateStr => {
+      if (selectedType === "steps") {
+        // Find workout entry for this date
+        const entry = workoutEntries.find(e => e.date.split('T')[0] === dateStr);
+        return {
+          date: dateStr,
+          value: entry ? entry.steps : "—" // Use dash as placeholder
+        };
+      } else {
+        // Find regular entry for this date
+        const entry = entries.find(e => e.date.split('T')[0] === dateStr);
+        if (!entry) return { date: dateStr, value: "—" }; // Use dash as placeholder
+        
+        const value = entry[selectedType];
+        if (typeof value === "boolean") {
+          return { date: dateStr, value: value ? "yes" : "no" };
+        }
+        return { date: dateStr, value: value || "—" };
+      }
     });
-  }
+    
+    setDisplayData(values);
+  }, [entries, workoutEntries, selectedType, daysToShow]);
 
   // Determine the display title based on the selected type
   let displayTitle = "";
@@ -75,6 +96,7 @@ const Home = () => {
   const getValueColor = (value) => {
     if (value === "yes") return "#4CAF50"; // Green for positive
     if (value === "no") return "#F44336"; // Red for negative
+    if (value === "—") return "#E0E0E0"; // Light gray for placeholders
     
     // For numeric values in steps, sleep time etc.
     if (!isNaN(value)) {
@@ -82,6 +104,13 @@ const Home = () => {
       
       // For steps (assuming goal is 10000)
       if (selectedType === "steps") {
+        if (num >= 10000) return "#4CAF50"; // Green for goal achieved
+        if (num >= 7500) return "#FFC107"; // Yellow/amber for close
+        return "#F44336"; // Red for low
+      }
+
+      // For steps (assuming goal is 10000)
+      if (selectedType === "workoutTime") {
         if (num >= 10000) return "#4CAF50"; // Green for goal achieved
         if (num >= 7500) return "#FFC107"; // Yellow/amber for close
         return "#F44336"; // Red for low
@@ -134,6 +163,7 @@ const Home = () => {
               <option value="10">10</option>
               <option value="15">15</option>
               <option value="20">20</option>
+              <option value="100">100</option>
             </select>
           </label>
         </div>
@@ -142,13 +172,14 @@ const Home = () => {
       <div className="data-section">
         <h2 className="section-title">{displayTitle}</h2>
         <div className="values-container">
-          {displayedValues.map((value, index) => (
+          {displayData.map((item, index) => (
             <div 
               key={index} 
               className="value-badge"
-              style={{ backgroundColor: getValueColor(value) }}
+              style={{ backgroundColor: getValueColor(item.value) }}
+              title={item.date} // Add date as tooltip
             >
-              {value}
+              {item.value}
             </div>
           ))}
         </div>
@@ -266,6 +297,7 @@ const Home = () => {
           font-size: 1rem;
           box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
           transition: all 0.2s ease;
+          cursor: default; /* Show pointer on hover for the tooltip */
         }
 
         .value-badge:hover {
